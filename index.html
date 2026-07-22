@@ -855,14 +855,18 @@ button:disabled { opacity: 0.4; cursor: not-allowed; }
 .chat-fab[hidden] { display: none; }
 
 .chat-panel {
-  position: fixed; top: 0; right: 0; z-index: 95;
-  width: min(420px, 100vw); height: 100vh; height: 100dvh;
+  position: fixed; right: 22px; bottom: 22px; z-index: 95;
+  width: min(384px, calc(100vw - 44px));
+  height: min(560px, calc(100vh - 44px));
   display: flex; flex-direction: column;
-  background: var(--surface); border-left: 1px solid var(--border);
-  box-shadow: var(--shadow-lg);
-  transform: translateX(102%); transition: transform 0.24s ease;
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius-lg); box-shadow: var(--shadow-lg);
+  overflow: hidden;
+  opacity: 0; visibility: hidden; pointer-events: none;
+  transform: translateY(12px) scale(0.98); transform-origin: bottom right;
+  transition: opacity .18s ease, transform .18s ease, visibility .18s;
 }
-.chat-panel.open { transform: translateX(0); }
+.chat-panel.open { opacity: 1; visibility: visible; pointer-events: auto; transform: none; }
 .chat-head { display: flex; align-items: center; gap: 11px; padding: 16px 18px; border-bottom: 1px solid var(--border); }
 .chat-head .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent-bright); box-shadow: var(--glow-accent); flex: none; }
 .chat-title { font-family: var(--font-heading); font-weight: 700; font-size: 15px; color: var(--text); line-height: 1.2; }
@@ -898,7 +902,7 @@ button:disabled { opacity: 0.4; cursor: not-allowed; }
 .chat-send:hover { background: var(--accent-bright); }
 .chat-send:disabled { opacity: .5; cursor: default; }
 
-@media (max-width: 640px) { .chat-panel { width: 100vw; } .chat-fab { right: 16px; bottom: 16px; } }
+@media (max-width: 640px) { .chat-panel { left: 12px; right: 12px; bottom: 12px; width: auto; height: min(72vh, 560px); } .chat-fab { right: 16px; bottom: 16px; } }
 @media (prefers-reduced-motion: reduce) { .chat-panel { transition: none; } .chat-fab { transition: none; } .chat-typing span { animation: none; } }
 </style>
 </head>
@@ -2090,17 +2094,17 @@ button:disabled { opacity: 0.4; cursor: not-allowed; }
      Written by the Pulse ingest command in Claude Code. -->
 <script src="analytics-data.js"></script>
 
-<!-- ═══ Console copilot: floating button + slide-in chat panel ═══
+<!-- ═══ Content assistant: floating button + compact chat window ═══
      Hidden unless CHAT_BACKEND_URL is set (keeps the launcher static/offline). -->
 <button class="chat-fab" id="chat-fab" hidden aria-haspopup="dialog" aria-controls="chat-panel">
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-  Ask the console
+  Ask the assistant
 </button>
-<aside class="chat-panel" id="chat-panel" role="dialog" aria-modal="false" aria-label="Console copilot" aria-hidden="true">
+<aside class="chat-panel" id="chat-panel" role="dialog" aria-modal="false" aria-label="Content assistant" aria-hidden="true">
   <div class="chat-head">
     <span class="dot" aria-hidden="true"></span>
     <div>
-      <div class="chat-title">Console copilot</div>
+      <div class="chat-title">Content assistant</div>
       <div class="chat-sub">Ask about the engine, or jump to a tool</div>
     </div>
     <button class="chat-x" id="chat-close" type="button" aria-label="Close chat">&times;</button>
@@ -3874,12 +3878,14 @@ function renderPulse() {
 
   function openPanel() {
     lastFocus = document.activeElement;
+    fab.hidden = true;   // the window takes the corner; hide the button under it
     panel.classList.add("open"); panel.setAttribute("aria-hidden", "false");
     if (!log.children.length) renderEmpty();
     setTimeout(() => input.focus(), 80);
   }
   function closePanel() {
     panel.classList.remove("open"); panel.setAttribute("aria-hidden", "true");
+    fab.hidden = false;
     if (lastFocus && lastFocus.focus) lastFocus.focus();
   }
   fab.addEventListener("click", openPanel);
