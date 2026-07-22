@@ -839,6 +839,67 @@ button:disabled { opacity: 0.4; cursor: not-allowed; }
     .tool-grid { grid-template-columns: 1fr; }
     .ci-boards { grid-template-columns: 1fr; gap: 14px; }
 }
+
+/* ═══════════════════════ Console copilot (chat) ═══════════════════════ */
+.chat-fab {
+  position: fixed; right: 22px; bottom: 22px; z-index: 90;
+  display: inline-flex; align-items: center; gap: 9px;
+  padding: 12px 17px; border: 1px solid var(--border); border-radius: 999px;
+  background: var(--surface); color: var(--text);
+  font-family: var(--font-heading); font-weight: 600; font-size: 14px;
+  cursor: pointer; box-shadow: var(--shadow-md), var(--glow-accent);
+  transition: transform var(--transition), box-shadow var(--transition);
+}
+.chat-fab:hover { transform: translateY(-1px); box-shadow: var(--shadow-lg), var(--glow-accent); }
+.chat-fab svg { width: 18px; height: 18px; color: var(--accent-bright); }
+.chat-fab[hidden] { display: none; }
+
+.chat-panel {
+  position: fixed; top: 0; right: 0; z-index: 95;
+  width: min(420px, 100vw); height: 100vh; height: 100dvh;
+  display: flex; flex-direction: column;
+  background: var(--surface); border-left: 1px solid var(--border);
+  box-shadow: var(--shadow-lg);
+  transform: translateX(102%); transition: transform 0.24s ease;
+}
+.chat-panel.open { transform: translateX(0); }
+.chat-head { display: flex; align-items: center; gap: 11px; padding: 16px 18px; border-bottom: 1px solid var(--border); }
+.chat-head .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent-bright); box-shadow: var(--glow-accent); flex: none; }
+.chat-title { font-family: var(--font-heading); font-weight: 700; font-size: 15px; color: var(--text); line-height: 1.2; }
+.chat-sub { font-size: 12px; color: var(--text-light); }
+.chat-x { margin-left: auto; background: none; border: none; color: var(--text-muted); cursor: pointer; font-size: 22px; line-height: 1; padding: 2px 8px; border-radius: 6px; }
+.chat-x:hover { color: var(--text); background: var(--input-bg); }
+
+.chat-log { flex: 1; overflow-y: auto; padding: 16px 18px; display: flex; flex-direction: column; gap: 11px; }
+.chat-msg { max-width: 88%; padding: 10px 13px; border-radius: 12px; font-size: 14px; line-height: 1.5; word-wrap: break-word; }
+.chat-msg.user { align-self: flex-end; background: var(--accent-mid); color: #fff; border-bottom-right-radius: 4px; }
+.chat-msg.bot { align-self: flex-start; background: var(--card); border: 1px solid var(--border); color: var(--text); border-bottom-left-radius: 4px; }
+.chat-msg.bot code { font-family: var(--font-mono); background: var(--input-bg); padding: 1px 5px; border-radius: 4px; font-size: 12.5px; }
+.chat-msg.bot a { color: var(--link); }
+.chat-msg.bot ul { margin: 6px 0; padding-left: 18px; }
+.chat-action { align-self: flex-start; font-size: 12px; color: var(--text-light); }
+.chat-action strong { color: var(--link); font-weight: 600; }
+.chat-empty { color: var(--text-light); font-size: 13px; line-height: 1.6; }
+.chat-empty .ex { display: block; margin-top: 9px; color: var(--link); cursor: pointer; }
+.chat-empty .ex:hover { color: var(--link-hover); }
+.chat-err { align-self: flex-start; color: var(--link); background: rgba(124,58,237,0.08); border: 1px solid var(--border); border-radius: 8px; padding: 8px 11px; font-size: 12.5px; max-width: 88%; }
+
+.chat-typing { align-self: flex-start; display: flex; gap: 4px; padding: 8px 4px; }
+.chat-typing span { width: 6px; height: 6px; border-radius: 50%; background: var(--text-light); animation: chatBlink 1.2s infinite; }
+.chat-typing span:nth-child(2) { animation-delay: .2s; }
+.chat-typing span:nth-child(3) { animation-delay: .4s; }
+@keyframes chatBlink { 0%, 60%, 100% { opacity: .25; } 30% { opacity: 1; } }
+
+.chat-form { display: flex; gap: 8px; padding: 12px 14px; border-top: 1px solid var(--border); }
+.chat-input { flex: 1; resize: none; background: var(--input-bg); border: 1px solid var(--border); border-radius: 10px; color: var(--text); font-family: var(--font-body); font-size: 14px; line-height: 1.4; padding: 9px 11px; max-height: 120px; }
+.chat-input::placeholder { color: var(--text-light); }
+.chat-input:focus-visible { outline: none; box-shadow: var(--ring); border-color: var(--accent-mid); }
+.chat-send { background: var(--accent); border: none; border-radius: 10px; color: #fff; padding: 0 15px; cursor: pointer; font-family: var(--font-heading); font-weight: 600; font-size: 14px; }
+.chat-send:hover { background: var(--accent-bright); }
+.chat-send:disabled { opacity: .5; cursor: default; }
+
+@media (max-width: 640px) { .chat-panel { width: 100vw; } .chat-fab { right: 16px; bottom: 16px; } }
+@media (prefers-reduced-motion: reduce) { .chat-panel { transition: none; } .chat-fab { transition: none; } .chat-typing span { animation: none; } }
 </style>
 </head>
 <body>
@@ -2029,6 +2090,28 @@ button:disabled { opacity: 0.4; cursor: not-allowed; }
      Written by the Pulse ingest command in Claude Code. -->
 <script src="analytics-data.js"></script>
 
+<!-- ═══ Console copilot: floating button + slide-in chat panel ═══
+     Hidden unless CHAT_BACKEND_URL is set (keeps the launcher static/offline). -->
+<button class="chat-fab" id="chat-fab" hidden aria-haspopup="dialog" aria-controls="chat-panel">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+  Ask the console
+</button>
+<aside class="chat-panel" id="chat-panel" role="dialog" aria-modal="false" aria-label="Console copilot" aria-hidden="true">
+  <div class="chat-head">
+    <span class="dot" aria-hidden="true"></span>
+    <div>
+      <div class="chat-title">Console copilot</div>
+      <div class="chat-sub">Ask about the engine, or jump to a tool</div>
+    </div>
+    <button class="chat-x" id="chat-close" type="button" aria-label="Close chat">&times;</button>
+  </div>
+  <div class="chat-log" id="chat-log" aria-live="polite" aria-label="Conversation"></div>
+  <form class="chat-form" id="chat-form">
+    <textarea class="chat-input" id="chat-input" rows="1" placeholder="Ask a question, or &ldquo;draft a post about&hellip;&rdquo;" aria-label="Message"></textarea>
+    <button class="chat-send" id="chat-send" type="submit">Send</button>
+  </form>
+</aside>
+
 <script>
 /* ═══════════════════════ CONFIG, edit these ═══════════════════════ */
 
@@ -2036,6 +2119,11 @@ button:disabled { opacity: 0.4; cursor: not-allowed; }
 // button copies the assembled request and opens this URL in a new tab.
 // Leave as "#" and the button just copies (no tab opens).
 const PROJECT_URL = "#";
+
+// The launcher copilot backend (the small Fly chat service). Leave "" to disable
+// the chat panel entirely — the floating button stays hidden and the launcher
+// remains fully static/offline. Set to the deployed URL to switch it on.
+const CHAT_BACKEND_URL = "https://stern-launcher-chat.fly.dev";
 
 // Reference cards. Paste your URLs here; "#" renders a muted "coming soon" card.
 const LINKS = {
@@ -3704,6 +3792,188 @@ function renderPulse() {
   }));
   document.querySelectorAll(".seg-btn, .chip, .toggle-row .track").forEach(el =>
     obs.observe(el, { attributes: true, attributeFilter: ["class"] }));
+})();
+
+/* ═══════════════════════ Console copilot (chat) ═══════════════════════
+   A lightweight helper: answers questions about the engine and opens the right
+   tool (via the same showView + field-prefill the UI already uses). It calls the
+   CHAT_BACKEND_URL service, never the MCP tools directly. If CHAT_BACKEND_URL is
+   "" the whole thing stays hidden, so the launcher is unchanged offline. */
+(function initChat() {
+  if (!CHAT_BACKEND_URL) return;  // disabled -> button stays hidden, launcher stays static
+  const fab = document.getElementById("chat-fab");
+  const panel = document.getElementById("chat-panel");
+  const log = document.getElementById("chat-log");
+  const form = document.getElementById("chat-form");
+  const input = document.getElementById("chat-input");
+  const sendBtn = document.getElementById("chat-send");
+  const closeBtn = document.getElementById("chat-close");
+  if (!fab || !panel || !log || !form || !input) return;
+  fab.hidden = false;
+
+  // slug -> which fields open_tool can prefill (matches the tools' input ids).
+  const FIELD_MAP = {
+    radar:    { moment: "rd-moment" },
+    dossier:  { moment: "sd-moment", topic: "sd-topic" },
+    brief:    { moment: "bb-moment", topic: "bb-topic" },
+    campaign: { moment: "sca-moment", topic: "sca-theme" },
+    studio:   { moment: "st-moment" },
+    recycler: { moment: "sc-moment" },
+  };
+  const TOOL_NAMES = {
+    harvest: "Source Harvester", radar: "Trend Radar", dossier: "Topic Researcher",
+    brief: "Post Drafter", check: "Draft Checker", studio: "Visual Designer",
+    recycler: "Content Recycler", campaign: "Campaign Builder",
+    pulse: "Content Analytics", competitors: "Competitor Analysis",
+  };
+  const EXAMPLES = [
+    "Which tool reacts to a competitor's breach?",
+    "Draft a post about MFA fatigue for the Failed Audit moment",
+    "What's our voice?",
+  ];
+
+  const history = [];
+  let streaming = false, lastFocus = null;
+
+  const esc = s => s.replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+  function inlineMd(t) {
+    return t.replace(/`([^`]+)`/g, "<code>$1</code>")
+            .replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>")
+            .replace(/(^|[^*])\*([^*]+)\*/g, "$1<em>$2</em>")
+            .replace(/\[([^\]]+)\]\((https?:[^)\s]+)\)/g, '<a href="$2" target="_blank" rel="noopener">$1</a>');
+  }
+  function chatMd(src) {
+    const lines = esc(src).split("\n");
+    let out = [], inList = false;
+    for (const raw of lines) {
+      const m = raw.match(/^\s*[-•]\s+(.*)/);
+      if (m) { if (!inList) { out.push("<ul>"); inList = true; } out.push("<li>" + inlineMd(m[1]) + "</li>"); }
+      else { if (inList) { out.push("</ul>"); inList = false; } out.push(raw.trim() === "" ? "" : inlineMd(raw)); }
+    }
+    if (inList) out.push("</ul>");
+    return out.join("<br>").replace(/(<\/li>)<br>/g, "$1").replace(/(<ul>)<br>/g, "$1").replace(/<br>(<ul>)/g, "$1").replace(/<br>(<\/ul>)/g, "$1");
+  }
+  function elc(cls, html) { const d = document.createElement("div"); d.className = cls; if (html != null) d.innerHTML = html; return d; }
+  function scroll() { log.scrollTop = log.scrollHeight; }
+
+  function renderEmpty() {
+    const wrap = elc("chat-empty", "I can explain the engine or open the right tool for you. Try:");
+    EXAMPLES.forEach(t => {
+      const a = document.createElement("span");
+      a.className = "ex"; a.textContent = "“" + t + "”";
+      a.addEventListener("click", () => { input.value = t; send(); });
+      wrap.appendChild(a);
+    });
+    log.appendChild(wrap);
+  }
+  function addMsg(role, text) {
+    const m = elc("chat-msg " + (role === "user" ? "user" : "bot"));
+    m.innerHTML = role === "user" ? esc(text) : chatMd(text);
+    log.appendChild(m); scroll(); return m;
+  }
+
+  function openPanel() {
+    lastFocus = document.activeElement;
+    panel.classList.add("open"); panel.setAttribute("aria-hidden", "false");
+    if (!log.children.length) renderEmpty();
+    setTimeout(() => input.focus(), 80);
+  }
+  function closePanel() {
+    panel.classList.remove("open"); panel.setAttribute("aria-hidden", "true");
+    if (lastFocus && lastFocus.focus) lastFocus.focus();
+  }
+  fab.addEventListener("click", openPanel);
+  closeBtn.addEventListener("click", closePanel);
+  document.addEventListener("keydown", e => {
+    if (e.key === "Escape" && panel.classList.contains("open")) closePanel();
+  });
+  panel.addEventListener("keydown", e => {   // focus trap
+    if (e.key !== "Tab") return;
+    const f = panel.querySelectorAll('button, textarea, a[href], input, [tabindex]:not([tabindex="-1"])');
+    if (!f.length) return;
+    const first = f[0], last = f[f.length - 1];
+    if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+    else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+  });
+
+  input.addEventListener("input", () => { input.style.height = "auto"; input.style.height = Math.min(input.scrollHeight, 120) + "px"; });
+  input.addEventListener("keydown", e => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); form.requestSubmit(); } });
+  form.addEventListener("submit", e => { e.preventDefault(); send(); });
+
+  function setField(id, val, evt) {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.value = val;
+    el.dispatchEvent(new Event(evt, { bubbles: true }));
+  }
+  function applyAction(a) {
+    if (!a || !a.tool) return;
+    if (!document.getElementById("view-" + a.tool)) return;   // unknown tool -> ignore
+    showView(a.tool);
+    const map = FIELD_MAP[a.tool] || {};
+    if (a.moment && map.moment) setField(map.moment, a.moment, "change");
+    if (a.topic && map.topic) setField(map.topic, a.topic, "input");
+    const note = elc("chat-action");
+    note.innerHTML = "↳ opened <strong>" + esc(TOOL_NAMES[a.tool] || a.tool) + "</strong>" + (a.moment ? " · " + esc(a.moment) : "");
+    log.appendChild(note); scroll();
+    closePanel();
+  }
+
+  async function send() {
+    const text = input.value.trim();
+    if (!text || streaming) return;
+    const empty = log.querySelector(".chat-empty"); if (empty) empty.remove();
+    input.value = ""; input.style.height = "auto";
+    addMsg("user", text);
+    history.push({ role: "user", content: text });
+    streaming = true; sendBtn.disabled = true;
+    const typing = elc("chat-typing", "<span></span><span></span><span></span>");
+    log.appendChild(typing); scroll();
+    let botMsg = null, acc = "", action = null;
+    try {
+      const resp = await fetch(CHAT_BACKEND_URL.replace(/\/$/, "") + "/chat", {
+        method: "POST", headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ messages: history.slice(-12) }),
+      });
+      if (!resp.ok) {
+        typing.remove();
+        let msg = "Something went wrong. Please try again.";
+        try { const j = await resp.json(); if (j.error) msg = j.error; } catch (_) {}
+        log.appendChild(elc("chat-err", esc(msg))); scroll();
+        return;
+      }
+      const reader = resp.body.getReader(), dec = new TextDecoder();
+      let buf = "";
+      for (;;) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        buf += dec.decode(value, { stream: true });
+        let idx;
+        while ((idx = buf.indexOf("\n\n")) >= 0) {
+          const chunk = buf.slice(0, idx).trim(); buf = buf.slice(idx + 2);
+          if (!chunk.startsWith("data:")) continue;
+          let ev; try { ev = JSON.parse(chunk.slice(5).trim()); } catch (_) { continue; }
+          if (ev.type === "text") {
+            if (!botMsg) { typing.remove(); botMsg = addMsg("bot", ""); }
+            acc += ev.delta; botMsg.innerHTML = chatMd(acc); scroll();
+          } else if (ev.type === "action" && ev.action === "open_tool") {
+            action = ev.input;
+          } else if (ev.type === "error") {
+            if (typing.parentNode) typing.remove();
+            log.appendChild(elc("chat-err", esc(ev.message || "The assistant hit an error."))); scroll();
+          }
+        }
+      }
+      if (typing.parentNode) typing.remove();
+      if (acc) history.push({ role: "assistant", content: acc });
+      if (action) applyAction(action);
+    } catch (err) {
+      if (typing.parentNode) typing.remove();
+      log.appendChild(elc("chat-err", "Couldn’t reach the copilot. Check your connection and try again.")); scroll();
+    } finally {
+      streaming = false; sendBtn.disabled = false; input.focus();
+    }
+  }
 })();
 </script>
 
