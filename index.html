@@ -891,7 +891,9 @@ button:disabled { opacity: 0.4; cursor: not-allowed; }
 .guide-lead strong { color: var(--text); font-weight: 600; }
 
 /* Buying moments ------------------------------------------------------- */
-.gmoments { display: grid; grid-template-columns: repeat(auto-fill, minmax(268px, 1fr)); gap: 12px; }
+/* align-items:start, not the default stretch: otherwise expanding one card
+   inflates its row-mates into tall empty boxes. */
+.gmoments { display: grid; grid-template-columns: repeat(auto-fill, minmax(268px, 1fr)); gap: 12px; align-items: start; }
 .gmoment {
   text-align: left; background: var(--surface); border: 1px solid var(--border);
   border-radius: var(--radius-md); padding: 15px 16px; cursor: pointer; color: var(--text);
@@ -907,7 +909,16 @@ button:disabled { opacity: 0.4; cursor: not-allowed; }
   color: var(--text-muted); border: 1px solid var(--border); background: var(--input-bg);
   border-radius: 5px; padding: 2px 6px; white-space: nowrap;
 }
-.gmoment-trigger { font-size: 13.5px; line-height: 1.55; color: var(--text-muted); margin: 8px 0 0; }
+.gmoment-trigger { font-size: 13.5px; line-height: 1.55; color: var(--text-muted); margin: 0 0 10px; }
+/* Collapsed the card is just a name and a badge, so it needs a visible cue
+   that there's something behind it. */
+.gmoment-chev {
+  width: 8px; height: 8px; flex: none; margin: 4px 1px 0 0;
+  border-right: 2px solid var(--text-light); border-bottom: 2px solid var(--text-light);
+  transform: rotate(45deg); transition: transform var(--transition), border-color var(--transition);
+}
+.gmoment:hover .gmoment-chev { border-color: var(--accent-bright); }
+.gmoment[aria-expanded="true"] .gmoment-chev { transform: rotate(-135deg); border-color: var(--accent-bright); }
 .gmoment-more { display: none; margin-top: 11px; padding-top: 11px; border-top: 1px solid var(--border); }
 .gmoment[aria-expanded="true"] .gmoment-more { display: block; }
 .gmoment-k { font-family: var(--font-mono); font-size: 9.5px; letter-spacing: .07em; text-transform: uppercase; color: var(--text-light); display: block; margin-bottom: 4px; }
@@ -1000,7 +1011,7 @@ button:disabled { opacity: 0.4; cursor: not-allowed; }
 }
 @media (prefers-reduced-motion: reduce) {
   .gconn::after { animation: none; opacity: 0; }
-  .gmoment, .gnode, .gchip { transition: none; }
+  .gmoment, .gnode, .gchip, .gmoment-chev { transition: none; }
   .greveal { opacity: 1; transform: none; }
   .greveal.in { transition: none; }
 }
@@ -4864,9 +4875,11 @@ function renderPulse() {
       <span class="gmoment-top">
         <span class="gmoment-name">${esc(m.name)}</span>
         <span class="gmoment-type">${esc(m.type)}</span>
+        <span class="gmoment-chev" aria-hidden="true"></span>
       </span>
-      <p class="gmoment-trigger">${esc(m.trigger)}</p>
       <span class="gmoment-more">
+        <span class="gmoment-k">What just happened</span>
+        <p class="gmoment-trigger">${esc(m.trigger)}</p>
         <span class="gmoment-k">What they want next</span>
         <p class="gmoment-wants">${esc(m.wants)}</p>
         <span class="gmoment-k">Stern services in play</span>
