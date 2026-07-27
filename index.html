@@ -948,8 +948,37 @@ button:disabled { opacity: 0.4; cursor: not-allowed; }
 .chat-send:hover { background: var(--accent-bright); }
 .chat-send:disabled { opacity: .5; cursor: default; }
 
+/* Connor: avatar, the AI marker, and the reply + follow-up layout.
+   The chip is deliberately always visible — the persona is a voice, not a
+   disguise, and teammates who know Connor shouldn't think this is a DM to him. */
+.chat-avatar { width: 30px; height: 30px; border-radius: 50%; object-fit: cover; flex: none; border: 1px solid var(--border); background: var(--input-bg); display: block; }
+.chat-avatar.sm { width: 24px; height: 24px; margin-top: 2px; }
+.chat-fab .chat-avatar { width: 24px; height: 24px; }
+.chat-initial { display: flex; align-items: center; justify-content: center; font-family: var(--font-heading); font-weight: 700; font-size: 12px; color: var(--accent-bright); }
+.chat-ai-chip {
+  font-family: var(--font-mono); font-size: 9px; letter-spacing: .09em; text-transform: uppercase;
+  color: var(--accent-bright); border: 1px solid var(--border); background: var(--input-bg);
+  border-radius: 5px; padding: 1px 5px; margin-left: 7px; vertical-align: 1.5px; font-weight: 600;
+}
+.chat-row { display: flex; align-items: flex-start; gap: 8px; align-self: flex-start; max-width: 94%; }
+.chat-row .chat-msg { max-width: none; }
+.chat-msg.bot p { margin: 0 0 7px; }
+.chat-msg.bot p:last-child { margin-bottom: 0; }
+.chat-msg.bot strong { color: var(--text); font-weight: 650; }
+.chat-typing { margin-left: 32px; }
+
+.chat-sugs { display: flex; flex-wrap: wrap; gap: 6px; align-self: flex-start; margin: -2px 0 2px 32px; max-width: 94%; }
+.chat-sug {
+  font-family: var(--font-body); font-size: 12.5px; line-height: 1.3; color: var(--link);
+  background: var(--input-bg); border: 1px solid var(--border); border-radius: 999px;
+  padding: 5px 11px; cursor: pointer; text-align: left;
+  transition: color var(--transition), border-color var(--transition);
+}
+.chat-sug:hover { color: var(--link-hover); border-color: var(--accent-mid); }
+.chat-sug:disabled { opacity: .5; cursor: default; }
+
 @media (max-width: 640px) { .chat-panel { left: 12px; right: 12px; bottom: 12px; width: auto; height: min(72vh, 560px); } .chat-fab { right: 16px; bottom: 16px; } }
-@media (prefers-reduced-motion: reduce) { .chat-panel { transition: none; } .chat-fab { transition: none; } .chat-typing span { animation: none; } }
+@media (prefers-reduced-motion: reduce) { .chat-panel { transition: none; } .chat-fab { transition: none; } .chat-typing span { animation: none; } .chat-sug { transition: none; } }
 </style>
 </head>
 <body>
@@ -974,6 +1003,7 @@ button:disabled { opacity: 0.4; cursor: not-allowed; }
     <symbol id="ic-building" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 21V5a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v16"/><path d="M12 9h7a1 1 0 0 1 1 1v11"/><path d="M2 21h20"/><path d="M7 8h1M7 12h1M7 16h1M15.5 13h1M15.5 17h1"/></symbol>
     <symbol id="ic-pulse" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h4l2.5-7 4 15 2.5-8H21"/></symbol>
     <symbol id="ic-trend" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17l6-6 4 4 8-8"/><path d="M15 7h6v6"/></symbol>
+    <symbol id="ic-seo" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="10" cy="10" r="6"/><path d="M14.5 14.5L21 21"/><path d="M8 12V9.5M10.2 12V7.6M12.4 12v-3"/></symbol>
     <symbol id="ic-dossier" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.4 15.4L21 21"/><path d="M7.8 8.8h5.4M7.8 12h3.4"/></symbol>
     <symbol id="ic-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.6 19.5 5.5v6.1c0 4.4-3.3 7.7-7.5 9.6-4.2-1.9-7.5-5.2-7.5-9.6V5.5z"/><path d="M8.6 11.6 10.9 14l4.5-5.2"/></symbol>
     <symbol id="ic-studio" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="8.5" cy="9.5" r="1.8"/><path d="M3 16.5l4.5-4 4 3.5 3.5-3.5L21 17"/></symbol>
@@ -1022,6 +1052,7 @@ button:disabled { opacity: 0.4; cursor: not-allowed; }
                 <div class="nav-group-label">Intelligence</div>
                 <button class="nav-item" data-nav="competitors"><svg class="ico"><use href="#ic-intel"/></svg> Competitor Analysis</button>
                 <button class="nav-item" data-nav="pulse"><svg class="ico"><use href="#ic-pulse"/></svg> Content Analytics</button>
+                <button class="nav-item" data-nav="semrush"><svg class="ico"><use href="#ic-seo"/></svg> Search Intelligence</button>
             </div>
             <div class="nav-group">
                 <div class="nav-group-label">Reference</div>
@@ -1046,7 +1077,7 @@ button:disabled { opacity: 0.4; cursor: not-allowed; }
             <h1 class="hero-title">Signal in, drafts out.</h1>
             <p class="hero-sub">The Stern content engine is one console for researching cybersecurity buying moments, drafting on-brand LinkedIn posts, and tracking what performs.</p>
             <div class="hero-stats">
-                <span class="hero-stat"><strong>10</strong> tools</span>
+                <span class="hero-stat"><strong>11</strong> tools</span>
                 <span class="hero-stat"><strong>16</strong> competitors tracked</span>
                 <span class="hero-stat"><span class="live-dot"></span> data current to Jul 8</span>
             </div>
@@ -1132,7 +1163,7 @@ button:disabled { opacity: 0.4; cursor: not-allowed; }
             </button>
         </div>
 
-        <div class="section-label"><span class="section-ico"><svg class="ico"><use href="#ic-intel"/></svg></span> Intelligence <span class="section-count">2</span></div>
+        <div class="section-label"><span class="section-ico"><svg class="ico"><use href="#ic-intel"/></svg></span> Intelligence <span class="section-count">3</span></div>
         <div class="grid">
             <button class="card" data-tool="competitors" data-accent="tool">
                 <span class="card-ico"><svg class="ico"><use href="#ic-intel"/></svg></span>
@@ -1147,6 +1178,14 @@ button:disabled { opacity: 0.4; cursor: not-allowed; }
                 <span class="card-body">
                     <span class="card-title">Content Analytics</span>
                     <span class="card-desc">Ingest analytics; see what's trending for our content and cyber.</span>
+                    <span class="card-meta"><span class="card-tag">Intel</span><span class="card-arrow"><svg class="ico"><use href="#ic-arrow"/></svg></span></span>
+                </span>
+            </button>
+            <button class="card" data-tool="semrush" data-accent="tool">
+                <span class="card-ico"><svg class="ico"><use href="#ic-seo"/></svg></span>
+                <span class="card-body">
+                    <span class="card-title">Search Intelligence</span>
+                    <span class="card-desc">Ingest Semrush exports; see what we rank for and what to write next.</span>
                     <span class="card-meta"><span class="card-tag">Intel</span><span class="card-arrow"><svg class="ico"><use href="#ic-arrow"/></svg></span></span>
                 </span>
             </button>
@@ -2244,6 +2283,85 @@ button:disabled { opacity: 0.4; cursor: not-allowed; }
     </div>
 </section>
 
+<section id="view-semrush" class="view">
+    <div class="container">
+        <button class="back-btn" data-back>&larr; All tools</button>
+        <header class="tool-header">
+            <div class="tool-logo-row">
+                <div class="tool-mark" aria-hidden="true"><svg class="ico"><use href="#ic-seo"/></svg></div>
+                <h1 class="tool-title">Search Intelligence</h1>
+            </div>
+            <p class="tool-sub">Drop Semrush exports in Claude Code and turn them into two things: what Stern should write next, and where Stern sits against the rivals you exported. The dashboard below shows the latest run. Search demand only, no LinkedIn activity.</p>
+        </header>
+
+        <div class="tool-grid">
+            <section class="tool-panel" aria-label="Exports to ingest">
+                <div class="tfield">
+                    <label class="tlabel">Exports you're dropping</label>
+                    <div class="toggle-group" id="sr-reports">
+                        <button type="button" class="toggle-row" data-report="positions">
+                            <span class="toggle-label">Organic positions</span>
+                            <span class="track on"><span class="knob"></span></span>
+                        </button>
+                        <button type="button" class="toggle-row" data-report="gap">
+                            <span class="toggle-label">Keyword gap vs rivals</span>
+                            <span class="track on"><span class="knob"></span></span>
+                        </button>
+                        <button type="button" class="toggle-row" data-report="domain">
+                            <span class="toggle-label">Domain overview</span>
+                            <span class="track on"><span class="knob"></span></span>
+                        </button>
+                        <button type="button" class="toggle-row" data-report="backlinks">
+                            <span class="toggle-label">Backlinks</span>
+                            <span class="track"><span class="knob"></span></span>
+                        </button>
+                    </div>
+                    <p class="help-text">Drop the exports in <code class="ci-code">semrush-inbox/</code> beside index.html, then run the command in Claude Code. CSV, XLSX or PDF, whichever Semrush gives you. Whichever rival domains are in your gap export are the ones it compares against, there's no fixed competitor list.</p>
+                </div>
+
+                <div class="tfield">
+                    <label class="tlabel">Period</label>
+                    <input class="tinput" id="sr-period" type="text" placeholder="e.g. July 2026, or since the last run">
+                </div>
+
+                <div class="toggle-group">
+                    <button type="button" class="toggle-row" data-toggle="tagMoment">
+                        <span class="toggle-label">Tag opportunities by buying moment?</span>
+                        <span class="track on"><span class="knob"></span></span>
+                    </button>
+                    <button type="button" class="toggle-row" data-toggle="handoff">
+                        <span class="toggle-label">Hand the top topics to Idea Generator?</span>
+                        <span class="track on"><span class="knob"></span></span>
+                    </button>
+                </div>
+
+                <div class="tfield">
+                    <label class="tlabel">Add a focus (optional)</label>
+                    <input class="tinput" id="sr-steer" type="text" placeholder="Narrow it, e.g. 'pentest pages only' or 'CRQ terms'">
+                </div>
+            </section>
+
+            <section class="tool-panel" aria-label="Command preview">
+                <div class="preview-header">
+                    <span class="preview-label">Claude Code command</span>
+                    <span class="status-dot" id="sr-dot" aria-hidden="true"></span>
+                </div>
+                <div class="preview-box"><p class="preview-text" id="sr-preview"></p></div>
+                <p class="hint" id="sr-hint">Turn on at least one export to build the command.</p>
+                <div class="btn-row">
+                    <button type="button" class="btn-primary" id="sr-copy" data-label="Copy for Claude Code" disabled>Copy for Claude Code</button>
+                </div>
+                <p class="run-note">Paste into Claude Code, where it reads the exports, works out the opportunities, and refreshes the dashboard below. Nothing is written until you approve.</p>
+            </section>
+        </div>
+
+        <div class="section-label" style="margin-top:34px;"><span class="section-ico"><svg class="ico"><use href="#ic-seo"/></svg></span> Search dashboard</div>
+        <p class="tool-sub" id="sr-sub" style="margin:-4px 0 14px;">No Semrush data filed yet.</p>
+        <div id="sr-app" class="ci-stack"><p class="ci-empty">Run the command above in Claude Code to populate this, it writes the figures into <code class="ci-code">semrush-data.js</code>.</p></div>
+        <footer class="tool-footer" id="sr-foot"></footer>
+    </div>
+</section>
+
     </main>
 </div><!-- /.app -->
 
@@ -2259,24 +2377,28 @@ button:disabled { opacity: 0.4; cursor: not-allowed; }
      Written by the Pulse ingest command in Claude Code. -->
 <script src="analytics-data.js"></script>
 
+<!-- Search Intelligence snapshot: sets window.SEMRUSH_DATA = { data, notes, history }.
+     Written by the Search Intelligence ingest command in Claude Code. -->
+<script src="semrush-data.js"></script>
+
 <!-- ═══ Content assistant: floating button + compact chat window ═══
      Hidden unless CHAT_BACKEND_URL is set (keeps the launcher static/offline). -->
 <button class="chat-fab" id="chat-fab" hidden aria-haspopup="dialog" aria-controls="chat-panel">
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-  Ask the assistant
+  <img class="chat-avatar" data-avatar src="connor.jpg" alt="" aria-hidden="true">
+  Ask Connor
 </button>
-<aside class="chat-panel" id="chat-panel" role="dialog" aria-modal="false" aria-label="Content assistant" aria-hidden="true">
+<aside class="chat-panel" id="chat-panel" role="dialog" aria-modal="false" aria-label="Chat with Connor, an AI assistant" aria-hidden="true">
   <div class="chat-head">
-    <span class="dot" aria-hidden="true"></span>
+    <img class="chat-avatar" data-avatar src="connor.jpg" alt="" aria-hidden="true">
     <div>
-      <div class="chat-title">Content assistant</div>
-      <div class="chat-sub">Ask about the engine, or jump to a tool</div>
+      <div class="chat-title">Connor <span class="chat-ai-chip" title="An AI version of Connor, not the real person">AI</span></div>
+      <div class="chat-sub">I built this engine. Ask me how it works.</div>
     </div>
     <button class="chat-x" id="chat-close" type="button" aria-label="Close chat">&times;</button>
   </div>
   <div class="chat-log" id="chat-log" aria-live="polite" aria-label="Conversation"></div>
   <form class="chat-form" id="chat-form">
-    <textarea class="chat-input" id="chat-input" rows="1" placeholder="Ask a question, or &ldquo;draft a post about&hellip;&rdquo;" aria-label="Message"></textarea>
+    <textarea class="chat-input" id="chat-input" rows="1" placeholder="What are you working on?" aria-label="Message"></textarea>
     <button class="chat-send" id="chat-send" type="submit">Send</button>
   </form>
 </aside>
@@ -2423,6 +2545,15 @@ const PULSE_SOURCES = [
   { key: "ga4",      label: "Website (GA4)",  phrase: "website analytics from GA4, sessions, users, top landing pages, UTM-tagged referrals from LinkedIn, and conversions" },
 ];
 const PULSE_INBOX = "analytics-inbox/";
+
+// ── Search Intelligence, the Semrush exports its ingest command can read ──
+const SEMRUSH_INBOX = "semrush-inbox/";
+const SEMRUSH_REPORTS = [
+  { key: "positions", label: "Organic positions", phrase: "the organic positions export, every keyword the domain ranks for with its position, search volume, traffic share, and landing URL" },
+  { key: "gap",       label: "Keyword gap",       phrase: "the keyword gap export, keywords the compared rival domains rank for and sternsecurity.com does not" },
+  { key: "domain",    label: "Domain overview",   phrase: "the domain overview export, authority score, organic traffic estimate, and total ranking keywords" },
+  { key: "backlinks", label: "Backlinks",         phrase: "the backlinks export, referring domains with their authority and whether they are new or lost" },
+];
 
 // ── Topic Researcher, the folder its Claude Code ingest mode reads from ──
 const RESEARCH_INBOX = "research-inbox/";
@@ -4223,12 +4354,12 @@ function renderPulse() {
     harvest: "Source Harvester", radar: "Trend Radar", dossier: "Topic Researcher",
     ideas: "Idea Generator", brief: "Post Drafter", check: "Draft Checker",
     studio: "Visual Designer", recycler: "Content Recycler", campaign: "Campaign Builder",
-    pulse: "Content Analytics", competitors: "Competitor Analysis",
+    pulse: "Content Analytics", semrush: "Search Intelligence", competitors: "Competitor Analysis",
   };
   const EXAMPLES = [
-    "Which tool reacts to a competitor's breach?",
-    "Draft a post about MFA fatigue for the Failed Audit moment",
-    "What's our voice?",
+    "I have no idea what to post this week",
+    "Draft something on MFA fatigue for Failed Audit",
+    "Which tool do I start with?",
   ];
 
   const history = [];
@@ -4255,8 +4386,30 @@ function renderPulse() {
   function elc(cls, html) { const d = document.createElement("div"); d.className = cls; if (html != null) d.innerHTML = html; return d; }
   function scroll() { log.scrollTop = log.scrollHeight; }
 
+  /* Avatar with a graceful fallback: if connor.jpg isn't beside index.html the
+     image is swapped for a monogram rather than leaving a broken-image box. */
+  function avatarEl() {
+    const img = document.createElement("img");
+    img.className = "chat-avatar sm"; img.src = "connor.jpg"; img.alt = ""; img.setAttribute("aria-hidden", "true");
+    img.addEventListener("error", () => {
+      const s = elc("chat-avatar sm chat-initial", "C");
+      s.setAttribute("aria-hidden", "true");
+      if (img.parentNode) img.replaceWith(s);
+    });
+    return img;
+  }
+
+  // Same fallback for the two static avatars (the button and the panel header).
+  document.querySelectorAll("[data-avatar]").forEach(img => {
+    img.addEventListener("error", () => {
+      const s = elc("chat-avatar chat-initial", "C");
+      s.setAttribute("aria-hidden", "true");
+      if (img.parentNode) img.replaceWith(s);
+    });
+  });
+
   function renderEmpty() {
-    const wrap = elc("chat-empty", "I can explain the engine or open the right tool for you. Try:");
+    const wrap = elc("chat-empty", "I know every tool in here and which one you actually want. Try:");
     EXAMPLES.forEach(t => {
       const a = document.createElement("span");
       a.className = "ex"; a.textContent = "“" + t + "”";
@@ -4268,7 +4421,59 @@ function renderPulse() {
   function addMsg(role, text) {
     const m = elc("chat-msg " + (role === "user" ? "user" : "bot"));
     m.innerHTML = role === "user" ? esc(text) : chatMd(text);
-    log.appendChild(m); scroll(); return m;
+    if (role === "user") { log.appendChild(m); }
+    else { const row = elc("chat-row"); row.appendChild(avatarEl()); row.appendChild(m); log.appendChild(row); }
+    scroll(); return m;
+  }
+
+  /* Follow-up chips: the model proposes them, so they track the conversation
+     instead of being a fixed menu. Cleared whenever a new turn starts. */
+  function clearSugs() { log.querySelectorAll(".chat-sugs").forEach(n => n.remove()); }
+  function addSuggestions(items) {
+    if (!Array.isArray(items) || !items.length) return;
+    const wrap = elc("chat-sugs");
+    items.slice(0, 3).forEach(t => {
+      if (typeof t !== "string" || !t.trim()) return;
+      const b = document.createElement("button");
+      b.type = "button"; b.className = "chat-sug"; b.textContent = t.trim();
+      b.addEventListener("click", () => {
+        if (streaming) return;
+        clearSugs(); input.value = t.trim(); send();
+      });
+      wrap.appendChild(b);
+    });
+    if (wrap.children.length) { log.appendChild(wrap); scroll(); }
+  }
+
+  /* What's actually loaded in this launcher, so answers can be specific rather
+     than generic. Strictly typed values only; the backend whitelists them again
+     because anything sent from here ends up inside its system prompt. */
+  function engineContext() {
+    const ctx = {};
+    const active = document.querySelector(".view.active");
+    if (active && active.id.startsWith("view-")) ctx.view = active.id.slice(5);
+    const iso = v => (typeof v === "string" && v.length >= 10 ? v.slice(0, 10) : null);
+    try {
+      const d = window.VAULT_DATA;
+      if (d && iso(d.generated_at)) ctx.competitor_run = iso(d.generated_at);
+    } catch (_) {}
+    try {
+      const d = window.SEMRUSH_DATA;
+      if (d) {
+        if (iso(d.generated_at)) ctx.semrush_run = iso(d.generated_at);
+        const kw = d.data && d.data.keywords;
+        if (Array.isArray(kw)) ctx.semrush_keywords = kw.length;
+      }
+    } catch (_) {}
+    try {
+      const d = window.ANALYTICS_DATA;
+      const runs = d && d.history && d.history.runs;
+      ctx.analytics_runs = Array.isArray(runs) ? runs.length : 0;
+      if (Array.isArray(runs) && runs.length && iso(runs[runs.length - 1].date)) {
+        ctx.analytics_run = iso(runs[runs.length - 1].date);
+      }
+    } catch (_) {}
+    return ctx;
   }
 
   function openPanel() {
@@ -4315,17 +4520,18 @@ function renderPulse() {
     const text = input.value.trim();
     if (!text || streaming) return;
     const empty = log.querySelector(".chat-empty"); if (empty) empty.remove();
+    clearSugs();   // last turn's follow-ups are stale the moment a new one starts
     input.value = ""; input.style.height = "auto";
     addMsg("user", text);
     history.push({ role: "user", content: text });
     streaming = true; sendBtn.disabled = true;
     const typing = elc("chat-typing", "<span></span><span></span><span></span>");
     log.appendChild(typing); scroll();
-    let botMsg = null, acc = "", action = null;
+    let botMsg = null, acc = "", action = null, sugs = null;
     try {
       const resp = await fetch(CHAT_BACKEND_URL.replace(/\/$/, "") + "/chat", {
         method: "POST", headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ messages: history.slice(-12) }),
+        body: JSON.stringify({ messages: history.slice(-12), context: engineContext() }),
       });
       if (!resp.ok) {
         typing.remove();
@@ -4350,6 +4556,8 @@ function renderPulse() {
             acc += ev.delta; botMsg.innerHTML = chatMd(acc); scroll();
           } else if (ev.type === "action" && ev.action === "open_tool") {
             action = ev.input;
+          } else if (ev.type === "suggestions") {
+            sugs = ev.items;
           } else if (ev.type === "error") {
             if (typing.parentNode) typing.remove();
             log.appendChild(elc("chat-err", esc(ev.message || "The assistant hit an error."))); scroll();
@@ -4358,7 +4566,9 @@ function renderPulse() {
       }
       if (typing.parentNode) typing.remove();
       if (acc) history.push({ role: "assistant", content: acc });
+      // An action closes the panel, so chips would land behind it. One or the other.
       if (action) applyAction(action);
+      else addSuggestions(sugs);
     } catch (err) {
       if (typing.parentNode) typing.remove();
       log.appendChild(elc("chat-err", "Couldn’t reach the copilot. Check your connection and try again.")); scroll();
@@ -4367,6 +4577,214 @@ function renderPulse() {
     }
   }
 })();
+/* ═══════════════════════ Search Intelligence ═══════════════════════ */
+(function initSemrush() {
+  const wrap      = document.getElementById("sr-reports");
+  const periodEl  = document.getElementById("sr-period");
+  const steerEl   = document.getElementById("sr-steer");
+  const previewEl = document.getElementById("sr-preview");
+  const dotEl     = document.getElementById("sr-dot");
+  const hintEl    = document.getElementById("sr-hint");
+  const copyBtn   = document.getElementById("sr-copy");
+  if (!wrap) return;
+
+  const state = { reports: { positions: true, gap: true, domain: true, backlinks: false },
+                  tagMoment: true, handoff: true };
+
+  function assemble() {
+    const on = SEMRUSH_REPORTS.filter(r => state.reports[r.key]);
+    const list = on.map(r => r.phrase);
+    const listText = list.length > 1
+      ? list.slice(0, -1).join("; ") + "; and " + list[list.length - 1]
+      : (list[0] || "whatever Semrush exports are in the folder");
+    const period = periodEl.value.trim();
+    const parts = [];
+
+    parts.push(`Read the Semrush exports I've dropped in ${SEMRUSH_INBOX} (beside index.html) and parse ${listText}.`);
+    parts.push("Work out which report each file is from its contents rather than its filename, and say plainly which of the expected exports you found and which are missing. Don't infer a missing report's numbers from another one.");
+    parts.push("CSV and XLSX parse cleanly. PDF is fine too, and some Semrush reports only export that way, but read a PDF as a rendered page rather than a table: the headline figures in a PDF summary are reliable, while a long table in one may be paginated, cut off at the export limit, or mis-aligned across columns. For each PDF, say how many rows you actually read and whether it looks cut short, and when the same report is present as both CSV and PDF, use the CSV.");
+    if (period) parts.push(`Period: ${period}.`);
+
+    parts.push("Treat every Semrush figure as a modelled estimate, not measured analytics: it is sound for relative comparison and trend, unreliable as an absolute count. Carry that caveat into the write-up and never present an estimate as measured traffic. Measured website numbers live in Content Analytics, don't mix them.");
+    parts.push("Don't run keyword research here. Search volume and difficulty for new terms come from the stern-keywords connector; this tool reads what the exports already contain.");
+
+    parts.push("Then produce two things. First, what Stern should write next: the near-misses ranking positions 11 to 20 where a better page could reach page one, and the strongest gaps where a rival ranks and sternsecurity.com does not. Rank them by opportunity, not raw volume, and for each give the keyword, where Stern currently sits, who owns it now, and one line on the post or page that would take it.");
+    parts.push("Judge relevance before volume, and discard anything Stern could not credibly serve even if it ranked: other companies' brand and login lookups, dictionary or definition queries, certification and exam-study terms, job and salary searches, consumer how-to terms, and bare single words with no buying context. A high-volume keyword Stern has no business answering is not an opportunity, and listing it wastes the run. Say how many candidates you discarded and why, so the filter itself can be checked.");
+    parts.push("Second, where Stern sits competitively: use whichever rival domains actually appear in the gap export, don't assume a fixed competitor set, and name them. Report Stern's position against each on shared terms, and call out any topic a rival owns outright.");
+
+    if (state.tagMoment) parts.push("Tag each opportunity to the buying moment it serves, reading the Buying Moment Map live from Notion, or mark it wildcard if it fits none.");
+    if (state.handoff)   parts.push("Finish with the three strongest topics written as a short list I can paste straight into Idea Generator: the topic in one line each, no commentary.");
+
+    const steer = steerEl.value.trim();
+    if (steer) parts.push(`Focus: ${steer}.`);
+
+    parts.push(`Then rewrite semrush-data.js beside index.html, keeping the shape window.SEMRUSH_DATA = { generated_at, period, domain, sources, data, notes, history }: put the KPI figures, the opportunity rows, the competitive rows, and the backlink summary into data, a short written read into notes, and append this run to history.runs so the dashboard can show movement since last time. Preserve the existing history.runs entries rather than replacing them.`);
+    parts.push(`Finally, move the raw exports from ${SEMRUSH_INBOX} into ${SEMRUSH_INBOX}archive/ so the next run starts clean, and tell me what landed and what the dashboard now shows. Show me the findings before you write anything and write only on my go-ahead.`);
+
+    return parts.join(" ");
+  }
+
+  function update() {
+    const ready = SEMRUSH_REPORTS.some(r => state.reports[r.key]);
+    previewEl.textContent = assemble();
+    dotEl.classList.toggle("ready", ready);
+    hintEl.style.display = ready ? "none" : "";
+    copyBtn.disabled = !ready;
+  }
+
+  wrap.querySelectorAll("[data-report]").forEach(btn => {
+    btn.addEventListener("click", () => {
+      const k = btn.dataset.report;
+      state.reports[k] = !state.reports[k];
+      btn.querySelector(".track").classList.toggle("on", state.reports[k]);
+      update();
+    });
+  });
+  document.querySelectorAll("#view-semrush [data-toggle]").forEach(btn => {
+    btn.addEventListener("click", () => {
+      const k = btn.dataset.toggle;
+      state[k] = !state[k];
+      btn.querySelector(".track").classList.toggle("on", state[k]);
+      update();
+    });
+  });
+  [periodEl, steerEl].forEach(el => el.addEventListener("input", update));
+  copyBtn.addEventListener("click", async () => { await copyText(assemble()); flash(copyBtn, "Copied ✓"); });
+
+  update();
+})();
+
+// Search Intelligence dashboard, index.html-only like renderCompetitors / renderPulse.
+// Empty-state until the first ingest run writes semrush-data.js.
+function renderSemrush() {
+  const app = document.getElementById("sr-app");
+  if (!app) return;
+  const snap = window.SEMRUSH_DATA || null;
+  const subEl = document.getElementById("sr-sub");
+  const footEl = document.getElementById("sr-foot");
+  if (!snap || !snap.data) {
+    if (subEl) subEl.textContent = "No Semrush data filed yet, run the command above.";
+    return; // keep the .ci-empty placeholder
+  }
+
+  const esc = v => String(v == null ? "" : v).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+  const fmt = n => (n == null ? "–" : (typeof n === "number" ? n.toLocaleString() : esc(n)));
+  const d = snap.data;
+  const runs = (snap.history && snap.history.runs) || [];
+  const prev = runs.length > 1 ? runs[runs.length - 2] : null;
+  const delta = (cur, key) => {
+    if (!prev || !prev.kpis || prev.kpis[key] == null || cur == null) return "";
+    const diff = cur - prev.kpis[key];
+    if (!diff) return "";
+    return ` <span class="ci-pill">${diff > 0 ? "+" : ""}${fmt(diff)}</span>`;
+  };
+  const out = [];
+
+  if (subEl) {
+    subEl.textContent = [snap.domain, snap.period, snap.generated_at ? "run " + snap.generated_at : null]
+      .filter(Boolean).join(" · ");
+  }
+
+  const k = d.kpis || {};
+  // Carry the key on the tile. Rebuilding it from the array index breaks as soon
+  // as a null KPI is filtered out, which silently compares the wrong two numbers.
+  const tiles = [
+    ["Authority", "authority", k.authority], ["Ranking keywords", "keywords", k.keywords],
+    ["Est. traffic / mo", "traffic", k.traffic], ["Referring domains", "referring_domains", k.referring_domains],
+  ].filter(t => t[2] != null);
+  if (tiles.length) {
+    out.push('<div class="ci-kpi-row">' + tiles.map(([label, key, val]) =>
+      `<div class="ci-kpi"><div class="ci-kpi-body"><div class="ci-kpi-num">${fmt(val)}${delta(val, key)}</div>` +
+      `<div class="ci-kpi-label">${esc(label)}</div></div></div>`
+    ).join("") + "</div>");
+    out.push('<p class="ci-sub">Semrush figures are modelled estimates, not measured traffic. Good for trend and comparison, not for quoting as counts.</p>');
+  }
+
+  // Movement is computed here, not read from Semrush: its own "Previous position"
+  // field came back identical to the current position on 215 of 218 rows, so it
+  // carries no signal. Diff the stored positions map from the previous run instead.
+  const prevPos = (prev && prev.positions) || null;
+  const moveCell = (kw, cur) => {
+    if (!prevPos || prevPos[kw] == null || cur == null) return "–";
+    const diff = prevPos[kw] - cur;                 // positive = climbed the rankings
+    if (!diff) return "0";
+    return `<span class="ci-pill">${diff > 0 ? "▲" : "▼"} ${Math.abs(diff)}</span>`;
+  };
+  const posCell = p => (p == null ? "–" : String(p));
+
+  // ── what to write next: the curated shortlist, metrics first ──
+  const opps = d.opportunities || [];
+  if (opps.length) {
+    out.push('<div class="ci-panel"><div class="ci-board-title">What to write next</div>' +
+      '<table class="ci-table"><thead><tr>' +
+      '<th>Keyword</th><th class="num">Pos</th><th class="num">Move</th><th class="num">Volume</th><th class="num">KD</th><th>Also ranking</th><th>Moment</th><th>The move</th>' +
+      '</tr></thead><tbody>' +
+      opps.map(o => "<tr>" +
+        `<td>${esc(o.keyword)}</td>` +
+        `<td class="num">${posCell(o.position)}</td>` +
+        `<td class="num">${moveCell(o.keyword, o.position)}</td>` +
+        `<td class="num">${fmt(o.volume)}</td>` +
+        `<td class="num">${fmt(o.kd)}</td>` +
+        `<td>${esc(o.owner || "–")}</td>` +
+        `<td>${esc(o.moment || "–")}</td>` +
+        `<td>${esc(o.move || "")}</td>` +
+      "</tr>").join("") +
+      "</tbody></table></div>");
+  }
+
+  // ── every ranking keyword, sorted by position then volume ──
+  const kws = (d.keywords || []).slice().sort((a, b) =>
+    (a.position - b.position) || (b.volume - a.volume));
+  if (kws.length) {
+    const band = p => (p <= 3 ? "1–3" : p <= 10 ? "4–10" : p <= 20 ? "11–20" : p <= 50 ? "21–50" : "51+");
+    const counts = {};
+    kws.forEach(k => { counts[band(k.position)] = (counts[band(k.position)] || 0) + 1; });
+    const strip = ["1–3", "4–10", "11–20", "21–50", "51+"]
+      .filter(b => counts[b]).map(b => `${b}: <strong>${counts[b]}</strong>`).join(" &nbsp;·&nbsp; ");
+    out.push('<div class="ci-panel"><div class="ci-board-title">Ranking keywords</div>' +
+      `<p class="ci-sub">${kws.length} keywords &nbsp;·&nbsp; ${strip}</p>` +
+      '<table class="ci-table"><thead><tr>' +
+      '<th>Keyword</th><th class="num">Pos</th><th class="num">Move</th><th class="num">Volume</th><th class="num">KD</th><th>Also ranking</th>' +
+      '</tr></thead><tbody>' +
+      kws.map(k => "<tr>" +
+        `<td>${esc(k.keyword)}</td>` +
+        `<td class="num">${posCell(k.position)}</td>` +
+        `<td class="num">${moveCell(k.keyword, k.position)}</td>` +
+        `<td class="num">${fmt(k.volume)}</td>` +
+        `<td class="num">${fmt(k.kd)}</td>` +
+        `<td>${esc(k.rivals || "–")}</td>` +
+      "</tr>").join("") +
+      "</tbody></table></div>");
+  }
+
+  // Backlinks: the command still parses this export, so the dashboard has to be
+  // able to show it. Kept compact -- this is a keyword dashboard first.
+  const bl = d.backlinks || [];
+  if (bl.length) {
+    out.push('<div class="ci-panel"><div class="ci-board-title">Referring domains</div>' +
+      `<p class="ci-sub">${bl.length} referring domain${bl.length === 1 ? "" : "s"} in this export</p>` +
+      '<table class="ci-table"><thead><tr>' +
+      '<th>Domain</th><th class="num">Authority</th><th>Status</th>' +
+      '</tr></thead><tbody>' +
+      bl.map(b => "<tr>" +
+        `<td>${esc(b.domain)}</td>` +
+        `<td class="num">${fmt(b.authority)}</td>` +
+        `<td>${esc(b.status || "–")}</td>` +
+      "</tr>").join("") +
+      "</tbody></table></div>");
+  }
+
+  if (snap.notes) out.push(`<div class="ci-panel ci-prose">${esc(snap.notes).replace(/\n/g, "<br>")}</div>`);
+
+  const html = out.filter(Boolean).join("\n");
+  if (html) app.innerHTML = html;
+  if (footEl) {
+    const n = (snap.history && snap.history.runs || []).length;
+    footEl.textContent = `Snapshot written by the Search Intelligence ingest command into semrush-data.js. ${n} run${n === 1 ? "" : "s"} recorded.`;
+  }
+}
+renderSemrush();
+
 </script>
 
 </body>
