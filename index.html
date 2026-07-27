@@ -886,6 +886,125 @@ button:disabled { opacity: 0.4; cursor: not-allowed; }
     .ci-boards { grid-template-columns: 1fr; gap: 14px; }
 }
 
+/* ═══════════════════════ Start Here guide ═══════════════════════ */
+.guide-lead { font-size: 14.5px; line-height: 1.65; color: var(--text-muted); max-width: 74ch; margin: -2px 0 18px; }
+.guide-lead strong { color: var(--text); font-weight: 600; }
+
+/* Buying moments ------------------------------------------------------- */
+.gmoments { display: grid; grid-template-columns: repeat(auto-fill, minmax(268px, 1fr)); gap: 12px; }
+.gmoment {
+  text-align: left; background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius-md); padding: 15px 16px; cursor: pointer; color: var(--text);
+  font-family: var(--font-body); box-shadow: var(--surface-hi);
+  transition: border-color var(--transition), transform var(--transition);
+}
+.gmoment:hover { border-color: var(--accent-mid); transform: translateY(-1px); }
+.gmoment[aria-expanded="true"] { border-color: var(--accent); box-shadow: var(--surface-hi), var(--glow-accent); }
+.gmoment-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; }
+.gmoment-name { font-family: var(--font-heading); font-weight: 700; font-size: 14.5px; line-height: 1.3; }
+.gmoment-type {
+  flex: none; font-family: var(--font-mono); font-size: 9px; letter-spacing: .07em; text-transform: uppercase;
+  color: var(--text-muted); border: 1px solid var(--border); background: var(--input-bg);
+  border-radius: 5px; padding: 2px 6px; white-space: nowrap;
+}
+.gmoment-trigger { font-size: 12.8px; line-height: 1.55; color: var(--text-muted); margin: 8px 0 0; }
+.gmoment-more { display: none; margin-top: 11px; padding-top: 11px; border-top: 1px solid var(--border); }
+.gmoment[aria-expanded="true"] .gmoment-more { display: block; }
+.gmoment-k { font-family: var(--font-mono); font-size: 9.5px; letter-spacing: .07em; text-transform: uppercase; color: var(--text-light); display: block; margin-bottom: 4px; }
+.gmoment-wants { font-size: 12.8px; line-height: 1.55; color: var(--text); margin: 0 0 10px; }
+.gsvc { display: inline-block; font-size: 11px; color: var(--link); border: 1px solid var(--border); border-radius: 999px; padding: 2px 8px; margin: 0 4px 4px 0; }
+
+/* Filter --------------------------------------------------------------- */
+.gfilter { display: flex; flex-wrap: wrap; gap: 7px; margin: 0 0 18px; align-items: center; }
+.gfilter-lbl { font-family: var(--font-mono); font-size: 10px; letter-spacing: .07em; text-transform: uppercase; color: var(--text-light); margin-right: 3px; }
+.gchip {
+  font-family: var(--font-body); font-size: 12.5px; color: var(--text-muted);
+  background: var(--input-bg); border: 1px solid var(--border); border-radius: 999px;
+  padding: 6px 13px; cursor: pointer; transition: color var(--transition), border-color var(--transition);
+}
+.gchip:hover { color: var(--text); border-color: var(--accent-mid); }
+.gchip.on { color: #fff; background: var(--accent-mid); border-color: var(--accent); }
+
+/* The map -------------------------------------------------------------- */
+.gmap { border: 1px solid var(--border); border-radius: var(--radius-lg); background: var(--surface); box-shadow: var(--surface-hi); overflow: hidden; }
+.glane-tag {
+  font-family: var(--font-mono); font-size: 9.5px; letter-spacing: .09em; text-transform: uppercase;
+  color: var(--text-light); padding: 12px 18px 0;
+}
+.gstages { display: grid; align-items: start; padding: 8px 18px 18px; row-gap: 10px; }
+.ghead { grid-row: 1; }
+.ghead-n { font-family: var(--font-mono); font-size: 10px; color: var(--accent-bright); letter-spacing: .08em; }
+.ghead-t { font-family: var(--font-heading); font-weight: 700; font-size: 14px; color: var(--text); margin-top: 1px; }
+.ghead-b { font-size: 11.8px; line-height: 1.45; color: var(--text-light); margin-top: 2px; }
+.gtrack { grid-row: 2; display: flex; flex-direction: column; gap: 8px; }
+.gconn { grid-row: 2; position: relative; align-self: stretch; min-height: 46px; }
+.gconn::before { content: ""; position: absolute; top: 23px; left: 4px; right: 4px; height: 2px; background: var(--border); border-radius: 2px; }
+.gconn::after {
+  content: ""; position: absolute; top: 22px; width: 16px; height: 4px; border-radius: 4px;
+  background: linear-gradient(90deg, transparent, var(--accent-bright), transparent);
+  animation: gflow 3s linear infinite; opacity: 0;
+}
+@keyframes gflow { 0% { left: -8px; opacity: 0; } 15% { opacity: .95; } 85% { opacity: .95; } 100% { left: calc(100% - 8px); opacity: 0; } }
+
+.gnode {
+  display: flex; align-items: center; gap: 9px; width: 100%; text-align: left; cursor: pointer;
+  background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 10px 11px;
+  color: var(--text); font-family: var(--font-body);
+  transition: border-color var(--transition), transform var(--transition), opacity var(--transition);
+}
+.gnode:hover { border-color: var(--accent-mid); transform: translateY(-1px); }
+.gnode .ico { width: 16px; height: 16px; color: var(--accent-bright); flex: none; }
+.gnode-name { font-size: 13px; font-weight: 600; line-height: 1.25; }
+.gnode.sel { border-color: var(--accent); box-shadow: var(--glow-accent); }
+.gnode.admin { background: transparent; border-style: dashed; }
+.gnode.admin .ico { color: var(--text-muted); }
+/* filter highlight: dim, never hide, so the shape of the engine survives.
+   Scoped to the view, not .gmap, so the supporting layer below dims too. */
+.gfiltered .gnode { opacity: .28; }
+.gfiltered .gnode.lit { opacity: 1; border-color: var(--accent); box-shadow: var(--glow-accent); }
+.gfiltered .gconn::after { animation: none; opacity: 0; }
+
+.gproject { border-top: 1px solid var(--border); background: rgba(124,58,237,0.06); padding: 14px 18px 16px; }
+.ghandoff { display: flex; align-items: center; gap: 8px; font-size: 11.5px; color: var(--text-light); font-family: var(--font-mono); letter-spacing: .04em; margin-bottom: 9px; }
+.ghandoff-arrow { color: var(--accent-bright); font-size: 14px; line-height: 1; }
+.gproject-t { font-family: var(--font-heading); font-weight: 700; font-size: 14px; color: var(--text); }
+.gproject-b { font-size: 12.8px; line-height: 1.6; color: var(--text-muted); margin: 4px 0 0; max-width: 82ch; }
+
+/* Detail panel --------------------------------------------------------- */
+.gdetail { margin-top: 12px; }
+.gdetail:empty { display: none; }
+.gdetail-card { border: 1px solid var(--accent-mid); border-radius: var(--radius-md); background: var(--surface); padding: 17px 19px; box-shadow: var(--surface-hi); }
+.gdetail-top { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.gdetail-name { font-family: var(--font-heading); font-weight: 700; font-size: 17px; color: var(--text); }
+.gdetail-runs { font-family: var(--font-mono); font-size: 9.5px; letter-spacing: .07em; text-transform: uppercase; color: var(--text-muted); border: 1px solid var(--border); border-radius: 5px; padding: 2px 7px; }
+.gdetail-what { font-size: 13.5px; line-height: 1.65; color: var(--text-muted); margin: 10px 0 0; max-width: 78ch; }
+.gdetail-when { font-size: 13.5px; line-height: 1.65; color: var(--text); margin: 9px 0 0; max-width: 78ch; }
+.gdetail-when b { font-family: var(--font-mono); font-size: 9.5px; letter-spacing: .07em; text-transform: uppercase; color: var(--text-light); font-weight: 400; display: block; margin-bottom: 2px; }
+.gdetail-btns { display: flex; gap: 9px; margin-top: 15px; flex-wrap: wrap; }
+
+/* Supporting layer ----------------------------------------------------- */
+.gsupport { display: grid; grid-template-columns: repeat(auto-fill, minmax(238px, 1fr)); gap: 12px; }
+
+/* Motion + reveal ------------------------------------------------------
+   Fails OPEN: the hidden state only exists while .garmed is on the view, and
+   JS both adds it and guarantees it comes off. Hiding content in CSS and
+   relying on JS to reveal it means one hiccup blanks the whole page. */
+.garmed .greveal { opacity: 0; transform: translateY(10px); }
+.garmed .greveal.in { opacity: 1; transform: none; transition: opacity .45s ease, transform .45s ease; }
+
+@media (max-width: 860px) {
+  .gstages { grid-template-columns: 1fr !important; }
+  .ghead, .gtrack { grid-row: auto !important; grid-column: 1 !important; }
+  .gconn { display: none; }
+  .ghead { margin-top: 14px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .gconn::after { animation: none; opacity: 0; }
+  .gmoment, .gnode, .gchip { transition: none; }
+  .greveal { opacity: 1; transform: none; }
+  .greveal.in { transition: none; }
+}
+
 /* ═══════════════════════ Console copilot (chat) ═══════════════════════ */
 .chat-fab {
   position: fixed; right: 22px; bottom: 22px; z-index: 90;
@@ -987,6 +1106,7 @@ button:disabled { opacity: 0.4; cursor: not-allowed; }
 <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
     <symbol id="ic-brand" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 9.5a9 9 0 0 1 14 0"/><path d="M8 12.5a5 5 0 0 1 8 0"/><circle cx="12" cy="16.5" r="1.4" fill="currentColor" stroke="none"/></symbol>
     <symbol id="ic-dashboard" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.6"/><rect x="14" y="3" width="7" height="7" rx="1.6"/><rect x="3" y="14" width="7" height="7" rx="1.6"/><rect x="14" y="14" width="7" height="7" rx="1.6"/></symbol>
+    <symbol id="ic-guide" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="5.5" cy="6" r="2.5"/><circle cx="18.5" cy="18" r="2.5"/><path d="M8 6h5.5A3.5 3.5 0 0 1 17 9.5v0a3.5 3.5 0 0 1-3.5 3.5h-3A3.5 3.5 0 0 0 7 16.5v0A3.5 3.5 0 0 0 10.5 20H16"/></symbol>
     <symbol id="ic-harvest" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 5h17l-6.5 8v6l-4 2v-8z"/></symbol>
     <symbol id="ic-radar" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="4.3"/><path d="M12 12l7-4.5"/><circle cx="12" cy="12" r="1" fill="currentColor" stroke="none"/></symbol>
     <symbol id="ic-brief" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/><path d="M8.5 14l2 2 4-4.5"/></symbol>
@@ -1031,6 +1151,7 @@ button:disabled { opacity: 0.4; cursor: not-allowed; }
         <nav class="sidebar-nav">
             <div class="nav-group">
                 <div class="nav-group-label">Workspace</div>
+                <button class="nav-item" data-nav="guide"><svg class="ico"><use href="#ic-guide"/></svg> Start here</button>
                 <button class="nav-item" data-nav="home"><svg class="ico"><use href="#ic-dashboard"/></svg> Dashboard</button>
             </div>
             <div class="nav-group">
@@ -1234,6 +1355,35 @@ button:disabled { opacity: 0.4; cursor: not-allowed; }
                 </span>
             </a>
         </div>
+    </div>
+</section>
+
+<!-- ===================== START HERE (guide) =====================
+     Rendered by renderGuide() from GUIDE_* config. No .jsx twin: it builds no
+     prompt, so it sits with the dashboards, not the ported tools. -->
+<section id="view-guide" class="view">
+    <div class="container">
+        <header class="tool-header">
+            <div class="tool-logo-row">
+                <div class="tool-mark" aria-hidden="true"><svg class="ico"><use href="#ic-guide"/></svg></div>
+                <h1 class="tool-title">How this engine works</h1>
+            </div>
+            <p class="tool-sub">Eleven tools, one workflow: a signal comes in, a post goes out. Here's the shape of it, and which tool to reach for at each step. Click anything to open it.</p>
+        </header>
+
+        <div class="section-label"><span class="section-ico"><svg class="ico"><use href="#ic-map"/></svg></span> Start with a buying moment</div>
+        <p class="guide-lead">Nearly every tool asks you to pick a <strong>buying moment</strong> first. A moment is the point where a security buyer stops browsing and starts looking, the thing that just happened to them. Writing to one means the post lands on somebody with a reason to care. These eight are Stern's.</p>
+        <div class="gmoments" id="guide-moments"></div>
+
+        <div class="section-label" style="margin-top:38px;"><span class="section-ico"><svg class="ico"><use href="#ic-guide"/></svg></span> The workflow</div>
+        <p class="guide-lead">Left to right is the life of one post. You don't always start at the far left, so tell it what you've already got and it'll light the path.</p>
+        <div class="gfilter" id="guide-filter" role="group" aria-label="What do you have right now"></div>
+        <div class="gmap" id="guide-map"></div>
+        <div class="gdetail" id="guide-detail" aria-live="polite"></div>
+
+        <div class="section-label" style="margin-top:38px;"><span class="section-ico"><svg class="ico"><use href="#ic-intel"/></svg></span> Running behind the scenes</div>
+        <p class="guide-lead">These keep the engine fed. Most are run by the admin in Claude Code, not by the marketing team, so if one asks for a terminal that's expected rather than broken.</p>
+        <div class="gsupport" id="guide-support"></div>
     </div>
 </section>
 
@@ -2550,6 +2700,111 @@ const SEMRUSH_REPORTS = [
   { key: "gap",       label: "Keyword gap",       phrase: "the keyword gap export, keywords the compared rival domains rank for and sternsecurity.com does not" },
   { key: "domain",    label: "Domain overview",   phrase: "the domain overview export, authority score, organic traffic estimate, and total ranking keywords" },
   { key: "backlinks", label: "Backlinks",         phrase: "the backlinks export, referring domains with their authority and whether they are new or lost" },
+];
+
+// ── Start Here guide ──────────────────────────────────────────────────────
+// Buying-moment copy is a SNAPSHOT of the Notion Buying Moment Map
+// (collection://c7cf47e4-148a-8239-af68-07d1f5e2a81b), captured 2026-07-27.
+// `trigger` is what just happened to the buyer, `wants` is what they're trying
+// to do about it. Both are Notion's wording, not invented here. `name` must
+// match MOMENTS exactly or the handoff prefill silently won't take.
+// Note: a V2 map exists with 12 moments; the extra 4 are Status=Draft and no
+// tool accepts them, so this shows the 8 the engine can actually act on.
+const GUIDE_MOMENTS = [
+  { name: `"What's our Cyber Risk in Dollars?"`, type: "Executive pressure",
+    trigger: "A CEO, CFO, or board member demands cyber risk expressed in financial terms.",
+    wants: "A financially translated, defensible risk view before the next board or budget meeting.",
+    services: ["Cyber Risk Quantification", "vCISO"] },
+  { name: "Peer Breach", type: "Incident",
+    trigger: "A peer organization experiences a breach and ends up in the news.",
+    wants: "Rapidly determine exposure to the same root cause or shared vendor.",
+    services: ["Third Party Risk Management", "Penetration Testing", "vCISO"] },
+  { name: "Failed Audit", type: "Compliance",
+    trigger: "An internal or external audit returns material findings that must be corrected and re-tested within a fixed timeline.",
+    wants: "Build a remediation plan, produce evidence auditors will accept, and prevent the same issues from occurring again.",
+    services: ["Internal Risk Assessment", "Penetration Testing", "vCISO"] },
+  { name: "Penetration Test Findings", type: "Incident",
+    trigger: "A pen test report reveals a list of vulnerabilities that management wants corrected.",
+    wants: "An actionable plan to patch vulnerabilities based on business impact, brief leadership without triggering panic.",
+    services: ["Penetration Testing", "Cyber Risk Quantification", "vCISO"] },
+  { name: "Budget Creation", type: "Calendar",
+    trigger: "Annual budget creation season arrives. The security leader must defend every line item to a finance team under pressure to cut funding.",
+    wants: "Justify spend in financial terms, identify tool overlap to consolidate, and pitch new ideas to a CFO with language they understand.",
+    services: ["Cyber Risk Quantification", "vCISO"] },
+  { name: "Upcoming Compliance Deadline", type: "Compliance",
+    trigger: "A regulatory or framework deadline is coming up and the organization is behind on required posture.",
+    wants: "Understand the necessary steps to required posture and consolidate overlapping framework work wherever possible.",
+    services: ["Internal Risk Assessment", "vCISO"] },
+  { name: "Rapid Growth", type: "Growth",
+    trigger: "A funding round, headcount surge, a major enterprise customer, or a cloud migration outgrows the security program's current system.",
+    wants: "Identify end goals for security posture, build a scalable security roadmap, and make informed decisions on which products to use in the new system.",
+    services: ["vCISO", "Cyber Risk Quantification", "Penetration Testing", "Third Party Risk Management"] },
+  { name: "Third Party Risk Management Delays", type: "Calendar",
+    trigger: "The vendor risk review queue is backed up. New vendors are blocked from onboarding because security review takes 4 to 8 weeks.",
+    wants: "Assess vendors faster without becoming careless. Standardize evidence collection so the same vendor isn't reviewed from scratch every time.",
+    services: ["Third Party Risk Management", "vCISO"] },
+];
+
+// The five stages of the workflow, left to right across the map.
+const GUIDE_STAGES = [
+  { key: "signal",  title: "Find a signal",    blurb: "Something worth writing about this week." },
+  { key: "idea",    title: "Shape an idea",    blurb: "Turn it into an angle you can write." },
+  { key: "write",   title: "Write it",         blurb: "Draft it in Stern's voice." },
+  { key: "sharpen", title: "Sharpen it",       blurb: "Check the words, then give it a visual." },
+  { key: "more",    title: "Get more from it", blurb: "One post becomes several." },
+];
+
+// Every tool, placed in a stage. `admin: true` drops it into the supporting
+// layer, which is styled apart so nobody tries to run a Claude Code tool and
+// concludes the engine is broken.
+const GUIDE_TOOLS = [
+  { slug: "radar", stage: "signal", runs: "Project or Claude Code",
+    what: "Web-searches the past days and weeks across breaches, vulnerabilities, regulation and threat reports, then hands back trending topics with a post hook for each. Adds search volume and difficulty when you want the keyword side too.",
+    when: "You need something timely and you don't have a topic yet." },
+  { slug: "dossier", stage: "signal", runs: "Project or Claude Code",
+    what: "Builds a research dossier on one topic and files it to the Research database. Its second mode reads sources you already have, PDFs or links, and files those instead.",
+    when: "The topic needs real grounding before you write, or you're sitting on research nobody has filed." },
+  { slug: "ideas", stage: "idea", runs: "Project",
+    what: "Takes one topic and returns 5 to 12 post ideas, each with an angle, a hook, a format and the buying moment it serves. Can sketch a series and a visual direction too.",
+    when: "You have a topic but no angle. It's the only tool that starts from a topic instead of a moment." },
+  { slug: "brief", stage: "write", runs: "Project",
+    what: "Turns a moment plus a topic into a hook-first draft in Stern's voice. Guided mode adds interview fields for your angle, proof and takeaway.",
+    when: "The main drafting tool, for one post at a time." },
+  { slug: "campaign", stage: "write", runs: "Project",
+    what: "Brainstorms campaign concepts, then designs the full multi-post plan and files it to the Campaigns database once you approve.",
+    when: "You want several coordinated posts around one moment, not a single post." },
+  { slug: "check", stage: "sharpen", runs: "Project",
+    what: "Scores a draft against Stern's playbook and voice across six groups, flags AI tells, and rewrites the weak parts at the depth you pick.",
+    when: "Any draft, from anywhere. The fastest tool here, so run it first." },
+  { slug: "studio", stage: "sharpen", runs: "Project",
+    what: "Writes the visual brief for a post: concept, composition, palette, and a standalone image-model prompt. Holds a hard text budget so the graphic doesn't turn into a slide.",
+    when: "The post needs a graphic or a carousel." },
+  { slug: "recycler", stage: "more", runs: "Project",
+    what: "Spins a post that worked into fresh variants, re-aims it at a different buying moment, or turns it into a video with a storyboard and a script.",
+    when: "Something performed and you want more out of it than one impression." },
+
+  { slug: "harvest", stage: "signal", admin: true, runs: "Claude Code",
+    what: "Builds the commands that pull articles and videos into the craft vault, the library every writing tool reads for hooks, structure and design patterns.",
+    when: "Admin task. This is where the craft the other tools quote actually comes from." },
+  { slug: "semrush", stage: "signal", admin: true, runs: "Claude Code",
+    what: "Turns Semrush exports into what Stern should write next by search demand, plus where the site currently ranks.",
+    when: "Admin task. Search demand only, nothing about LinkedIn." },
+  { slug: "competitors", stage: "signal", admin: true, runs: "Dashboard",
+    what: "A snapshot of 16 cybersecurity vendors' LinkedIn presence: what they post, what lands, and which themes are heating up.",
+    when: "Anyone can read it. Useful when you want to know what peers are saying before you say it." },
+  { slug: "pulse", stage: "more", admin: true, runs: "Claude Code",
+    what: "Reads the LinkedIn export and works out which posts, formats and hooks performed, then files the analysis and refreshes the Performance dashboard.",
+    when: "Admin task. This is the loop back to the start: what worked decides what to write next." },
+];
+
+// The "what do you have right now?" filter. Each entry lights a path through
+// the map without hiding anything, so the shape of the engine stays visible.
+const GUIDE_ENTRY = [
+  { key: "nothing", label: "Nothing yet",         path: ["radar", "ideas", "brief", "check", "studio"] },
+  { key: "topic",   label: "A topic",             path: ["ideas", "dossier", "brief", "check", "studio"] },
+  { key: "sources", label: "Research to file",    path: ["dossier", "brief"] },
+  { key: "draft",   label: "A draft",             path: ["check", "studio"] },
+  { key: "worked",  label: "A post that worked",  path: ["recycler", "campaign", "pulse"] },
 ];
 
 // ── Topic Researcher, the folder its Claude Code ingest mode reads from ──
@@ -4574,6 +4829,183 @@ function renderPulse() {
     }
   }
 })();
+/* ═══════════════════════ Start Here guide ═══════════════════════
+   index.html-only, like the dashboards: it builds no prompt, so there's no
+   .jsx twin and the byte-identity contract doesn't apply. Tool names and icons
+   are read off the sidebar rather than duplicated, so a rename in one place
+   can't leave the guide showing something else. */
+(function initGuide() {
+  const momentsEl = document.getElementById("guide-moments");
+  const filterEl  = document.getElementById("guide-filter");
+  const mapEl     = document.getElementById("guide-map");
+  const detailEl  = document.getElementById("guide-detail");
+  const supportEl = document.getElementById("guide-support");
+  const viewEl    = document.getElementById("view-guide");
+  if (!momentsEl || !mapEl) return;
+
+  const esc = s => String(s).replace(/[&<>"']/g, c =>
+    ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+
+  // Single source of truth for display name + icon: the sidebar itself.
+  function meta(slug) {
+    const nav = document.querySelector('.nav-item[data-nav="' + slug + '"]');
+    const use = nav && nav.querySelector("use");
+    return {
+      name: nav ? nav.textContent.trim() : slug,
+      icon: (use && use.getAttribute("href")) || "#ic-brief",
+    };
+  }
+  const byslug = {};
+  GUIDE_TOOLS.forEach(t => { byslug[t.slug] = t; });
+
+  /* ── buying moments ── */
+  momentsEl.innerHTML = GUIDE_MOMENTS.map((m, i) => `
+    <button type="button" class="gmoment greveal" aria-expanded="false" data-moment="${i}">
+      <span class="gmoment-top">
+        <span class="gmoment-name">${esc(m.name)}</span>
+        <span class="gmoment-type">${esc(m.type)}</span>
+      </span>
+      <p class="gmoment-trigger">${esc(m.trigger)}</p>
+      <span class="gmoment-more">
+        <span class="gmoment-k">What they want next</span>
+        <p class="gmoment-wants">${esc(m.wants)}</p>
+        <span class="gmoment-k">Stern services in play</span>
+        <span>${m.services.map(s => `<span class="gsvc">${esc(s)}</span>`).join("")}</span>
+      </span>
+    </button>`).join("");
+  momentsEl.querySelectorAll("[data-moment]").forEach(btn => {
+    btn.addEventListener("click", () => {
+      const open = btn.getAttribute("aria-expanded") === "true";
+      btn.setAttribute("aria-expanded", open ? "false" : "true");
+    });
+  });
+
+  /* ── the map ── */
+  const nodeHtml = t => {
+    const m = meta(t.slug);
+    return `<button type="button" class="gnode${t.admin ? " admin" : ""}" data-node="${t.slug}">
+      <svg class="ico" aria-hidden="true"><use href="${m.icon}"/></svg>
+      <span class="gnode-name">${esc(m.name)}</span>
+    </button>`;
+  };
+
+  const cols = GUIDE_STAGES.length * 2 - 1;   // stages interleaved with connectors
+  // DOM order is head, tools, head, tools... Desktop placement comes from the
+  // explicit grid-row/column below, so source order is free to be the LOGICAL
+  // order. That's what mobile falls back to when the grid collapses to one
+  // column: emitting all heads then all tracks stranded every step away from
+  // its own tools.
+  let grid = "";
+  GUIDE_STAGES.forEach((s, i) => {
+    const col = i * 2 + 1;
+    grid += `<div class="ghead greveal" style="grid-column:${col};grid-row:1">
+        <div class="ghead-n">STEP ${i + 1}</div>
+        <div class="ghead-t">${esc(s.title)}</div>
+        <div class="ghead-b">${esc(s.blurb)}</div>
+      </div>`;
+    grid += `<div class="gtrack greveal" style="grid-column:${col};grid-row:2">` +
+      GUIDE_TOOLS.filter(t => t.stage === s.key && !t.admin).map(nodeHtml).join("") +
+      `</div>`;
+    if (i < GUIDE_STAGES.length - 1) {
+      grid += `<div class="gconn" aria-hidden="true" style="grid-column:${col + 1};grid-row:2"></div>`;
+    }
+  });
+
+  mapEl.innerHTML = `
+    <div class="glane-tag">In the launcher &mdash; you pick the options, it writes the request</div>
+    <div class="gstages" style="grid-template-columns:${
+      Array.from({ length: cols }, (_, i) => (i % 2 ? "26px" : "minmax(0,1fr)")).join(" ")
+    }">${grid}</div>
+    <div class="gproject">
+      <div class="ghandoff"><span class="ghandoff-arrow">&darr;</span> COPY THE REQUEST, PASTE IT HERE</div>
+      <div class="gproject-t">In the shared Claude Project</div>
+      <p class="gproject-b">Every tool above ends the same way: a request on your clipboard. This is where it goes, and where the work actually happens. The Project has the craft vault, the keyword data and Notion connected, so Claude drafts with Stern's hooks and voice rather than from a blank slate. A few admin tools run in Claude Code instead, on the admin's machine.</p>
+    </div>`;
+
+  /* ── supporting layer ── */
+  supportEl.innerHTML = GUIDE_TOOLS.filter(t => t.admin).map(nodeHtml).join("");
+
+  /* ── node detail ── */
+  let selected = null;
+  function select(slug) {
+    const t = byslug[slug];
+    if (!t) return;
+    selected = slug;
+    document.querySelectorAll("#view-guide .gnode").forEach(n =>
+      n.classList.toggle("sel", n.dataset.node === slug));
+    const m = meta(slug);
+    detailEl.innerHTML = `
+      <div class="gdetail-card">
+        <div class="gdetail-top">
+          <svg class="ico" aria-hidden="true" style="width:19px;height:19px;color:var(--accent-bright)"><use href="${m.icon}"/></svg>
+          <span class="gdetail-name">${esc(m.name)}</span>
+          <span class="gdetail-runs">Runs in ${esc(t.runs)}</span>
+        </div>
+        <p class="gdetail-what">${esc(t.what)}</p>
+        <p class="gdetail-when"><b>When to reach for it</b>${esc(t.when)}</p>
+        <div class="gdetail-btns">
+          <button type="button" class="btn-primary" data-open="${slug}">Open ${esc(m.name)}</button>
+        </div>
+      </div>`;
+    detailEl.querySelector("[data-open]").addEventListener("click", () => handoff(slug, {}));
+    detailEl.scrollIntoView({ block: "nearest", behavior: prefersReduced() ? "auto" : "smooth" });
+  }
+  function prefersReduced() {
+    return window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  }
+  document.querySelectorAll("#view-guide .gnode").forEach(n =>
+    n.addEventListener("click", () => select(n.dataset.node)));
+
+  /* ── "what do you have?" filter: highlights, never hides ── */
+  filterEl.innerHTML = `<span class="gfilter-lbl">What do you have?</span>` +
+    GUIDE_ENTRY.map(e => `<button type="button" class="gchip" data-entry="${e.key}">${esc(e.label)}</button>`).join("");
+  filterEl.querySelectorAll("[data-entry]").forEach(chip => {
+    chip.addEventListener("click", () => {
+      const entry = GUIDE_ENTRY.find(e => e.key === chip.dataset.entry);
+      const turningOff = chip.classList.contains("on");
+      filterEl.querySelectorAll(".gchip").forEach(c => c.classList.remove("on"));
+      document.querySelectorAll("#view-guide .gnode").forEach(n => n.classList.remove("lit"));
+      if (turningOff || !entry) { viewEl.classList.remove("gfiltered"); return; }
+      chip.classList.add("on");
+      viewEl.classList.add("gfiltered");
+      entry.path.forEach(slug =>
+        document.querySelectorAll('#view-guide .gnode[data-node="' + slug + '"]')
+          .forEach(n => n.classList.add("lit")));
+    });
+  });
+
+  /* ── staged reveal, played once the first time the guide is opened ──
+     Deliberately not IntersectionObserver-driven: the observer never fires
+     while the view is display:none, which left the whole page blank. */
+  let played = false;
+  function playReveal() {
+    if (played) return;
+    played = true;
+    const els = [...viewEl.querySelectorAll(".greveal")];
+    if (prefersReduced() || !els.length) return;   // never armed, so never hidden
+    viewEl.classList.add("garmed");
+    // Backstop: whatever happens to the timers below, the hidden state is
+    // guaranteed to come off, so content can't be stranded invisible.
+    setTimeout(() => viewEl.classList.remove("garmed"), 2500);
+    // setTimeout rather than requestAnimationFrame: rAF is suspended when the
+    // page isn't painting, which would leave the stagger permanently pending.
+    els.forEach((el, i) => setTimeout(() => el.classList.add("in"), 30 + Math.min(i, 14) * 45));
+  }
+  if (viewEl.classList.contains("active")) playReveal();
+  // Catches every route in: the nav item, the copilot, and the first-visit open.
+  new MutationObserver(() => {
+    if (viewEl.classList.contains("active")) playReveal();
+  }).observe(viewEl, { attributes: true, attributeFilter: ["class"] });
+
+  /* ── first visit lands here once, then never again ── */
+  try {
+    if (!localStorage.getItem("stern.guideSeen")) {
+      localStorage.setItem("stern.guideSeen", "1");
+      showView("guide");
+    }
+  } catch (_) { /* private mode: just don't auto-open */ }
+})();
+
 /* ═══════════════════════ Search Intelligence ═══════════════════════ */
 (function initSemrush() {
   const wrap      = document.getElementById("sr-reports");
