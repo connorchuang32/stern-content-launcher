@@ -430,6 +430,52 @@ button:focus-visible, a:focus-visible, textarea:focus-visible, select:focus-visi
     transition: background 0.15s, color 0.15s;
 }
 .seg-btn:hover:not(.active) { background: rgba(255,255,255,0.07); }
+.tslider-row { display: flex; align-items: center; gap: 12px; }
+.tslider {
+    flex: 1;
+    -webkit-appearance: none;
+    appearance: none;
+    height: 4px;
+    border-radius: 999px;
+    background: rgba(255,255,255,0.14);
+    outline: none;
+    cursor: pointer;
+}
+.tslider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 16px; height: 16px;
+    border-radius: 50%;
+    background: var(--accent);
+    border: none;
+    cursor: pointer;
+    box-shadow: 0 0 10px rgba(124,58,237,0.6);
+}
+.tslider::-moz-range-thumb {
+    width: 16px; height: 16px;
+    border-radius: 50%;
+    background: var(--accent);
+    border: none;
+    cursor: pointer;
+    box-shadow: 0 0 10px rgba(124,58,237,0.6);
+}
+.tslider-val {
+    min-width: 74px;
+    text-align: right;
+    font-family: var(--font-mono, monospace);
+    font-size: 12px;
+    color: var(--text-muted);
+}
+.seg-btn .seg-sub {
+    display: block;
+    margin-top: 2px;
+    font-family: var(--font-body);
+    font-size: 10.5px;
+    font-weight: 500;
+    line-height: 1.25;
+    opacity: 0.7;
+}
+.seg-btn.active .seg-sub { opacity: 0.85; }
 .seg-btn.active { background: var(--accent); color: #fff; box-shadow: 0 0 14px rgba(124,58,237,0.5); }
 
 /* Toggle switch */
@@ -933,6 +979,7 @@ button:disabled { opacity: 0.4; cursor: not-allowed; }
     <symbol id="ic-studio" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="8.5" cy="9.5" r="1.8"/><path d="M3 16.5l4.5-4 4 3.5 3.5-3.5L21 17"/></symbol>
     <symbol id="ic-recycler" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9a8 8 0 0 1 13.3-3.3L20 8"/><path d="M20 4v4h-4"/><path d="M20 15a8 8 0 0 1-13.3 3.3L4 16"/><path d="M4 20v-4h4"/></symbol>
     <symbol id="ic-campaign" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11v2a1 1 0 0 0 1 1h3l7 4V6L7 10H4a1 1 0 0 0-1 1z"/><path d="M17 8.5a5 5 0 0 1 0 7"/><path d="M7 14v3a1 1 0 0 0 1 1h1a1 1 0 0 0 1-1v-2"/></symbol>
+    <symbol id="ic-ideas" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.8a6.2 6.2 0 0 0-3.6 11.2c.5.4.8 1 .8 1.6v.4h5.6v-.4c0-.6.3-1.2.8-1.6A6.2 6.2 0 0 0 12 2.8z"/><path d="M9.6 19h4.8M10.4 21.4h3.2"/></symbol>
 </svg>
 
 <div class="bg-atmosphere" aria-hidden="true">
@@ -964,6 +1011,7 @@ button:disabled { opacity: 0.4; cursor: not-allowed; }
             </div>
             <div class="nav-group">
                 <div class="nav-group-label">Create</div>
+                <button class="nav-item" data-nav="ideas"><svg class="ico"><use href="#ic-ideas"/></svg> Idea Generator</button>
                 <button class="nav-item" data-nav="brief"><svg class="ico"><use href="#ic-brief"/></svg> Post Drafter</button>
                 <button class="nav-item" data-nav="check"><svg class="ico"><use href="#ic-check"/></svg> Draft Checker</button>
                 <button class="nav-item" data-nav="studio"><svg class="ico"><use href="#ic-studio"/></svg> Visual Designer</button>
@@ -998,7 +1046,7 @@ button:disabled { opacity: 0.4; cursor: not-allowed; }
             <h1 class="hero-title">Signal in, drafts out.</h1>
             <p class="hero-sub">The Stern content engine is one console for researching cybersecurity buying moments, drafting on-brand LinkedIn posts, and tracking what performs.</p>
             <div class="hero-stats">
-                <span class="hero-stat"><strong>9</strong> tools</span>
+                <span class="hero-stat"><strong>10</strong> tools</span>
                 <span class="hero-stat"><strong>16</strong> competitors tracked</span>
                 <span class="hero-stat"><span class="live-dot"></span> data current to Jul 8</span>
             </div>
@@ -1032,8 +1080,16 @@ button:disabled { opacity: 0.4; cursor: not-allowed; }
             </button>
         </div>
 
-        <div class="section-label"><span class="section-ico"><svg class="ico"><use href="#ic-tools-sec"/></svg></span> Create <span class="section-count">5</span></div>
+        <div class="section-label"><span class="section-ico"><svg class="ico"><use href="#ic-tools-sec"/></svg></span> Create <span class="section-count">6</span></div>
         <div class="grid">
+            <button class="card" data-tool="ideas" data-accent="tool">
+                <span class="card-ico"><svg class="ico"><use href="#ic-ideas"/></svg></span>
+                <span class="card-body">
+                    <span class="card-title">Idea Generator</span>
+                    <span class="card-desc">Turn a topic into post ideas, hooks, and a series sketch.</span>
+                    <span class="card-meta"><span class="card-tag">Tool</span><span class="card-arrow"><svg class="ico"><use href="#ic-arrow"/></svg></span></span>
+                </span>
+            </button>
             <button class="card" data-tool="brief" data-accent="tool">
                 <span class="card-ico"><svg class="ico"><use href="#ic-brief"/></svg></span>
                 <span class="card-body">
@@ -1165,9 +1221,10 @@ button:disabled { opacity: 0.4; cursor: not-allowed; }
             <button type="button" class="seg-btn" data-val="Claude Code">Claude Code</button>
         </div>
         <div class="segmented" id="rd-mode" role="group" aria-label="Mode" style="max-width:340px;margin-bottom:20px;">
-            <button type="button" class="seg-btn active" data-val="By moment">By moment</button>
-            <button type="button" class="seg-btn" data-val="What's hot">What's hot</button>
+            <button type="button" class="seg-btn" data-val="By moment">By moment<span class="seg-sub">3&ndash;5 for one buyer</span></button>
+            <button type="button" class="seg-btn active" data-val="What's hot">What's hot<span class="seg-sub">5&ndash;8, auto-tagged</span></button>
         </div>
+        <p class="help-text" style="max-width:560px;margin:-12px 0 20px;">What's hot scans the whole cyber space and tags each story to the buying moments it fits, so you don't have to choose one up front. By moment needs a moment first, then reads that moment's Notion entry for its exact trigger and keeps every story tied to it.</p>
 
         <div class="tool-grid">
             <!-- Config -->
@@ -1219,8 +1276,9 @@ button:disabled { opacity: 0.4; cursor: not-allowed; }
                 </div>
 
                 <div class="tfield">
-                    <label class="tlabel">Steer it (optional)</label>
-                    <input class="tinput" id="rd-steer" type="text" placeholder="A lens, e.g. 'healthcare only' or 'the CFO angle'">
+                    <label class="tlabel">Add a topic or lens (optional)</label>
+                    <input class="tinput" id="rd-steer" type="text" placeholder="Narrow the scan, e.g. 'Oracle EBS', 'healthcare only', or 'the CFO angle'">
+                    <p class="help-text">Type a topic to focus the scan on, or a lens to read the results through. Applies in both modes.</p>
                 </div>
             </section>
 
@@ -1231,7 +1289,7 @@ button:disabled { opacity: 0.4; cursor: not-allowed; }
                     <span class="status-dot" id="rd-dot" aria-hidden="true"></span>
                 </div>
                 <div class="preview-box"><p class="preview-text" id="rd-preview"></p></div>
-                <p class="hint" id="rd-hint">Pick a buying moment (or switch to What's hot) and keep at least one signal on to enable the run.</p>
+                <p class="hint" id="rd-hint">Keep at least one signal on to enable the run. By moment also needs a buying moment picked.</p>
                 <div class="btn-row">
                     <button type="button" class="btn-secondary" id="rd-copy" data-label="Copy request" disabled>Copy request</button>
                     <button type="button" class="btn-primary" id="rd-open" data-label="Copy &amp; open Project" disabled>Copy &amp; open Project</button>
@@ -1241,6 +1299,102 @@ button:disabled { opacity: 0.4; cursor: not-allowed; }
         </div>
 
         <footer class="tool-footer">Moment list is a July snapshot of the Buying Moment Map, re-read from Notion if it has changed.</footer>
+    </div>
+</section>
+
+<!-- ===================== IDEA GENERATOR ===================== -->
+<section id="view-ideas" class="view">
+    <div class="container">
+        <header class="tool-header">
+            <div class="tool-logo-row">
+                <div class="tool-mark" aria-hidden="true"><svg class="ico"><use href="#ic-ideas"/></svg></div>
+                <h1 class="tool-title">Idea Generator</h1>
+            </div>
+            <p class="tool-sub">Give it a topic and get post ideas back, each with a hook, the format that fits, and the buying moment it serves, plus a sketch of how the strongest could arc into a series. Ideas to pick from, not finished drafts.</p>
+        </header>
+
+        <div class="tool-grid">
+            <!-- Request -->
+            <section class="tool-panel" aria-label="Idea request">
+                <div class="tfield">
+                    <label class="tlabel">Topic</label>
+                    <textarea class="ttextarea" id="ig-topic" rows="3" placeholder="A theme, an article you read, or a thought you had."></textarea>
+                </div>
+
+                <div class="tfield">
+                    <label class="tlabel">Tag a buying moment (optional)</label>
+                    <select class="tselect" id="ig-moment"></select>
+                    <p class="help-text">Leave it on Any and each idea gets tagged to the moment it serves.</p>
+                </div>
+
+                <div class="tfield">
+                    <label class="tlabel">How many ideas</label>
+                    <div class="segmented" id="ig-count" role="group" aria-label="How many ideas">
+                        <button type="button" class="seg-btn" data-val="5">5</button>
+                        <button type="button" class="seg-btn active" data-val="8">8</button>
+                        <button type="button" class="seg-btn" data-val="12">12</button>
+                    </div>
+                </div>
+
+                <div class="tfield">
+                    <label class="tlabel">Who it's for (optional)</label>
+                    <select class="tselect" id="ig-reader"></select>
+                </div>
+
+                <div class="toggle-group">
+                    <button type="button" class="toggle-row" data-toggle="useSeries">
+                        <span class="toggle-label">Sketch how they'd arc into a series?</span>
+                        <span class="track on"><span class="knob"></span></span>
+                    </button>
+                    <button type="button" class="toggle-row" data-toggle="useVisuals">
+                        <span class="toggle-label">Say which ideas need a visual, and what?</span>
+                        <span class="track on"><span class="knob"></span></span>
+                    </button>
+                    <button type="button" class="toggle-row" data-toggle="useVault">
+                        <span class="toggle-label">Use vault patterns for hooks?</span>
+                        <span class="track on"><span class="knob"></span></span>
+                    </button>
+                    <button type="button" class="toggle-row" data-toggle="useKeywords">
+                        <span class="toggle-label">Anchor angles on live keywords from stern-keywords?</span>
+                        <span class="track on"><span class="knob"></span></span>
+                    </button>
+                    <button type="button" class="toggle-row" data-toggle="useResearch">
+                        <span class="toggle-label">Build on filed research for this topic?</span>
+                        <span class="track"><span class="knob"></span></span>
+                    </button>
+                    <button type="button" class="toggle-row" data-toggle="useHumanize">
+                        <span class="toggle-label">Humanize to Stern voice?</span>
+                        <span class="track on"><span class="knob"></span></span>
+                    </button>
+                </div>
+
+                <div class="tfield">
+                    <label class="tlabel">Steer it (optional)</label>
+                    <input class="tinput" id="ig-steer" type="text" placeholder="A constraint or lens, e.g. 'no fear-mongering, lead with the CFO'">
+                </div>
+            </section>
+
+            <!-- Preview -->
+            <section class="tool-panel" aria-label="Request preview">
+                <div class="preview-header">
+                    <span class="preview-label">Assembled request</span>
+                    <span class="status-dot" id="ig-dot" aria-hidden="true"></span>
+                </div>
+                <div class="preview-box"><p class="preview-text" id="ig-preview"></p></div>
+                <p class="hint" id="ig-hint">Add a topic to enable the run.</p>
+                <div class="btn-row">
+                    <button type="button" class="btn-secondary" id="ig-copy" data-label="Copy request" disabled>Copy request</button>
+                    <button type="button" class="btn-primary" id="ig-open" data-label="Copy &amp; open Project" disabled>Copy &amp; open Project</button>
+                </div>
+                <p class="run-note">Opens your Project with the request on your clipboard, paste and send. Nothing is filed: pick an idea and hand it on.</p>
+                <div class="btn-row">
+                    <button type="button" class="btn-secondary" id="ig-to-brief" data-label="Take topic to Post Drafter" disabled>Take topic to Post Drafter</button>
+                    <button type="button" class="btn-secondary" id="ig-to-campaign" data-label="Take topic to Campaign Builder" disabled>Take topic to Campaign Builder</button>
+                </div>
+            </section>
+        </div>
+
+        <footer class="tool-footer">Optional buying-moment tag read from the Buying Moment Map in Notion.</footer>
     </div>
 </section>
 
@@ -1279,9 +1433,9 @@ button:disabled { opacity: 0.4; cursor: not-allowed; }
                 <div class="tfield">
                     <label class="tlabel">Format</label>
                     <div class="segmented" id="bb-format" role="group" aria-label="Format">
-                        <button type="button" class="seg-btn active" data-val="Evergreen">Evergreen</button>
-                        <button type="button" class="seg-btn" data-val="Reactive">Reactive</button>
-                        <button type="button" class="seg-btn" data-val="Founder POV">Founder POV</button>
+                        <button type="button" class="seg-btn active" data-val="Evergreen">Evergreen<span class="seg-sub">No news peg</span></button>
+                        <button type="button" class="seg-btn" data-val="Reactive">Reactive<span class="seg-sub">Tied to live news</span></button>
+                        <button type="button" class="seg-btn" data-val="Founder POV">Founder POV<span class="seg-sub">Jon's own take</span></button>
                     </div>
                 </div>
 
@@ -1409,20 +1563,18 @@ button:disabled { opacity: 0.4; cursor: not-allowed; }
 
                 <div class="tfield">
                     <label class="tlabel">Goal</label>
-                    <select class="tselect" id="sca-goal">
-                        <option value="Awareness">Awareness</option>
-                        <option value="Demand gen">Demand gen</option>
-                        <option value="Thought leadership">Thought leadership</option>
-                        <option value="Event">Event</option>
-                    </select>
+                    <input class="tinput" id="sca-goal" type="text" placeholder="What should this campaign achieve? e.g. get CFOs asking for a dollar figure on cyber risk">
                 </div>
 
                 <div class="tfield">
                     <label class="tlabel">Scope</label>
-                    <div class="segmented" id="sca-scale" role="group" aria-label="Scope">
-                        <button type="button" class="seg-btn" data-val="1 wk · 3 posts">1 wk · 3 posts</button>
-                        <button type="button" class="seg-btn active" data-val="2 wk · 5 posts">2 wk · 5 posts</button>
-                        <button type="button" class="seg-btn" data-val="1 mo · 8 posts">1 mo · 8 posts</button>
+                    <div class="tslider-row">
+                        <input class="tslider" id="sca-weeks" type="range" min="1" max="12" step="1" value="2" aria-label="Campaign duration in weeks">
+                        <span class="tslider-val" id="sca-weeks-val">2 weeks</span>
+                    </div>
+                    <div class="tslider-row" style="margin-top:10px;">
+                        <input class="tslider" id="sca-posts" type="range" min="2" max="30" step="1" value="5" aria-label="Number of posts">
+                        <span class="tslider-val" id="sca-posts-val">5 posts</span>
                     </div>
                 </div>
 
@@ -1492,7 +1644,7 @@ button:disabled { opacity: 0.4; cursor: not-allowed; }
                 <div class="tool-mark" aria-hidden="true"><svg class="ico"><use href="#ic-check"/></svg></div>
                 <h1 class="tool-title">Draft Checker</h1>
             </div>
-            <p class="tool-sub">Run a draft through Stern's six-group Quality Checklist before it reaches Jon. Review only: it marks each group pass or flag with fixes, and you approve any change.</p>
+            <p class="tool-sub">Run a draft through Stern's six-group Quality Checklist before it reaches Jon. Review only: it scores each group against its checklist items, grades the draft, and you approve any change.</p>
         </header>
 
         <div class="tool-grid">
@@ -1510,9 +1662,9 @@ button:disabled { opacity: 0.4; cursor: not-allowed; }
                 <div class="tfield">
                     <label class="tlabel">Intended format</label>
                     <div class="segmented" id="sc-format" role="group" aria-label="Intended format">
-                        <button type="button" class="seg-btn active" data-val="Evergreen">Evergreen</button>
-                        <button type="button" class="seg-btn" data-val="Reactive">Reactive</button>
-                        <button type="button" class="seg-btn" data-val="Founder POV">Founder POV</button>
+                        <button type="button" class="seg-btn active" data-val="Evergreen">Evergreen<span class="seg-sub">No news peg</span></button>
+                        <button type="button" class="seg-btn" data-val="Reactive">Reactive<span class="seg-sub">Tied to live news</span></button>
+                        <button type="button" class="seg-btn" data-val="Founder POV">Founder POV<span class="seg-sub">Jon's own take</span></button>
                     </div>
                 </div>
 
@@ -1632,7 +1784,7 @@ button:disabled { opacity: 0.4; cursor: not-allowed; }
                         </button>
                         <button type="button" class="toggle-row" data-toggle="conceptPrompt">
                             <span class="toggle-label">Add a full-visual concept prompt (rough draft only)</span>
-                            <span class="track"><span class="knob"></span></span>
+                            <span class="track on"><span class="knob"></span></span>
                         </button>
                     </div>
                     <p class="help-text">The background prompt is safe to ship after compositing in Canva. The concept prompt is for ideation only: an image model won't render your exact copy, colors, or logo, so it's a reference, not a final asset.</p>
@@ -1751,8 +1903,13 @@ button:disabled { opacity: 0.4; cursor: not-allowed; }
                 <div class="tool-mark" aria-hidden="true"><svg class="ico"><use href="#ic-dossier"/></svg></div>
                 <h1 class="tool-title">Topic Researcher</h1>
             </div>
-            <p class="tool-sub">Deep-dive a topic across web and video, then file a structured dossier to the Research database in Notion. Research only: it gathers and synthesizes, and you approve before anything is filed.</p>
+            <p class="tool-sub">Build a dossier and file it to the Research database in Notion, either by deep-diving a topic across web and video, or from research you already have. You approve before anything is filed.</p>
         </header>
+
+        <div class="segmented" id="sd-mode" role="group" aria-label="Mode" style="max-width:340px;margin-bottom:20px;">
+            <button type="button" class="seg-btn active" data-val="Research">Research a topic</button>
+            <button type="button" class="seg-btn" data-val="Ingest">Use my sources</button>
+        </div>
 
         <div class="tool-grid">
             <!-- Request -->
@@ -1773,9 +1930,16 @@ button:disabled { opacity: 0.4; cursor: not-allowed; }
                         <button type="button" class="seg-btn active" data-val="Claude Code">Claude Code</button>
                         <button type="button" class="seg-btn" data-val="Project">Project</button>
                     </div>
-                    <p class="help-text">Claude Code analyzes video (/watch, /harvest) and files to Notion directly. The Project is web-only.</p>
+                    <p class="help-text" id="sd-target-help">Claude Code analyzes video (/watch, /harvest) and files to Notion directly. The Project is web-only.</p>
                 </div>
 
+                <div class="tfield" id="sd-ingest-field" style="display:none;">
+                    <label class="tlabel">Links &amp; notes (optional)</label>
+                    <textarea class="ttextarea" id="sd-sources" rows="4" placeholder="Paste links, one per line, plus anything I should know about what you're giving me."></textarea>
+                    <p class="help-text" id="sd-ingest-help"></p>
+                </div>
+
+                <div id="sd-research-only">
                 <div class="tfield">
                     <label class="tlabel">Depth</label>
                     <div class="segmented" id="sd-depth" role="group" aria-label="Depth">
@@ -1794,15 +1958,20 @@ button:disabled { opacity: 0.4; cursor: not-allowed; }
                         <button type="button" class="seg-btn" data-val="Any time">Any time</button>
                     </div>
                 </div>
+                </div>
 
                 <div class="toggle-group">
-                    <button type="button" class="toggle-row" data-toggle="useWeb">
+                    <button type="button" class="toggle-row" id="sd-t-web" data-toggle="useWeb">
                         <span class="toggle-label">Include web sources</span>
                         <span class="track on"><span class="knob"></span></span>
                     </button>
-                    <button type="button" class="toggle-row" data-toggle="useVideo">
+                    <button type="button" class="toggle-row" id="sd-t-video" data-toggle="useVideo">
                         <span class="toggle-label">Include YouTube and video</span>
                         <span class="track on"><span class="knob"></span></span>
+                    </button>
+                    <button type="button" class="toggle-row" id="sd-t-gap" data-toggle="fillGaps" style="display:none;">
+                        <span class="toggle-label">Web-search to fill gaps in what I gave you?</span>
+                        <span class="track"><span class="knob"></span></span>
                     </button>
                     <button type="button" class="toggle-row" data-toggle="saveToNotion">
                         <span class="toggle-label">File to the Notion Research database</span>
@@ -1871,12 +2040,8 @@ button:disabled { opacity: 0.4; cursor: not-allowed; }
                         <textarea class="ttextarea" id="hv-topic" rows="3" placeholder="What to research, in a sentence. e.g. LinkedIn hooks that stop the scroll for B2B founders."></textarea>
                     </div>
                     <div class="tfield">
-                        <label class="tlabel">Breadth</label>
-                        <div class="segmented" id="hv-breadth" role="group" aria-label="Breadth">
-                            <button type="button" class="seg-btn" data-val="tight">Tight</button>
-                            <button type="button" class="seg-btn active" data-val="standard">Standard</button>
-                            <button type="button" class="seg-btn" data-val="broad">Broad</button>
-                        </div>
+                        <label class="tlabel">How many sources</label>
+                        <input class="tinput" id="hv-count" type="number" min="3" max="30" step="1" value="10" aria-label="How many sources">
                         <p class="help-text">Quality curation beats volume. A tight set of strong sources makes a better pack than a dump of noisy pages.</p>
                     </div>
                     <button type="button" class="toggle-row" id="hv-video">
@@ -2179,11 +2344,6 @@ const HARVEST_CONFIG = {
   ],
   defaultRoster: "",
 };
-const HARVEST_BREADTH = [
-  { key: "tight",    label: "Tight",    phrase: "a tight set of 5 to 8 sources" },
-  { key: "standard", label: "Standard", phrase: "around 10 to 12 sources" },
-  { key: "broad",    label: "Broad",    phrase: "a broad 15+ sources" },
-];
 const HARVEST_DIMENSIONS = [
   { key: "positioning", label: "Positioning & messaging",  phrase: "positioning and core messaging" },
   { key: "pillars",     label: "Content pillars & formats", phrase: "content pillars and post formats" },
@@ -2228,14 +2388,14 @@ const CHECK_GROUPS = ["The Hook", "The Substance", "The Voice", "The Format", "T
 const CHECK_DEPTHS = ["Diagnose", "Diagnose + fixes", "Revise"];
 
 // ── Signal Studio ──
-const STUDIO_VISUAL_TYPES = ["Single image", "Carousel", "Quote card", "Data or stat card", "Diagram or framework"];
+const STUDIO_VISUAL_TYPES = ["Single image", "Carousel", "Video", "Quote card", "Data or stat card", "Diagram or framework"];
 const STUDIO_RATIOS = ["Square 1:1", "Portrait 4:5", "Wide 16:9"];
 const STUDIO_SLIDE_COUNTS = [5, 7, 10];
 
 // ── Content Recycler, each selected move produces one variant ──
 const RECYCLE_MOVES = [
   { key: "carousel", label: "Carousel",
-    phrase: "Expand it into a carousel: a hook-first opening slide, one idea per slide, and a closing slide. Give the text for each slide in order." },
+    phrase: "Expand it into a carousel. Lead with the post copy that sits above the carousel in the feed, written in full, then the carousel beneath it: a hook-first opening slide, one idea per slide, and a closing slide. For every slide give the on-slide text and one line on what the slide shows. Then add a block titled Carousel image-generator prompt holding a master prompt that primes the whole set (the look, the palette as literal hex values, the type treatment, the aspect ratio, and what stays consistent slide to slide) followed by one short numbered prompt per slide that inherits it. Write both in plain descriptive language with no tool-specific syntax, so it works in any image generator, and say plainly at the top of the block that the output is a rough draft for ideation, not publishable art." },
   { key: "followup", label: "Follow-up post",
     phrase: "Write a follow-up post that advances the idea a step further and stands entirely on its own." },
   { key: "reactive", label: "Reactive spin",
@@ -2244,17 +2404,17 @@ const RECYCLE_MOVES = [
     phrase: "Write 3 to 5 fresh one-line hook options for the same body so I can pick the sharpest." },
   { key: "format", label: "New format",
     phrase: "Recast it in a different format (evergreen, reactive, or founder POV) while keeping the core idea." },
+  { key: "video", label: "Video",
+    phrase: "Recast it as a short LinkedIn video of 30 to 90 seconds in Stern's current format: the screen carries the thing being talked about while Jon or a colleague narrates over it, with a webcam bubble in a corner so their face is visible throughout. Storyboard it as a numbered beat list, and for every beat give what is on screen, roughly how many seconds it holds, the talking point as a prompt to speak from rather than a line to read aloud, and the caption text for that beat. Script only the first three seconds word for word, since that decides whether anyone finishes it, and leave every later beat as a talking point so it sounds spoken. Assume it plays on mute: any point that matters has to survive in the captions alone. End with the single line left on screen at the close." },
   { key: "retarget", label: "Re-target moment or reader",
     phrase: "Re-aim the same insight at a different buying moment or reader, surfacing what that audience needs at that moment." },
 ];
 
+// ── Idea Generator, how many ideas a run returns. Topic-first, so its reader
+//    list is BRIEF_READERS with the first label reworded (no moment to imply it). ──
+const IDEA_COUNTS = ["5", "8", "12"];
+
 // ── Campaign Builder, goals + scope presets ──
-const CAMPAIGN_GOALS  = ["Awareness", "Demand gen", "Thought leadership", "Event"];
-const CAMPAIGN_SCALES = [
-  { val: "1 wk · 3 posts", phrase: "roughly 3 posts over 1 week" },
-  { val: "2 wk · 5 posts", phrase: "roughly 5 posts over 2 weeks" },
-  { val: "1 mo · 8 posts", phrase: "roughly 8 posts over 1 month" },
-];
 
 // ── Content Analytics, analytics sources the ingest command can cover ──
 const PULSE_SOURCES = [
@@ -2263,6 +2423,9 @@ const PULSE_SOURCES = [
   { key: "ga4",      label: "Website (GA4)",  phrase: "website analytics from GA4, sessions, users, top landing pages, UTM-tagged referrals from LinkedIn, and conversions" },
 ];
 const PULSE_INBOX = "analytics-inbox/";
+
+// ── Topic Researcher, the folder its Claude Code ingest mode reads from ──
+const RESEARCH_INBOX = "research-inbox/";
 
 // ── Trend Radar — recency windows + the cyber-signal sources it scans ──
 const TREND_WINDOWS = [
@@ -2317,6 +2480,38 @@ function showView(name) {
   window.scrollTo(0, 0);
 }
 
+// slug -> which fields a handoff can prefill (matches the tools' input ids).
+// Shared by the console copilot's open_tool action and by Idea Generator's
+// "take this to..." buttons, so both stay in step with one list.
+const FIELD_MAP = {
+  radar:    { moment: "rd-moment" },
+  dossier:  { moment: "sd-moment", topic: "sd-topic" },
+  brief:    { moment: "bb-moment", topic: "bb-topic" },
+  campaign: { moment: "sca-moment", topic: "sca-theme" },
+  studio:   { moment: "st-moment" },
+  recycler: { moment: "sc-moment" },
+  ideas:    { moment: "ig-moment", topic: "ig-topic" },
+};
+
+// Set a value and let the owning tool's own listeners re-run, so its preview
+// and button state update exactly as if the user had typed it.
+function setField(id, val, evt) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.value = val;
+  el.dispatchEvent(new Event(evt, { bubbles: true }));
+}
+
+// Open a tool with the moment/topic already filled in, so handing work from one
+// tool to the next doesn't mean retyping. Unknown tools and fields are ignored.
+function handoff(slug, vals) {
+  if (!document.getElementById("view-" + slug)) return;
+  showView(slug);
+  const map = FIELD_MAP[slug] || {};
+  if (vals.moment && map.moment) setField(map.moment, vals.moment, "change");
+  if (vals.topic  && map.topic)  setField(map.topic,  vals.topic,  "input");
+}
+
 /* ═══════════════════════ navigation ═══════════════════════ */
 
 // Home cards + tool cards (data-tool) and sidebar nav items (data-nav) both switch views
@@ -2351,7 +2546,7 @@ document.getElementById("bb-orig").href = ARTIFACT_URLS.signalBriefBuilder;
 (function initRadar() {
   const state = {
     target: "Project",       // "Project" | "Claude Code"
-    mode: "By moment",       // "By moment" | "What's hot"
+    mode: "What's hot",      // "By moment" | "What's hot"
     window: "2 weeks",
     sources: { breaches: true, vulns: true, regulation: true, social: true },
     useKeywords: true,
@@ -2461,6 +2656,136 @@ document.getElementById("bb-orig").href = ARTIFACT_URLS.signalBriefBuilder;
     if (state.target !== "Claude Code") openProject();
     flash(openBtn, "Copied ✓");
   });
+
+  update();
+})();
+
+/* ═══════════════════════ Idea Generator ═══════════════════════ */
+// Port of signal-ideas.jsx. The assembled prompt must stay byte-identical to it.
+(function initIdeas() {
+  const ANY = "Any moment (let the ideas map themselves)";
+
+  const state = { count: "8", useSeries: true, useVisuals: true, useVault: true,
+                  useKeywords: true, useResearch: false, useHumanize: true };
+
+  const topicEl   = document.getElementById("ig-topic");
+  const momentEl  = document.getElementById("ig-moment");
+  const readerEl  = document.getElementById("ig-reader");
+  const steerEl   = document.getElementById("ig-steer");
+  const previewEl = document.getElementById("ig-preview");
+  const dotEl     = document.getElementById("ig-dot");
+  const hintEl    = document.getElementById("ig-hint");
+  const copyBtn   = document.getElementById("ig-copy");
+  const openBtn   = document.getElementById("ig-open");
+  const briefBtn  = document.getElementById("ig-to-brief");
+  const campBtn   = document.getElementById("ig-to-campaign");
+
+  fillMomentSelect(momentEl, ANY);
+
+  // Reuses BRIEF_READERS; only `val` reaches the prompt, so the first label is
+  // reworded here (this tool may have no moment to imply the reader).
+  BRIEF_READERS.forEach((r, i) => {
+    const o = document.createElement("option");
+    o.value = r.val;
+    o.textContent = i === 0 ? "Let the ideas decide" : r.label;
+    readerEl.appendChild(o);
+  });
+
+  topicEl.addEventListener("input", update);
+  momentEl.addEventListener("change", update);
+  readerEl.addEventListener("change", update);
+  steerEl.addEventListener("input", update);
+
+  wireSegGroup("ig-count", v => { state.count = v; update(); });
+
+  document.querySelectorAll("#view-ideas [data-toggle]").forEach(btn => {
+    btn.addEventListener("click", () => {
+      const key = btn.dataset.toggle;
+      state[key] = !state[key];
+      btn.querySelector(".track").classList.toggle("on", state[key]);
+      update();
+    });
+  });
+
+  function assemble() {
+    const moment = momentEl.value;
+    const tagged = moment && moment !== ANY;
+    const reader = readerEl.value;
+    const t = topicEl.value.trim() || "{topic}";
+    const parts = [
+      "Brainstorm LinkedIn post ideas about a topic, and how Stern could market around it.",
+      `Topic: ${t}.`,
+    ];
+
+    if (tagged) {
+      parts.push(`Frame the ideas around the buying moment "${moment}": surface what a decision-maker at that moment needs to know, plus angles Stern could post about.`);
+    } else {
+      parts.push("No buying moment is set, so range across the whole map and tag each idea to the buying moment it serves, or wildcard if it fits none.");
+    }
+
+    if (reader) {
+      parts.push(`Write them for ${reader}.`);
+    }
+
+    parts.push(`Give me ${state.count} distinct post ideas, not variations on one. For each: the angle in one line, a ready hook, the format that fits (Evergreen, Reactive, or Founder POV), the buying moment it serves, and why it would land now.`);
+
+    if (state.useSeries) {
+      parts.push("Then sketch how the strongest three to five could arc into a series: the throughline, the order, and the cadence. A sketch to choose from, not a full plan, hand it to Campaign Builder to build out.");
+    }
+    if (state.useVisuals) {
+      parts.push("For each idea, say whether it wants a carousel, a single graphic, a short video, or text only, and what the visual would show in one line. Hand these to Visual Designer to produce.");
+    }
+    if (state.useVault) {
+      parts.push("Pull hook, structure, and pacing patterns from the Video Briefs folder of the Stern Craft Vault (stern-vault connector), scope to the Video Briefs/wiki/ path with search_query, since search_simple can't filter by folder and the wiki holds the distilled notes rather than the raw transcripts under raw/ and harvest/, and apply what fits Stern's voice.");
+    }
+    if (state.useKeywords) {
+      parts.push(`Pull keywords from the ${CONNECTOR} connector (keyword_research, seeded with the topic) and use the strongest candidates to sharpen the angles and hooks. Read the mode block before using any figure, never build on synthetic numbers, and treat a null metric as unavailable rather than zero.`);
+    }
+    if (state.useResearch) {
+      parts.push(`If research has been filed on this topic, pull the most relevant recent page from the Research database in Notion (data source collection://01ea17dd-e458-4f66-a7b6-cd9891fab5a1), matching on the topic${tagged ? ` and the buying moment "${moment}"` : ""}, and ground the ideas in its findings and cited figures. If none is filed, say so and proceed without it, don't invent findings.`);
+    }
+
+    const steer = steerEl.value.trim();
+    if (steer) {
+      parts.push(`Steer: ${steer}.`);
+    }
+
+    parts.push("Read the playbook and the Buying Moment Map from Notion first, and keep everything in Stern's voice.");
+
+    if (state.useHumanize) {
+      parts.push("For the hooks and post copy in the ideas, write them in Stern's voice using the Stern Voice guide in Notion (the 'Stern Voice' page at https://app.notion.com/p/3a4f47e4148a812792eff5c15d6c47a3): match the example posts' tone, rhythm, and first-person founder POV, keep it concrete and warm, and strip every AI tell, no em dashes, no rule-of-three, no 'delve/leverage/robust/underscore', no hedging or press-release fluff, so it reads like Jon wrote it, not a brand or a bot.");
+    }
+
+    parts.push("Don't draft the full posts, these are ideas to pick from. When I pick one, I'll take it to Post Drafter.");
+
+    return parts.join(" ");
+  }
+
+  function update() {
+    const ready = topicEl.value.trim() !== "";
+    previewEl.textContent = assemble();
+    dotEl.classList.toggle("ready", ready);
+    hintEl.style.display = ready ? "none" : "";
+    copyBtn.disabled  = !ready;
+    openBtn.disabled  = !ready;
+    briefBtn.disabled = !ready;
+    campBtn.disabled  = !ready;
+  }
+
+  copyBtn.addEventListener("click", async () => { await copyText(assemble()); flash(copyBtn, "Copied ✓"); });
+  openBtn.addEventListener("click", async () => { await copyText(assemble()); openProject(); flash(openBtn, "Copied ✓"); });
+
+  // Hand the topic on rather than making you retype it. The moment only travels
+  // when one is actually tagged: the ANY sentinel isn't an option in either target.
+  function handOn(slug) {
+    const moment = momentEl.value;
+    handoff(slug, {
+      moment: moment && moment !== ANY ? moment : "",
+      topic: topicEl.value.trim(),
+    });
+  }
+  briefBtn.addEventListener("click", () => handOn("brief"));
+  campBtn.addEventListener("click", () => handOn("campaign"));
 
   update();
 })();
@@ -2590,10 +2915,10 @@ document.getElementById("bb-orig").href = ARTIFACT_URLS.signalBriefBuilder;
     }
 
     if (state.useVault) {
-      parts.push("Before writing the hook and choosing structure, search the Video Briefs folder of the Stern Craft Vault (stern-vault connector), scope to the Video Briefs/ path with search_query, since search_simple can't filter by folder, for relevant hook, structure, and pacing patterns and apply what fits Stern's voice.");
+      parts.push("Before writing the hook and choosing structure, search the Video Briefs folder of the Stern Craft Vault (stern-vault connector), scope to the Video Briefs/wiki/ path with search_query, since search_simple can't filter by folder and the wiki holds the distilled notes rather than the raw transcripts under raw/ and harvest/, for relevant hook, structure, and pacing patterns and apply what fits Stern's voice.");
     }
     if (state.useResearch) {
-      parts.push(`If a Signal Dossier has been filed for this buying moment, pull the most recent research page tagged to "${m}" from the Research database in Notion (data source collection://01ea17dd-e458-4f66-a7b6-cd9891fab5a1) and build the post on its findings and cited figures rather than researching from scratch. If none is filed, say so and proceed without it, don't invent findings to stand in for a dossier.`);
+      parts.push(`If Topic Researcher has filed research relevant to this post, pull the most relevant recent page from the Research database in Notion (data source collection://01ea17dd-e458-4f66-a7b6-cd9891fab5a1), matching on the topic first and on the buying moment "${m}" second, so a page filed as General is still found, and build the post on its findings and cited figures rather than researching from scratch. If none is filed, say so and proceed without it, don't invent findings to stand in for filed research.`);
     }
     if (state.useKeywords) {
       parts.push(`Pull keywords from the ${CONNECTOR} connector first (keyword_research, seeded with the buying moment's name) and build the post around the strongest candidate. Read the mode block before using any figure, never build on synthetic numbers, and treat a null metric as unavailable rather than zero.`);
@@ -2602,7 +2927,7 @@ document.getElementById("bb-orig").href = ARTIFACT_URLS.signalBriefBuilder;
     if (steer) {
       parts.push(`Steer: ${steer}.`);
     }
-    parts.push("Follow the Project workflow: read the playbook and this buying moment from Notion, draft hook-first in Stern's voice, and run the quality self-check.");
+    parts.push("Follow the Project workflow: read the playbook and this buying moment from Notion, and draft hook-first in Stern's voice. Output the draft itself, no self-review and no quality checklist, Draft Checker scores it as a separate step.");
     if (state.useHumanize) {
       parts.push("Then humanize it to Stern's voice using the Stern Voice guide in Notion (the 'Stern Voice' page at https://app.notion.com/p/3a4f47e4148a812792eff5c15d6c47a3): match the example posts' tone, rhythm, and first-person founder POV, keep it concrete and warm, and strip every AI tell, no em dashes, no rule-of-three, no 'delve/leverage/robust/underscore', no hedging or press-release fluff, so it reads like Jon wrote it, not a brand or a bot.");
     }
@@ -2651,8 +2976,8 @@ function fillMomentSelect(el, sentinel) {
 (function initCampaign() {
   const state = {
     mode: "Brainstorm",          // "Brainstorm" | "Design"
-    goal: "Awareness",
-    scale: "2 wk · 5 posts",
+    goal: "",
+    weeks: 2, posts: 5,
     useVault: true,
     useKeywords: true,
     useResearch: false,
@@ -2680,11 +3005,24 @@ function fillMomentSelect(el, sentinel) {
 
   momentEl.addEventListener("change", update);
   themeEl.addEventListener("input", update);
-  goalEl.addEventListener("change", () => { state.goal = goalEl.value; update(); });
+  goalEl.addEventListener("input", () => { state.goal = goalEl.value; update(); });
   steerEl.addEventListener("input", update);
 
   wireSegGroup("sca-mode",  v => { state.mode = v; update(); });
-  wireSegGroup("sca-scale", v => { state.scale = v; update(); });
+  const weeksEl = document.getElementById("sca-weeks");
+  const postsEl = document.getElementById("sca-posts");
+  const weeksVal = document.getElementById("sca-weeks-val");
+  const postsVal = document.getElementById("sca-posts-val");
+  function syncScope() {
+    state.weeks = Number(weeksEl.value);
+    state.posts = Number(postsEl.value);
+    weeksVal.textContent = state.weeks === 1 ? "1 week" : `${state.weeks} weeks`;
+    postsVal.textContent = state.posts === 1 ? "1 post" : `${state.posts} posts`;
+    update();
+  }
+  weeksEl.addEventListener("input", syncScope);
+  postsEl.addEventListener("input", syncScope);
+  syncScope();
 
   document.querySelectorAll("#view-campaign [data-toggle]").forEach(btn => {
     btn.addEventListener("click", () => {
@@ -2699,28 +3037,29 @@ function fillMomentSelect(el, sentinel) {
     const moment = momentEl.value.trim();
     const m = moment || "{buying moment}";
     const theme = themeEl.value.trim() || "{big idea}";
-    const scale = (CAMPAIGN_SCALES.find(s => s.val === state.scale) || CAMPAIGN_SCALES[1]).phrase;
+    const scale = `roughly ${state.posts} ${state.posts === 1 ? "post" : "posts"} over ${state.weeks} ${state.weeks === 1 ? "week" : "weeks"}`;
+    const goalText = state.goal.trim() || "not specified, infer a sensible one from the buying moment";
     const design = state.mode === "Design";
     const parts = [];
 
     if (design) {
       parts.push(`Design a full LinkedIn campaign for the buying moment ${m}.`);
-      parts.push(`Big idea: ${theme}. Goal: ${state.goal}. Scope: ${scale}.`);
+      parts.push(`Big idea: ${theme}. Goal: ${goalText}. Scope: ${scale}.`);
       parts.push("Produce the campaign's narrative arc (how the posts build on each other), then each post as a numbered brief, hook, angle, format, the buying-moment stage it serves, and a call to action, plus the posting sequence and cadence, the visual assets each post needs (hand these to Signal Studio), and the signals that would tell us it's working.");
     } else {
       parts.push(`Brainstorm distinct LinkedIn campaign concepts for the buying moment ${m}.`);
-      parts.push(`Big idea to explore: ${theme}. Goal: ${state.goal}. Scope: ${scale}.`);
-      parts.push("Give me 3 to 5 distinct concepts. For each: a title, the throughline in one sentence, 2 to 3 example hooks, how the posts would arc, and why it fits this moment. These are concepts to choose from, don't write the full posts yet, and don't file anything.");
+      parts.push(`Big idea to explore: ${theme}. Goal: ${goalText}. Scope: ${scale}.`);
+      parts.push("Give me 3 distinct concepts, no more, and make each genuinely different rather than a variation on one idea. For each concept: a title, the throughline in one sentence, and why it fits this moment. Then storyboard it as a numbered post-by-post outline, and for every post in that outline give the hook line, the angle, the format (Evergreen, Reactive, or Founder POV), whether it runs as a written post, a carousel, or a short video, and one line on what the visual shows, so any post can be carried straight into Post Drafter or Visual Designer. Don't write the full posts yet, and don't file anything.");
     }
 
     if (state.useVault) {
-      parts.push("Pull hook, structure, and pacing patterns from the Video Briefs folder of the Stern Craft Vault (stern-vault connector), scope to the Video Briefs/ path with search_query, since search_simple can't filter by folder, and apply what fits Stern's voice.");
+      parts.push("Pull hook, structure, and pacing patterns from the Video Briefs folder of the Stern Craft Vault (stern-vault connector), scope to the Video Briefs/wiki/ path with search_query, since search_simple can't filter by folder and the wiki holds the distilled notes rather than the raw transcripts under raw/ and harvest/, and apply what fits Stern's voice.");
     }
     if (state.useKeywords) {
       parts.push(`Pull keywords from the ${CONNECTOR} connector (keyword_research, seeded with the buying moment's name) and anchor the campaign's themes on the strongest candidates. Read the mode block before using any figure, never build on synthetic numbers, and treat a null metric as unavailable rather than zero.`);
     }
     if (state.useResearch) {
-      parts.push(`If a Signal Dossier has been filed for this buying moment, pull the most recent research page tagged to "${m}" from the Research database in Notion (data source collection://01ea17dd-e458-4f66-a7b6-cd9891fab5a1) and ground the campaign in its findings and cited figures. If none is filed, say so and proceed without it, don't invent findings.`);
+      parts.push(`If Topic Researcher has filed research relevant to this campaign, pull the most relevant recent page from the Research database in Notion (data source collection://01ea17dd-e458-4f66-a7b6-cd9891fab5a1), matching on the theme first and on the buying moment "${m}" second, so a page filed as General is still found, and ground the campaign in its findings and cited figures. If none is filed, say so and proceed without it, don't invent findings.`);
     }
     if (state.useAnalytics) {
       parts.push(`If performance data has been filed for this moment, pull the most recent analysis tagged to "${m}" from the Signal Metrics database in Notion (data source collection://afeaaf19-b0c8-49f3-b781-248b834aa442) and lean the campaign toward the formats and angles that have been working. If none is filed, say so and proceed without it.`);
@@ -2840,11 +3179,11 @@ function fillMomentSelect(el, sentinel) {
     }
 
     if (state.depth === "Diagnose") {
-      parts.push("For each group in scope, mark pass or flag. For every flag, name the specific checklist item it misses and one line on why. No fixes yet.");
+      parts.push("Score every group in scope. For each, count how many of its checklist items the draft passes and report it as items passed out of items total, plus that as a percentage. Then give one overall letter grade from the unweighted mean of those group percentages: A at 90 or above, B at 80, C at 70, D at 60, F below that. Lead with the grade and name the single group that cost it the most. Close with a short note listing each group's score and the mean, so I can check the grade rather than trust it. Never give a score without showing the items behind it. For every item a group misses, name the item and one line on why. No fixes yet.");
     } else if (state.depth === "Diagnose + fixes") {
-      parts.push("For each group in scope, mark pass or flag. For every flag, name the specific checklist item it misses, one line on why, and a concrete fix I can apply.");
+      parts.push("Score every group in scope. For each, count how many of its checklist items the draft passes and report it as items passed out of items total, plus that as a percentage. Then give one overall letter grade from the unweighted mean of those group percentages: A at 90 or above, B at 80, C at 70, D at 60, F below that. Lead with the grade and name the single group that cost it the most. Close with a short note listing each group's score and the mean, so I can check the grade rather than trust it. Never give a score without showing the items behind it. For every item a group misses, name the item, one line on why, and a concrete fix I can apply.");
     } else {
-      parts.push("For each group in scope, mark pass or flag with the specific item missed. Then propose a revised draft that clears every flag while keeping Stern's voice, and wait for my approval before treating it as final. Don't post anything.");
+      parts.push("Score every group in scope. For each, count how many of its checklist items the draft passes and report it as items passed out of items total, plus that as a percentage. Then give one overall letter grade from the unweighted mean of those group percentages: A at 90 or above, B at 80, C at 70, D at 60, F below that. Lead with the grade and name the single group that cost it the most. Close with a short note listing each group's score and the mean, so I can check the grade rather than trust it. Never give a score without showing the items behind it. For every item a group misses, name the item and one line on why. Then propose a revised draft that clears every miss while keeping Stern's voice, and re-score it so I can see the grade move. Wait for my approval before treating it as final. Don't post anything.");
     }
 
     if (state.useHumanize) {
@@ -2878,7 +3217,7 @@ function fillMomentSelect(el, sentinel) {
 
 /* ═══════════════════════ Signal Studio ═══════════════════════ */
 (function initStudio() {
-  const state = { visualType: "Single image", ratio: "Square 1:1", slides: 7, bgPrompt: false, conceptPrompt: false };
+  const state = { visualType: "Single image", ratio: "Square 1:1", slides: 7, bgPrompt: false, conceptPrompt: true };
 
   const postEl    = document.getElementById("st-post");
   const sel       = document.getElementById("st-moment");
@@ -2917,12 +3256,13 @@ function fillMomentSelect(el, sentinel) {
     const moment = sel.value;
     const tagged = moment && moment !== UNTAGGED;
     const isCarousel = state.visualType === "Carousel";
+    const isVideo = state.visualType === "Video";
     const postText = postEl.value.trim() || "{paste the post the visual supports}";
     const parts = [];
 
     parts.push("Build a visual brief for this LinkedIn post. Brief only: a designer or Canva executes it, and no image is generated here.");
 
-    parts.push(`Read craft patterns from the LinkedIn Design folder of the Stern Craft Vault (stern-vault connector), scoped to the LinkedIn Design/ path with search_query: scroll-stopping, hierarchy, text density${isCarousel ? ", and carousel pacing" : ""}. Pull only the relevant note or notes, not the whole folder.`);
+    parts.push(`Read craft patterns from the LinkedIn Design folder of the Stern Craft Vault (stern-vault connector), scoped to the LinkedIn Design/wiki/ path with search_query, since the wiki holds the distilled notes rather than the raw tutorials and articles under harvest/: scroll-stopping, hierarchy, text density${isCarousel ? ", and carousel pacing" : ""}. Pull only the relevant note or notes, not the whole folder.`);
 
     parts.push("Read Stern's brand rules from the LinkedIn Visual Playbook in Notion (the live version): colors, type, logo usage, and the do and don't list. Where the vault's craft and the Playbook's brand conflict, the Playbook wins.");
 
@@ -2933,7 +3273,16 @@ function fillMomentSelect(el, sentinel) {
 
     parts.push(`Post the visual supports:\n\n${postText}`);
 
-    parts.push(`Produce a designer-ready brief with: the concept in one line; layout and visual hierarchy (what's largest and the reading order); the exact copy for every text element (headline, subhead, labels${isCarousel ? ", and the text for each slide in order" : ""}); color and type per the Playbook; imagery or icon direction; and a short list of what to avoid.`);
+    parts.push(`Produce a designer-ready brief with: the concept in one line; layout and visual hierarchy (what's largest and the reading order); a hard text budget, ${isCarousel ? "one idea and at most 15 words per slide" : isVideo ? "one caption per beat and under 12 words each, since the captions carry the whole thing on mute" : "at most three text zones (one dominant hook, one supporting line, one closer) and under 25 words total"}, because the graphic stops the scroll and the post copy carries the detail, so anything that fails the thumbnail test at feed scale moves to the caption rather than getting smaller; the exact copy for every text element (headline, subhead, labels${isCarousel ? ", and the text for each slide in order" : ""}); color and type per the Playbook; imagery or icon direction; and a short list of what to avoid.`);
+
+    if (isVideo) {
+      parts.push(`Recast it as a short LinkedIn video of 30 to 90 seconds in Stern's current format: the screen carries the thing being talked about while Jon or a colleague narrates over it, with a webcam bubble in a corner so their face is visible throughout. Storyboard it as a numbered beat list, and for every beat give what is on screen, roughly how many seconds it holds, the talking point as a prompt to speak from rather than a line to read aloud, and the caption text for that beat. Script only the first three seconds word for word, since that decides whether anyone finishes it, and leave every later beat as a talking point so it sounds spoken. Assume it plays on mute: any point that matters has to survive in the captions alone. End with the single line left on screen at the close.`);
+      parts.push(`Because this is a video, also read the Video Briefs folder of the Stern Craft Vault (stern-vault connector), scoped to the Video Briefs/wiki/ path with search_query, for hook and pacing patterns: those notes carry frame-by-frame hook breakdowns and cuts-per-minute figures taken from real videos, which is what a storyboard needs and the LinkedIn Design notes do not cover. Pull only the relevant note or notes.`);
+    }
+
+    if (isCarousel) {
+      parts.push(`Because this is a carousel, lead the brief with the post copy that sits above it in the feed, written in full, then the slides beneath it. Then add a block titled Carousel image-generator prompt holding a master prompt that primes the whole set (the look, the palette as literal hex values, the type treatment, the aspect ratio, and what stays consistent slide to slide) followed by one short numbered prompt per slide that inherits it. Write both in plain descriptive language with no tool-specific syntax, so it works in any image generator, and say plainly at the top of the block that the output is a rough draft for ideation, not publishable art.`);
+    }
 
     parts.push("Flag any zone where an AI-generated background would be acceptable, background only, with no critical text over it, per the Visual Playbook honesty rule. Keep all text on clean brand backgrounds.");
 
@@ -2949,7 +3298,7 @@ function fillMomentSelect(el, sentinel) {
       parts.push("Also output a block titled 'Concept prompt (rough draft, do not publish)': one self-contained prompt for an image model that attempts the whole visual for ideation. It must stand entirely on its own, someone pastes it straight into an image model with no other context, so spell out the subject and scene, the composition and reading order, the literal headline and key copy to depict, the exact color palette in plain words (brand hex values), the mood, and the art style, rather than pointing back to this brief, the post, or the Playbook. Open the block by stating plainly that an image model will not render exact copy, brand colors, the logo, or small labels reliably, so its output is a mood and composition reference only and must be rebuilt properly in Canva before anything is published. The Visual Playbook's backgrounds-only rule still governs what ships; never post a model-generated full visual in Jon's voice.");
     }
 
-    parts.push("Hand the brief back here; don't file anything to Notion.");
+    parts.push("Return it in two layers. In chat, post only a short summary: the concept in one line, the layout in one line, the exact on-image copy, and the palette, followed by the concept prompt block in full. Put the complete brief, with the full hierarchy reasoning, type and colour specs, imagery direction and the avoid list, into a downloadable markdown file, and include the concept prompt in that file too. If you cannot create a file, say so plainly and post the full brief in chat instead of silently dropping it. Don't file anything to Notion.");
 
     return parts.join("\n\n");
   }
@@ -3046,7 +3395,7 @@ function fillMomentSelect(el, sentinel) {
     }
 
     if (state.useVault) {
-      parts.push("Before the hook and structure of each variant, search the Video Briefs folder of the Stern Craft Vault (stern-vault connector), scope to the Video Briefs/ path with search_query, since search_simple can't filter by folder, for relevant hook, structure, and pacing patterns and apply what fits Stern's voice.");
+      parts.push("Before the hook and structure of each variant, search the Video Briefs folder of the Stern Craft Vault (stern-vault connector), scope to the Video Briefs/wiki/ path with search_query, since search_simple can't filter by folder and the wiki holds the distilled notes rather than the raw transcripts under raw/ and harvest/, for relevant hook, structure, and pacing patterns and apply what fits Stern's voice.");
     }
     if (state.useKeywords) {
       parts.push(`Where a variant is keyword-driven, pull terms from the ${CONNECTOR} connector first (keyword_research, us database) and build around the strongest. Read the mode block before using any figure; if the connector returns a non-ok status or synthetic data, say so plainly rather than inventing terms.`);
@@ -3057,7 +3406,7 @@ function fillMomentSelect(el, sentinel) {
     const steer = steerEl.value.trim();
     if (steer) parts.push(`Steer: ${steer}.`);
 
-    parts.push("For each variant, read the playbook and the relevant buying moment from Notion, draft hook-first in Stern's voice, and run the quality self-check, showing what passes and flagging what doesn't.");
+    parts.push("For each variant, read the playbook and the relevant buying moment from Notion, and draft hook-first in Stern's voice. Output the variants themselves, no self-review and no quality checklist, Draft Checker scores them as a separate step.");
 
     if (state.useHumanize) {
       parts.push("Then humanize every variant to Stern's voice using the Stern Voice guide in Notion (the 'Stern Voice' page at https://app.notion.com/p/3a4f47e4148a812792eff5c15d6c47a3): match the example posts' tone, rhythm, and first-person founder POV, keep it concrete and warm, and strip every AI tell, no em dashes, no rule-of-three, no 'delve/leverage/robust/underscore', no hedging or press-release fluff, so each reads like Jon wrote it, not a brand or a bot.");
@@ -3104,11 +3453,13 @@ function fillMomentSelect(el, sentinel) {
     "Any time":  "No recency limit, but flag anything that looks out of date.",
   };
 
-  const state = { target: "Claude Code", depth: "Standard", recency: "Past year", useWeb: true, useVideo: true, saveToNotion: true };
+  const state = { mode: "Research", target: "Claude Code", depth: "Standard", recency: "Past year",
+                  useWeb: true, useVideo: true, fillGaps: false, saveToNotion: true };
 
   const sel       = document.getElementById("sd-moment");
   const topicEl   = document.getElementById("sd-topic");
   const steerEl   = document.getElementById("sd-steer");
+  const srcEl     = document.getElementById("sd-sources");
   const previewEl = document.getElementById("sd-preview");
   const dotEl     = document.getElementById("sd-dot");
   const hintEl    = document.getElementById("sd-hint");
@@ -3116,6 +3467,13 @@ function fillMomentSelect(el, sentinel) {
   const noteEl    = document.getElementById("sd-runnote");
   const copyBtn   = document.getElementById("sd-copy");
   const openBtn   = document.getElementById("sd-open");
+  const researchOnly = document.getElementById("sd-research-only");
+  const webRow    = document.getElementById("sd-t-web");
+  const videoRow  = document.getElementById("sd-t-video");
+  const gapRow    = document.getElementById("sd-t-gap");
+  const ingestFld = document.getElementById("sd-ingest-field");
+  const targetHelp= document.getElementById("sd-target-help");
+  const ingestHelp= document.getElementById("sd-ingest-help");
 
   // Moment select: General + the shared MOMENTS snapshot
   [GENERAL].concat(MOMENTS).forEach(m => {
@@ -3127,21 +3485,12 @@ function fillMomentSelect(el, sentinel) {
   sel.addEventListener("change", update);
   topicEl.addEventListener("input", update);
   steerEl.addEventListener("input", update);
+  srcEl.addEventListener("input", update);
 
-  wireSeg("sd-target",  v => { state.target = v; update(); });
-  wireSeg("sd-depth",   v => { state.depth = v; update(); });
-  wireSeg("sd-recency", v => { state.recency = v; update(); });
-
-  function wireSeg(id, cb) {
-    const group = document.getElementById(id);
-    group.querySelectorAll(".seg-btn").forEach(btn => {
-      btn.addEventListener("click", () => {
-        group.querySelectorAll(".seg-btn").forEach(b => b.classList.remove("active"));
-        btn.classList.add("active");
-        cb(btn.dataset.val);
-      });
-    });
-  }
+  wireSegGroup("sd-mode",    v => { state.mode = v; update(); });
+  wireSegGroup("sd-target",  v => { state.target = v; update(); });
+  wireSegGroup("sd-depth",   v => { state.depth = v; update(); });
+  wireSegGroup("sd-recency", v => { state.recency = v; update(); });
 
   document.querySelectorAll("#view-dossier [data-toggle]").forEach(btn => {
     btn.addEventListener("click", () => {
@@ -3156,11 +3505,16 @@ function fillMomentSelect(el, sentinel) {
     const moment = sel.value;
     const tagged = moment && moment !== GENERAL;
     const cc = state.target === "Claude Code";
+    const ingest = state.mode !== "Research";
     const t = topicEl.value.trim() || "{topic}";
-    const parts = [
-      "Run a deep-dive research pass. Findings only, not a LinkedIn draft.",
-      `Topic: ${t}.`,
-    ];
+    const parts = [];
+
+    if (ingest) {
+      parts.push("Build a Topic Researcher brief out of material I'm giving you. Work from what I supply, don't go run your own research pass.");
+    } else {
+      parts.push("Run a deep-dive research pass. Findings only, not a LinkedIn draft.");
+    }
+    parts.push(`Topic: ${t}.`);
 
     if (tagged) {
       parts.push(`Frame it around the buying moment "${moment}": surface what a decision-maker at that moment needs to know, plus angles Stern could post about.`);
@@ -3168,42 +3522,72 @@ function fillMomentSelect(el, sentinel) {
       parts.push("This is general research, not tied to a single buying moment.");
     }
 
-    const srcs = [];
-    if (state.useWeb) {
-      srcs.push("the web (industry reports, analyst and vendor posts, news, and primary or regulatory sources; favor originals over aggregators)");
-    }
-    if (state.useVideo && cc) {
-      srcs.push("YouTube and video (talks, walkthroughs, panels), analyzed with the /watch and /harvest skills for the actual substance rather than just titles");
-    }
-    if (srcs.length === 2) {
-      parts.push(`Pull from ${srcs[0]} and from ${srcs[1]}.`);
-    } else if (srcs.length === 1) {
-      parts.push(`Pull from ${srcs[0]}.`);
-    }
-    if (state.useVideo && !cc) {
-      parts.push(state.useWeb
-        ? "Video sources need Claude Code: the /watch and /harvest skills that analyze footage don't run in the Project, so this run covers web only. Switch the run target to Claude Code to include video."
-        : "Video sources need Claude Code (the /watch and /harvest skills don't run in the Project), and web is off, so this Project run has no usable source. Switch the run target to Claude Code, or turn on web.");
-    }
+    if (ingest) {
+      // What to read, and where it comes from. The two targets are genuinely
+      // different intake paths, not a relabelling: a local folder vs chat attachments.
+      parts.push(cc
+        ? `Read every file I've dropped in ${RESEARCH_INBOX} (beside index.html): documents, PDFs, transcripts, exports, and any file holding links. Fetch every link you find and read the actual page, and run the /watch skill on any video.`
+        : "Read every file I've attached to this chat. Fetch each link and read the actual page rather than working from the URL alone. Video needs the Claude Code target, the /watch skill that analyzes footage doesn't run in the Project, so treat any video here as unread and say so.");
 
-    parts.push(DEPTH_LINE[state.depth]);
-    parts.push(REC_LINE[state.recency]);
+      // No trailing period: the last line is often a bare URL and a period would break it.
+      const src = srcEl.value.trim();
+      if (src) {
+        parts.push(`Links and notes I'm giving you:\n${src}`);
+      }
+
+      parts.push(cc
+        ? `If ${RESEARCH_INBOX} is empty, or a file won't open or a link won't fetch, say which one plainly instead of guessing at its contents or filling the gap from memory.`
+        : "If nothing is attached, or an attachment won't open or a link won't fetch, say which one plainly instead of guessing at its contents or filling the gap from memory.");
+
+      if (state.fillGaps) {
+        parts.push("Once you've read everything I gave you, you may run a light web check to close a gap or verify a figure. Label anything you add that way as your own addition, kept separate from what I supplied.");
+      }
+    } else {
+      const srcs = [];
+      if (state.useWeb) {
+        srcs.push("the web (industry reports, analyst and vendor posts, news, and primary or regulatory sources; favor originals over aggregators)");
+      }
+      if (state.useVideo && cc) {
+        srcs.push("YouTube and video (talks, walkthroughs, panels), analyzed with the /watch and /harvest skills for the actual substance rather than just titles");
+      }
+      if (srcs.length === 2) {
+        parts.push(`Pull from ${srcs[0]} and from ${srcs[1]}.`);
+      } else if (srcs.length === 1) {
+        parts.push(`Pull from ${srcs[0]}.`);
+      }
+      if (state.useVideo && !cc) {
+        parts.push(state.useWeb
+          ? "Video sources need Claude Code: the /watch and /harvest skills that analyze footage don't run in the Project, so this run covers web only. Switch the run target to Claude Code to include video."
+          : "Video sources need Claude Code (the /watch and /harvest skills don't run in the Project), and web is off, so this Project run has no usable source. Switch the run target to Claude Code, or turn on web.");
+      }
+
+      parts.push(DEPTH_LINE[state.depth]);
+      parts.push(REC_LINE[state.recency]);
+    }
 
     const steer = steerEl.value.trim();
     if (steer) {
       parts.push(`Focus: ${steer}.`);
     }
 
-    parts.push("Return a structured dossier: a two to three sentence summary, key findings as bullets, any stat shown with its source (never invent figures), open questions or contradictions, and a short read on what it means for Stern (post angles or competitive signal). List every source with title, publisher or channel, date, and link.");
+    parts.push("Return a structured brief and title it Topic Researcher, not a dossier: a two to three sentence summary, then key findings as bullets with any stat shown next to its source (never invent figures). Then a section titled Post topics for Stern with three to five distinct post ideas grounded in this research, each given as the topic in one line, a potential take (the position Stern would argue, in one line), and a potential takeaway (the one thing the reader should leave with), so each one can be carried straight into Post Drafter. Keep the ideas genuinely different from one another rather than variations on a single angle. Then a section titled Keep this in mind holding open questions and contradictions, framed as context to weigh rather than part of the brief itself. Close by listing every source with title, publisher or channel, date, and link.");
+    if (ingest) {
+      parts.push("Cite anything I supplied as a file by its filename, note the date on every source, and flag material that looks out of date.");
+    }
     parts.push("Distinguish proposed rules from enacted ones, and flag any figure you cannot verify rather than stating it.");
 
     if (state.saveToNotion) {
       if (cc) {
-        parts.push(`When I approve the dossier, create a new page in the Research database in Notion using the Notion MCP tools (data source collection://01ea17dd-e458-4f66-a7b6-cd9891fab5a1). Put the full dossier in the page body, and set the properties: Topic as the page title, Buying Moment "${tagged ? moment : "General"}", Date today, Status Filed, and Source count. Show me the findings before filing and file only on my go-ahead.`);
+        parts.push(`When I approve the brief, create a new page in the Research database in Notion using the Notion MCP tools (data source collection://01ea17dd-e458-4f66-a7b6-cd9891fab5a1). Put the full brief in the page body, and set the properties: Topic as the page title, Buying Moment "${tagged ? moment : "General"}", Date today, Status Filed, and Source count. Show me the findings before filing and file only on my go-ahead.`);
         parts.push("If the Notion write fails or the database can't be reached, report that plainly instead of proceeding or faking a save.");
       } else {
         parts.push(`When I approve the dossier, file it as a new page in the Research database in Notion (data source collection://01ea17dd-e458-4f66-a7b6-cd9891fab5a1). Put the full dossier in the page body, and set the properties: Topic as the page title, Buying Moment "${tagged ? moment : "General"}", Date today, Status Filed, and Source count. Show me the findings before filing and file only on my go-ahead.`);
         parts.push("If the Notion connector is read-only or the write is blocked, report that plainly as a connector-scope issue instead of proceeding or faking a save.");
+      }
+      // Archive only when something was actually filed, and only on the path
+      // that owns the folder. Nothing gets swept away on a failed run.
+      if (ingest && cc) {
+        parts.push(`Then move the files from ${RESEARCH_INBOX} into ${RESEARCH_INBOX}archive/ so the next run starts clean, and tell me what landed, the Notion page and the files you archived.`);
       }
     }
 
@@ -3212,19 +3596,42 @@ function fillMomentSelect(el, sentinel) {
 
   function update() {
     const cc = state.target === "Claude Code";
+    const ingest = state.mode !== "Research";
     const hasSource = state.useWeb || state.useVideo;
-    const ready = topicEl.value.trim() !== "" && hasSource;
+    // In ingest mode we can't see the folder or the chat attachments, so there's
+    // nothing honest to gate on beyond the topic; the prompt carries the check.
+    const ready = topicEl.value.trim() !== "" && (ingest || hasSource);
+
+    researchOnly.style.display = ingest ? "none" : "";
+    webRow.style.display       = ingest ? "none" : "";
+    videoRow.style.display     = ingest ? "none" : "";
+    gapRow.style.display       = ingest ? "" : "none";
+    ingestFld.style.display    = ingest ? "" : "none";
+
     previewEl.textContent = assemble();
     dotEl.classList.toggle("ready", ready);
-    warnEl.style.display = hasSource ? "none" : "";
+    warnEl.style.display = (!ingest && !hasSource) ? "" : "none";
+    hintEl.textContent = ingest
+      ? "Add a topic to enable the run."
+      : "Add a topic and keep at least one source on to enable the run.";
     hintEl.style.display = ready ? "none" : "";
     copyBtn.disabled = !ready;
     openBtn.disabled = !ready;
     openBtn.textContent = cc ? "Copy for Claude Code" : "Copy & open Project";
+    targetHelp.textContent = ingest
+      ? "Claude Code reads the files you drop in research-inbox/. The Project reads files you attach to the chat."
+      : "Claude Code analyzes video (/watch, /harvest) and files to Notion directly. The Project is web-only.";
+    ingestHelp.textContent = cc
+      ? "Drop the files in research-inbox/ beside index.html. Links here are optional extras."
+      : "Attach the files to the Project chat, then paste this request. Links go here.";
     if (noteEl) {
-      noteEl.textContent = cc
-        ? "Paste into Claude Code, where the web, /watch and /harvest, and Notion MCP tools execute. Nothing is filed until you approve, and a failed Notion write is reported plainly instead of skipped in silence."
-        : "The run happens in the Project, where the web and Notion connectors execute, video needs the Claude Code target. Nothing is filed until you approve, and a read-only Notion connector is reported plainly instead of skipped in silence.";
+      noteEl.textContent = ingest
+        ? (cc
+          ? "Paste into Claude Code, where it reads research-inbox/, synthesizes what's there, files the dossier to Notion, and archives the raw files. Nothing is filed until you approve, and a failed Notion write is reported plainly instead of skipped in silence."
+          : "Attach your files to the Project chat first, then paste this request. Nothing is filed until you approve, and a read-only Notion connector is reported plainly instead of skipped in silence.")
+        : (cc
+          ? "Paste into Claude Code, where the web, /watch and /harvest, and Notion MCP tools execute. Nothing is filed until you approve, and a failed Notion write is reported plainly instead of skipped in silence."
+          : "The run happens in the Project, where the web and Notion connectors execute, video needs the Claude Code target. Nothing is filed until you approve, and a read-only Notion connector is reported plainly instead of skipped in silence.");
     }
   }
 
@@ -3242,7 +3649,7 @@ function fillMomentSelect(el, sentinel) {
 (function initHarvester() {
   const state = {
     mode: "harvest",              // "harvest" | "linkedin"
-    breadth: "standard",
+    sourceCount: 10,
     includeVideo: true,
     vault: HARVEST_CONFIG.vaults[0].key,
     dims: new Set(HARVEST_DIMENSIONS.map(d => d.key)),
@@ -3301,15 +3708,11 @@ function fillMomentSelect(el, sentinel) {
     });
   });
 
-  // Breadth segmented
-  const breadthGroup = document.getElementById("hv-breadth");
-  breadthGroup.querySelectorAll(".seg-btn").forEach(btn => {
-    btn.addEventListener("click", () => {
-      breadthGroup.querySelectorAll(".seg-btn").forEach(b => b.classList.remove("active"));
-      btn.classList.add("active");
-      state.breadth = btn.dataset.val;
-      update();
-    });
+  // Source count
+  const countEl = document.getElementById("hv-count");
+  countEl.addEventListener("input", () => {
+    state.sourceCount = countEl.value;
+    update();
   });
 
   // Video toggle
@@ -3334,11 +3737,11 @@ function fillMomentSelect(el, sentinel) {
 
   function assemble() {
     if (state.mode === "harvest") {
-      const b = HARVEST_BREADTH.find(x => x.key === state.breadth) || HARVEST_BREADTH[1];
+      const n = Math.max(3, Math.min(30, Math.round(Number(state.sourceCount)) || 10));
       const v = HARVEST_CONFIG.vaults.find(x => x.key === state.vault) || HARVEST_CONFIG.vaults[0];
       const t = (topicEl.value.trim() || "{topic}").replace(/\s+/g, " ");
       const steer = [
-        `Aim for ${b.phrase}, favoring high-signal primary sources over SEO filler and listicle farms.`,
+        `Aim for about ${n} sources, favoring high-signal primary sources over SEO filler and listicle farms.`,
       ];
       const angles = anglesEl.value.trim();
       steer.push(angles
@@ -3815,19 +4218,11 @@ function renderPulse() {
   if (!fab || !panel || !log || !form || !input) return;
   fab.hidden = false;
 
-  // slug -> which fields open_tool can prefill (matches the tools' input ids).
-  const FIELD_MAP = {
-    radar:    { moment: "rd-moment" },
-    dossier:  { moment: "sd-moment", topic: "sd-topic" },
-    brief:    { moment: "bb-moment", topic: "bb-topic" },
-    campaign: { moment: "sca-moment", topic: "sca-theme" },
-    studio:   { moment: "st-moment" },
-    recycler: { moment: "sc-moment" },
-  };
+  // FIELD_MAP + setField are shared with the handoff() helper near showView.
   const TOOL_NAMES = {
     harvest: "Source Harvester", radar: "Trend Radar", dossier: "Topic Researcher",
-    brief: "Post Drafter", check: "Draft Checker", studio: "Visual Designer",
-    recycler: "Content Recycler", campaign: "Campaign Builder",
+    ideas: "Idea Generator", brief: "Post Drafter", check: "Draft Checker",
+    studio: "Visual Designer", recycler: "Content Recycler", campaign: "Campaign Builder",
     pulse: "Content Analytics", competitors: "Competitor Analysis",
   };
   const EXAMPLES = [
@@ -3906,19 +4301,10 @@ function renderPulse() {
   input.addEventListener("keydown", e => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); form.requestSubmit(); } });
   form.addEventListener("submit", e => { e.preventDefault(); send(); });
 
-  function setField(id, val, evt) {
-    const el = document.getElementById(id);
-    if (!el) return;
-    el.value = val;
-    el.dispatchEvent(new Event(evt, { bubbles: true }));
-  }
   function applyAction(a) {
     if (!a || !a.tool) return;
     if (!document.getElementById("view-" + a.tool)) return;   // unknown tool -> ignore
-    showView(a.tool);
-    const map = FIELD_MAP[a.tool] || {};
-    if (a.moment && map.moment) setField(map.moment, a.moment, "change");
-    if (a.topic && map.topic) setField(map.topic, a.topic, "input");
+    handoff(a.tool, { moment: a.moment, topic: a.topic });
     const note = elc("chat-action");
     note.innerHTML = "↳ opened <strong>" + esc(TOOL_NAMES[a.tool] || a.tool) + "</strong>" + (a.moment ? " · " + esc(a.moment) : "");
     log.appendChild(note); scroll();
