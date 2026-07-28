@@ -887,7 +887,7 @@ button:disabled { opacity: 0.4; cursor: not-allowed; }
 }
 
 /* ═══════════════════════ What Signal knows ═══════════════════════ */
-.brain-map { position: relative; display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+.brain-map { position: relative; display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px 30px; }
 /* Connector lines scale with the container via a percentage viewBox, so there's
    no coordinate maths to get wrong when the grid resizes. */
 .brain-wires { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 0; }
@@ -904,6 +904,7 @@ button:disabled { opacity: 0.4; cursor: not-allowed; }
   border-radius: var(--radius-md); padding: 14px 15px; box-shadow: var(--surface-hi);
   transition: border-color var(--transition), transform var(--transition);
 }
+.brain-node { align-self: center; }
 .brain-node:hover { border-color: var(--accent-mid); transform: translateY(-1px); }
 .brain-node.sel { border-color: var(--accent); box-shadow: var(--surface-hi), var(--glow-accent); }
 /* display:block matters: these are spans inside a button, so they'd otherwise
@@ -914,11 +915,12 @@ button:disabled { opacity: 0.4; cursor: not-allowed; }
 .brain-via { display: block; font-size: 12px; color: var(--text-muted); margin-top: 2px; line-height: 1.4; }
 
 .brain-hub {
-  position: relative; z-index: 1; grid-column: 2; grid-row: 2;
+  position: relative; z-index: 1; grid-column: 2; grid-row: 2 / span 2; align-self: center;
+  margin-top: 34px;   /* sits low, so the run down from Notion reads as a long wire */
   display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center;
   border: 1px solid var(--accent); border-radius: 50%; aspect-ratio: 1;
   background: radial-gradient(circle at 50% 40%, rgba(124,58,237,0.22), rgba(22,12,44,0.9) 70%);
-  box-shadow: var(--glow-accent); padding: 18px; min-height: 150px;
+  box-shadow: var(--glow-accent); padding: 18px; min-height: 150px; max-width: 250px; justify-self: center; width: 100%;
 }
 .brain-hub-name { font-family: var(--font-heading); font-weight: 700; font-size: 22px; color: var(--text); letter-spacing: -0.01em; }
 .brain-hub-sub { font-size: 11.5px; color: var(--text-muted); margin-top: 4px; line-height: 1.35; max-width: 15ch; }
@@ -5045,25 +5047,18 @@ function renderPulse() {
     return nav ? nav.textContent.trim() : slug;
   };
 
-  // Grid cell plus the wire endpoint in the SVG's 0-100 space. The viewBox is
-  // percentage-based with preserveAspectRatio="none", so these stay correct at
-  // any container size without measuring anything.
+  // An arc, not a straight row: Notion sits highest and the other two step down,
+  // so the run from Notion down to the hub reads as the long wire.
   const POS = {
-    craft:      { col: 1, row: 1, x: 17, y: 21 },
-    notion:     { col: 2, row: 1, x: 50, y: 19 },
-    keywords:   { col: 3, row: 1, x: 83, y: 21 },
-    firstparty: { col: 1, row: 3, x: 17, y: 80 },
-    web:        { col: 3, row: 3, x: 83, y: 80 },
+    notion:     { col: 2, row: 1 },
+    craft:      { col: 1, row: 2 },
+    keywords:   { col: 3, row: 2 },
+    firstparty: { col: 1, row: 3 },
+    web:        { col: 3, row: 3 },
   };
 
-  const wires = BRAIN.filter(s => POS[s.key]).map(s => {
-    const p = POS[s.key];
-    return `<line x1="${p.x}" y1="${p.y}" x2="50" y2="50"/>` +
-           `<line class="flow" x1="${p.x}" y1="${p.y}" x2="50" y2="50"/>`;
-  }).join("");
-
   mapEl.innerHTML =
-    `<svg class="brain-wires" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">${wires}</svg>` +
+    `<svg class="brain-wires" aria-hidden="true"></svg>` +
     BRAIN.map(s => {
       const p = POS[s.key] || {};
       const cell = p.col ? `style="grid-column:${p.col};grid-row:${p.row}"` : "";
@@ -5078,6 +5073,44 @@ function renderPulse() {
        <div class="brain-hub-name">Signal</div>
        <div class="brain-hub-sub">reads all of this before it writes a word</div>
      </div>`;
+
+  /* Wires are drawn in real pixels from measured positions, so each one can stop
+     cleanly at the circle's edge instead of running underneath it. A percentage
+     viewBox can't do that: preserveAspectRatio="none" distorts the space, so the
+     circle isn't a circle in those coordinates and its edge has no fixed radius. */
+  const svg = mapEl.querySelector(".brain-wires");
+  const hubEl = mapEl.querySelector(".brain-hub");
+  function drawWires() {
+    const box = mapEl.getBoundingClientRect();
+    const hub = hubEl.getBoundingClientRect();
+    if (!box.width || !hub.width) return;          // view still hidden
+    svg.setAttribute("viewBox", `0 0 ${box.width} ${box.height}`);
+    const hx = hub.left - box.left + hub.width / 2;
+    const hy = hub.top - box.top + hub.height / 2;
+    const stop = hub.width / 2 + 7;                // just clear of the ring
+    let out = "";
+    mapEl.querySelectorAll("[data-src]").forEach(n => {
+      const c = n.getBoundingClientRect();
+      const sx = c.left - box.left + c.width / 2;
+      const sy = c.top - box.top + c.height / 2;
+      const dx = hx - sx, dy = hy - sy;
+      const len = Math.hypot(dx, dy) || 1;
+      const ex = hx - (dx / len) * stop, ey = hy - (dy / len) * stop;
+      out += `<line x1="${sx}" y1="${sy}" x2="${ex}" y2="${ey}"/>` +
+             `<line class="flow" x1="${sx}" y1="${sy}" x2="${ex}" y2="${ey}"/>`;
+    });
+    svg.innerHTML = out;
+  }
+  drawWires();
+  if (window.ResizeObserver) new ResizeObserver(drawWires).observe(mapEl);
+  // The view is display:none at load, so everything measures 0. Redraw the
+  // first time it's actually shown, and on every return to it.
+  const brainView = document.getElementById("view-brain");
+  if (brainView) {
+    new MutationObserver(() => {
+      if (brainView.classList.contains("active")) drawWires();
+    }).observe(brainView, { attributes: true, attributeFilter: ["class"] });
+  }
 
   listEl.innerHTML = BRAIN.map(s => `
     <button type="button" class="brain-row" data-row="${s.key}" aria-expanded="false">
