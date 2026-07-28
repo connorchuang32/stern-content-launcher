@@ -886,6 +886,78 @@ button:disabled { opacity: 0.4; cursor: not-allowed; }
     .ci-boards { grid-template-columns: 1fr; gap: 14px; }
 }
 
+/* ═══════════════════════ What Signal knows ═══════════════════════ */
+.brain-map { position: relative; display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+/* Connector lines scale with the container via a percentage viewBox, so there's
+   no coordinate maths to get wrong when the grid resizes. */
+.brain-wires { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 0; }
+.brain-wires line { stroke: var(--border); stroke-width: 1.5; vector-effect: non-scaling-stroke; }
+.brain-wires line.flow {
+  stroke: var(--accent-bright); stroke-width: 2; stroke-dasharray: 5 22; opacity: .8;
+  animation: brainFlow 3.4s linear infinite;
+}
+@keyframes brainFlow { from { stroke-dashoffset: 27; } to { stroke-dashoffset: 0; } }
+
+.brain-node {
+  position: relative; z-index: 1; text-align: left; cursor: pointer; color: var(--text);
+  font-family: var(--font-body); background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius-md); padding: 14px 15px; box-shadow: var(--surface-hi);
+  transition: border-color var(--transition), transform var(--transition);
+}
+.brain-node:hover { border-color: var(--accent-mid); transform: translateY(-1px); }
+.brain-node.sel { border-color: var(--accent); box-shadow: var(--surface-hi), var(--glow-accent); }
+/* display:block matters: these are spans inside a button, so they'd otherwise
+   run together on one line. */
+.brain-stat { display: block; font-family: var(--font-heading); font-weight: 700; font-size: 23px; color: var(--accent-bright); line-height: 1; }
+.brain-unit { display: block; font-size: 12px; color: var(--text-light); margin-top: 3px; }
+.brain-label { display: block; font-family: var(--font-heading); font-weight: 700; font-size: 14.5px; margin-top: 9px; }
+.brain-via { display: block; font-size: 12px; color: var(--text-muted); margin-top: 2px; line-height: 1.4; }
+
+.brain-hub {
+  position: relative; z-index: 1; grid-column: 2; grid-row: 2;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center;
+  border: 1px solid var(--accent); border-radius: 50%; aspect-ratio: 1;
+  background: radial-gradient(circle at 50% 40%, rgba(124,58,237,0.22), rgba(22,12,44,0.9) 70%);
+  box-shadow: var(--glow-accent); padding: 18px; min-height: 150px;
+}
+.brain-hub-name { font-family: var(--font-heading); font-weight: 700; font-size: 22px; color: var(--text); letter-spacing: -0.01em; }
+.brain-hub-sub { font-size: 11.5px; color: var(--text-muted); margin-top: 4px; line-height: 1.35; max-width: 15ch; }
+
+.brain-list { display: flex; flex-direction: column; gap: 10px; }
+.brain-row {
+  text-align: left; cursor: pointer; color: var(--text); font-family: var(--font-body);
+  background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-md);
+  padding: 14px 16px; box-shadow: var(--surface-hi); transition: border-color var(--transition);
+}
+.brain-row:hover { border-color: var(--accent-mid); }
+.brain-row[aria-expanded="true"] { border-color: var(--accent); }
+.brain-row-top { display: flex; align-items: baseline; gap: 11px; flex-wrap: wrap; }
+.brain-row-n { font-family: var(--font-heading); font-weight: 700; font-size: 15px; }
+.brain-row-v { font-family: var(--font-mono); font-size: 10px; letter-spacing: .06em; text-transform: uppercase; color: var(--text-light); }
+.brain-row-c { font-family: var(--font-mono); font-size: 11px; color: var(--accent-bright); margin-left: auto; }
+.brain-more { display: none; margin-top: 11px; padding-top: 11px; border-top: 1px solid var(--border); }
+.brain-row[aria-expanded="true"] .brain-more { display: block; }
+.brain-what { font-size: 13.5px; line-height: 1.6; color: var(--text-muted); margin: 0 0 10px; max-width: 82ch; }
+.brain-reads { display: flex; flex-wrap: wrap; gap: 5px; align-items: center; }
+.brain-reads .flow-k { margin: 0 4px 0 0; }
+
+/* Teaser on Start here, same data, condensed */
+.brain-teaser { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; margin-bottom: 14px; }
+.brain-chip { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 12px 13px; box-shadow: var(--surface-hi); }
+.brain-chip .brain-stat { font-size: 19px; }
+.brain-chip .brain-label { font-size: 13px; margin-top: 7px; }
+
+@media (max-width: 860px) {
+  .brain-map { grid-template-columns: 1fr; }
+  .brain-map > * { grid-column: 1 !important; grid-row: auto !important; }
+  .brain-wires { display: none; }
+  .brain-hub { aspect-ratio: auto; border-radius: var(--radius-lg); min-height: 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .brain-wires line.flow { animation: none; }
+  .brain-node, .brain-row { transition: none; }
+}
+
 /* ═══════════ Flow scaffolding: where you are, what you get, what's next ═══════════ */
 .flow-steps { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin: 16px 0 0; }
 .flow-step { display: inline-flex; align-items: center; gap: 7px; font-size: 13px; color: var(--text-light); }
@@ -1207,6 +1279,7 @@ button:disabled { opacity: 0.4; cursor: not-allowed; }
             <div class="nav-group">
                 <div class="nav-group-label">Workspace</div>
                 <button class="nav-item" data-nav="guide"><svg class="ico"><use href="#ic-guide"/></svg> Start here</button>
+                <button class="nav-item" data-nav="brain"><svg class="ico"><use href="#ic-vault"/></svg> What Signal knows</button>
                 <button class="nav-item" data-nav="home"><svg class="ico"><use href="#ic-dashboard"/></svg> Dashboard</button>
             </div>
             <div class="nav-group">
@@ -1410,6 +1483,32 @@ button:disabled { opacity: 0.4; cursor: not-allowed; }
                 </span>
             </a>
         </div>
+    </div>
+</section>
+
+<!-- ===================== WHAT SIGNAL KNOWS (brain) =====================
+     Rendered by renderBrain() from BRAIN / BRAIN_LOOP. index.html-only, like
+     the dashboards and the guide: builds no prompt, so no .jsx twin. -->
+<section id="view-brain" class="view">
+    <div class="container">
+        <header class="tool-header">
+            <div class="tool-logo-row">
+                <div class="tool-mark" aria-hidden="true"><svg class="ico"><use href="#ic-vault"/></svg></div>
+                <h1 class="tool-title">What Signal knows</h1>
+            </div>
+            <p class="tool-sub">Signal isn't a set of forms with a language model behind it. It's wired into a library of content craft, Stern's own playbook and voice, live search demand, and what has actually performed. This is what it reads before it writes anything, and it gets better as more goes in.</p>
+        </header>
+
+        <div class="brain-map" id="brain-map"></div>
+
+        <div class="section-label" style="margin-top:38px;"><span class="section-ico"><svg class="ico"><use href="#ic-book"/></svg></span> Each source, in detail</div>
+        <p class="guide-lead">What it contributes, where it physically lives, and which tools read it. Click any source above or below to expand it.</p>
+        <div class="brain-list" id="brain-list"></div>
+
+        <div class="section-label" style="margin-top:38px;"><span class="section-ico"><svg class="ico"><use href="#ic-trend"/></svg></span> It keeps learning</div>
+        <p class="guide-lead">The craft library isn't fixed. When someone finds a good video or article, it gets watched or read in full, distilled into the vault, and pushed. Within about a minute every tool is drawing on it. No redeploy, no release.</p>
+        <ol class="gloop" id="brain-loop"></ol>
+        <p class="gloop-tail"><span aria-hidden="true">&#8635;</span> That's how 60 sources became 509 notes. The next one takes about ten minutes.</p>
     </div>
 </section>
 
@@ -2860,6 +2959,46 @@ const GUIDE_ENTRY = [
   { key: "sources", label: "Research to file",    path: ["dossier", "brief"] },
   { key: "draft",   label: "A draft",             path: ["check", "studio"] },
   { key: "worked",  label: "A post that worked",  path: ["recycler", "campaign", "pulse"] },
+];
+
+// ── What Signal knows ─────────────────────────────────────────────────────
+// The knowledge layer, rendered by renderBrain() into both the full view and
+// the teaser on Start here, so the two can never drift apart.
+// Counts are a SNAPSHOT (the launcher is static and can't read the vault at
+// runtime), same convention as MOMENTS and the competitor data. Recount with:
+//   find ~/Desktop/"Stern Craft Vault"/{"Video Briefs","LinkedIn Design"}/wiki \
+//        -name '*.md' | wc -l
+const BRAIN_ASOF = "27 Jul 2026";
+const BRAIN = [
+  { key: "craft", label: "The craft vault", via: "Obsidian, via the stern-vault connector",
+    stat: "509", unit: "distilled notes",
+    what: "How LinkedIn content actually works, read straight out of an Obsidian vault: 176 concepts on hooks, structure and pacing, 33 design principles, and 104 people and companies worth knowing. All of it distilled from 60 videos and articles that were watched or read in full, not summarised from memory.",
+    reads: ["brief", "ideas", "recycler", "campaign", "studio"] },
+  { key: "notion", label: "The Notion workspace", via: "Notion connector",
+    stat: "7", unit: "live databases and pages",
+    what: "Stern's own knowledge, not general craft: the Buying Moment Map, the Stern Voice guide with its 8 example posts, the Quality Checklist and Visual Playbook, plus the Research, Campaigns, Post Drafts and Signal Metrics databases. This is what makes a draft sound like Jon rather than like a bot.",
+    reads: ["brief", "check", "studio", "dossier", "campaign", "recycler", "pulse"] },
+  { key: "keywords", label: "Search demand", via: "the stern-keywords connector",
+    stat: "live", unit: "Google + AI answer data",
+    what: "Real search volume, keyword difficulty and a 12-month trend for any term, plus which questions people put to AI answer engines. Every figure carries its provenance, so a modelled estimate can never be quoted as a measured count.",
+    reads: ["radar", "brief", "recycler"] },
+  { key: "firstparty", label: "Stern's own numbers", via: "snapshots in this launcher",
+    stat: "3", unit: "dashboards",
+    what: "16 cybersecurity competitors' LinkedIn presence, how Stern's own posts performed, and where sternsecurity.com ranks in search. What worked last month is evidence for what to write next month.",
+    reads: ["competitors", "pulse", "semrush"] },
+  { key: "web", label: "The live web", via: "web search, in the Project or Claude Code",
+    stat: "live", unit: "news and filings",
+    what: "Breaches, vulnerabilities, regulation and threat reports from the past days and weeks, filtered to exclude old incidents and settlement noise. This is what keeps a post timely rather than evergreen.",
+    reads: ["radar", "dossier"] },
+];
+
+// How the brain grows. Every step here is real and takes about a minute.
+const BRAIN_LOOP = [
+  "Watch a video or harvest an article",
+  "Claude distils it into the vault",
+  "git push",
+  "The hosted brain re-indexes, about a minute",
+  "Every tool is smarter, no redeploy",
 ];
 
 // ── What each tool hands back, where that output lands, and what follows ──
@@ -4890,6 +5029,110 @@ function renderPulse() {
     }
   }
 })();
+/* ═══════════════════════ What Signal knows ═══════════════════════
+   Renders BRAIN into both the full view and the teaser on Start here, from one
+   config, so the two can't drift. index.html-only: no prompt, no .jsx twin. */
+(function initBrain() {
+  const mapEl  = document.getElementById("brain-map");
+  const listEl = document.getElementById("brain-list");
+  const loopEl = document.getElementById("brain-loop");
+  if (!mapEl) return;
+
+  const esc = s => String(s).replace(/[&<>"']/g, c =>
+    ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+  const nameOf = slug => {
+    const nav = document.querySelector('.nav-item[data-nav="' + slug + '"]');
+    return nav ? nav.textContent.trim() : slug;
+  };
+
+  // Grid cell plus the wire endpoint in the SVG's 0-100 space. The viewBox is
+  // percentage-based with preserveAspectRatio="none", so these stay correct at
+  // any container size without measuring anything.
+  const POS = {
+    craft:      { col: 1, row: 1, x: 17, y: 21 },
+    notion:     { col: 2, row: 1, x: 50, y: 19 },
+    keywords:   { col: 3, row: 1, x: 83, y: 21 },
+    firstparty: { col: 1, row: 3, x: 17, y: 80 },
+    web:        { col: 3, row: 3, x: 83, y: 80 },
+  };
+
+  const wires = BRAIN.filter(s => POS[s.key]).map(s => {
+    const p = POS[s.key];
+    return `<line x1="${p.x}" y1="${p.y}" x2="50" y2="50"/>` +
+           `<line class="flow" x1="${p.x}" y1="${p.y}" x2="50" y2="50"/>`;
+  }).join("");
+
+  mapEl.innerHTML =
+    `<svg class="brain-wires" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">${wires}</svg>` +
+    BRAIN.map(s => {
+      const p = POS[s.key] || {};
+      const cell = p.col ? `style="grid-column:${p.col};grid-row:${p.row}"` : "";
+      return `<button type="button" class="brain-node" data-src="${s.key}" ${cell}>
+          <span class="brain-stat">${esc(s.stat)}</span>
+          <span class="brain-unit">${esc(s.unit)}</span>
+          <span class="brain-label">${esc(s.label)}</span>
+          <span class="brain-via">${esc(s.via)}</span>
+        </button>`;
+    }).join("") +
+    `<div class="brain-hub">
+       <div class="brain-hub-name">Signal</div>
+       <div class="brain-hub-sub">reads all of this before it writes a word</div>
+     </div>`;
+
+  listEl.innerHTML = BRAIN.map(s => `
+    <button type="button" class="brain-row" data-row="${s.key}" aria-expanded="false">
+      <span class="brain-row-top">
+        <span class="brain-row-n">${esc(s.label)}</span>
+        <span class="brain-row-v">${esc(s.via)}</span>
+        <span class="brain-row-c">${esc(s.stat)} ${esc(s.unit)}</span>
+      </span>
+      <span class="brain-more">
+        <p class="brain-what">${esc(s.what)}</p>
+        <span class="brain-reads"><span class="flow-k">Read by</span>${
+          s.reads.map(r => `<span class="gsvc">${esc(nameOf(r))}</span>`).join("")
+        }</span>
+      </span>
+    </button>`).join("");
+
+  loopEl.innerHTML = BRAIN_LOOP
+    .map((t, i) => `<li><b>${i + 1}</b>${esc(t)}</li>`).join("");
+
+  const rows = [...listEl.querySelectorAll("[data-row]")];
+  rows.forEach(r => r.addEventListener("click", () =>
+    r.setAttribute("aria-expanded", r.getAttribute("aria-expanded") === "true" ? "false" : "true")));
+
+  // A node in the map opens its row below, so the diagram is a way in rather
+  // than a picture you look at and then hunt for the detail.
+  mapEl.querySelectorAll("[data-src]").forEach(n => n.addEventListener("click", () => {
+    const key = n.dataset.src;
+    mapEl.querySelectorAll(".brain-node").forEach(x => x.classList.toggle("sel", x === n));
+    rows.forEach(r => r.setAttribute("aria-expanded", String(r.dataset.row === key)));
+    const row = rows.find(r => r.dataset.row === key);
+    if (row) row.scrollIntoView({ block: "nearest", behavior:
+      (window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches) ? "auto" : "smooth" });
+  }));
+
+  /* ── the teaser on Start here, same BRAIN data ── */
+  const tail = document.querySelector("#view-guide .gloop-tail");
+  if (tail) {
+    const wrap = document.createElement("div");
+    wrap.innerHTML =
+      `<div class="section-label" style="margin-top:38px;"><span class="section-ico"><svg class="ico"><use href="#ic-vault"/></svg></span> What it knows</div>` +
+      `<p class="guide-lead greveal">Signal isn't a form with a language model behind it. Before it writes anything it reads a library of content craft, Stern's own playbook and voice, live search demand, and what has actually performed. Counts as of ${esc(BRAIN_ASOF)}.</p>` +
+      `<div class="brain-teaser greveal">` +
+      BRAIN.map(s => `<div class="brain-chip">
+           <div class="brain-stat">${esc(s.stat)}</div>
+           <div class="brain-unit">${esc(s.unit)}</div>
+           <div class="brain-label">${esc(s.label)}</div>
+         </div>`).join("") +
+      `</div>` +
+      `<button type="button" class="btn-secondary greveal" data-open-brain>See what Signal knows</button>`;
+    while (wrap.firstChild) tail.parentNode.insertBefore(wrap.firstChild, tail.nextSibling);
+    const btn = document.querySelector("#view-guide [data-open-brain]");
+    if (btn) btn.addEventListener("click", () => showView("brain"));
+  }
+})();
+
 /* ═══════════ Flow scaffolding ═══════════
    Injects the step strip, the "what you get back / where it lands" block, and
    the panel that appears after Copy, into every tool view from TOOL_FLOW. One
