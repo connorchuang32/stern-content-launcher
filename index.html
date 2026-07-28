@@ -886,9 +886,53 @@ button:disabled { opacity: 0.4; cursor: not-allowed; }
     .ci-boards { grid-template-columns: 1fr; gap: 14px; }
 }
 
+/* ═══════════ Flow scaffolding: where you are, what you get, what's next ═══════════ */
+.flow-steps { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin: 16px 0 0; }
+.flow-step { display: inline-flex; align-items: center; gap: 7px; font-size: 13px; color: var(--text-light); }
+.flow-step b {
+  width: 19px; height: 19px; flex: none; border-radius: 50%; display: inline-flex;
+  align-items: center; justify-content: center; font-family: var(--font-mono); font-size: 10px;
+  font-weight: 600; color: var(--text-muted); border: 1px solid var(--border); background: var(--input-bg);
+}
+.flow-arrow { color: var(--border); font-size: 13px; line-height: 1; }
+
+.flow-what { display: flex; flex-wrap: wrap; gap: 10px 30px; margin: 16px 0 0; }
+.flow-what > div { max-width: 46ch; }
+.flow-k {
+  display: block; font-family: var(--font-mono); font-size: 10px; letter-spacing: .07em;
+  text-transform: uppercase; color: var(--text-light); margin-bottom: 3px;
+}
+.flow-v { font-size: 13.5px; line-height: 1.5; color: var(--text-muted); }
+
+/* The post-copy panel: the copy action used to be a dead end. */
+.flow-next { display: none; margin-top: 14px; border: 1px solid var(--accent-mid); border-left-width: 3px;
+  border-radius: var(--radius-md); background: rgba(124,58,237,0.07); padding: 13px 15px; }
+.flow-next.on { display: block; }
+.flow-next-h { display: flex; align-items: center; gap: 8px; font-family: var(--font-heading); font-weight: 700; font-size: 14px; color: var(--text); }
+.flow-next-h .tick { color: var(--accent-bright); }
+.flow-next-b { font-size: 13.5px; line-height: 1.6; color: var(--text-muted); margin: 6px 0 0; }
+.flow-next-b b { color: var(--text); font-weight: 600; }
+.flow-next-btn { margin-top: 12px; }
+@media (prefers-reduced-motion: reduce) { .flow-next { transition: none; } }
+
 /* ═══════════════════════ Start Here guide ═══════════════════════ */
 .guide-lead { font-size: 15.5px; line-height: 1.65; color: var(--text-muted); max-width: 74ch; margin: -2px 0 18px; }
 .guide-lead strong { color: var(--text); font-weight: 600; }
+
+/* The loop -------------------------------------------------------------- */
+.gloop { display: flex; flex-wrap: wrap; gap: 8px; list-style: none; margin: 0; padding: 0; }
+.gloop li {
+  display: flex; align-items: center; gap: 9px; flex: 1 1 210px;
+  background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-md);
+  padding: 11px 14px; font-size: 13.5px; color: var(--text); box-shadow: var(--surface-hi);
+}
+.gloop li b {
+  width: 21px; height: 21px; flex: none; border-radius: 50%; display: inline-flex;
+  align-items: center; justify-content: center; font-family: var(--font-mono); font-size: 10px;
+  font-weight: 600; color: var(--accent-bright); border: 1px solid var(--accent-mid); background: var(--input-bg);
+}
+.gloop-tail { display: flex; align-items: center; gap: 8px; font-size: 13.5px; color: var(--text-muted); margin: 10px 0 0; }
+.gloop-tail span { color: var(--accent-bright); font-size: 16px; line-height: 1; }
 
 /* Buying moments ------------------------------------------------------- */
 /* align-items:start, not the default stretch: otherwise expanding one card
@@ -1382,6 +1426,18 @@ button:disabled { opacity: 0.4; cursor: not-allowed; }
             <p class="tool-sub">Eleven tools, one workflow: a signal comes in, a post goes out. Here's the shape of it, and which tool to reach for at each step. Click anything to open it.</p>
         </header>
 
+        <div class="section-label" style="margin-top:26px;"><span class="section-ico"><svg class="ico"><use href="#ic-guide"/></svg></span> The loop</div>
+        <p class="guide-lead">Every tool works the same way, so you only have to learn this once. The launcher writes the request; your Claude Project does the work. You move between the two.</p>
+        <ol class="gloop">
+            <li class="greveal"><b>1</b>Pick the tool for where you are</li>
+            <li class="greveal"><b>2</b>Fill in the fields</li>
+            <li class="greveal"><b>3</b>Copy the request</li>
+            <li class="greveal"><b>4</b>Paste it into your Claude Project</li>
+            <li class="greveal"><b>5</b>Read what comes back</li>
+            <li class="greveal"><b>6</b>Move to the next tool</li>
+        </ol>
+        <p class="gloop-tail greveal"><span aria-hidden="true">&#8635;</span> Then repeat, until the post is ready to publish.</p>
+
         <div class="section-label"><span class="section-ico"><svg class="ico"><use href="#ic-map"/></svg></span> Start with a buying moment</div>
         <p class="guide-lead">Nearly every tool asks you to pick a <strong>buying moment</strong> first. A moment is the point where a security buyer stops browsing and starts looking, the thing that just happened to them. Writing to one means the post lands on somebody with a reason to care. These eight are Stern's.</p>
         <div class="gmoments" id="guide-moments"></div>
@@ -1491,8 +1547,7 @@ button:disabled { opacity: 0.4; cursor: not-allowed; }
                 <div class="preview-box"><p class="preview-text" id="rd-preview"></p></div>
                 <p class="hint" id="rd-hint">Keep at least one signal on to enable the run. By moment also needs a buying moment picked.</p>
                 <div class="btn-row">
-                    <button type="button" class="btn-secondary" id="rd-copy" data-label="Copy request" disabled>Copy request</button>
-                    <button type="button" class="btn-primary" id="rd-open" data-label="Copy &amp; open Project" disabled>Copy &amp; open Project</button>
+                    <button type="button" class="btn-primary" id="rd-copy" data-label="Copy request" disabled>Copy request</button>
                 </div>
                 <p class="run-note" id="rd-runnote">The scan runs in the Project, where web search, Notion, and the stern-keywords connector execute. It reports what's trending in the news and in search, not LinkedIn feed activity.</p>
             </section>
@@ -1583,8 +1638,7 @@ button:disabled { opacity: 0.4; cursor: not-allowed; }
                 <div class="preview-box"><p class="preview-text" id="ig-preview"></p></div>
                 <p class="hint" id="ig-hint">Add a topic to enable the run.</p>
                 <div class="btn-row">
-                    <button type="button" class="btn-secondary" id="ig-copy" data-label="Copy request" disabled>Copy request</button>
-                    <button type="button" class="btn-primary" id="ig-open" data-label="Copy &amp; open Project" disabled>Copy &amp; open Project</button>
+                    <button type="button" class="btn-primary" id="ig-copy" data-label="Copy request" disabled>Copy request</button>
                 </div>
                 <p class="run-note">Opens your Project with the request on your clipboard, paste and send. Nothing is filed: pick an idea and hand it on.</p>
                 <div class="btn-row">
@@ -1718,8 +1772,7 @@ button:disabled { opacity: 0.4; cursor: not-allowed; }
                 <div class="preview-box"><p class="preview-text" id="bb-preview"></p></div>
                 <p class="hint" id="bb-hint">Pick a buying moment and add a topic to enable the buttons.</p>
                 <div class="btn-row">
-                    <button type="button" class="btn-secondary" id="bb-copy" data-label="Copy request" disabled>Copy request</button>
-                    <button type="button" class="btn-primary" id="bb-open" data-label="Copy &amp; open Project" disabled>Copy &amp; open Project</button>
+                    <button type="button" class="btn-primary" id="bb-copy" data-label="Copy request" disabled>Copy request</button>
                 </div>
                 <p class="run-note">Opens your Project with the request on your clipboard, paste and send. <a id="bb-orig" target="_blank" rel="noopener">Open the original in Claude&nbsp;&#8599;</a> for one-click send.</p>
             </section>
@@ -1825,8 +1878,7 @@ button:disabled { opacity: 0.4; cursor: not-allowed; }
                 <div class="preview-box"><p class="preview-text" id="sca-preview"></p></div>
                 <p class="hint" id="sca-hint">Pick a buying moment and add a big idea to enable the buttons.</p>
                 <div class="btn-row">
-                    <button type="button" class="btn-secondary" id="sca-copy" data-label="Copy request" disabled>Copy request</button>
-                    <button type="button" class="btn-primary" id="sca-open" data-label="Copy &amp; open Project" disabled>Copy &amp; open Project</button>
+                    <button type="button" class="btn-primary" id="sca-copy" data-label="Copy request" disabled>Copy request</button>
                 </div>
                 <p class="run-note">Opens your Project with the request on your clipboard, paste and send. Brainstorm returns concepts to choose from; Design files the plan to the Campaigns database when you approve.</p>
             </section>
@@ -1912,8 +1964,7 @@ button:disabled { opacity: 0.4; cursor: not-allowed; }
                 <div class="preview-box"><p class="preview-text" id="sc-preview"></p></div>
                 <p class="hint" id="sc-hint">Paste a draft and keep at least one group selected to enable the run.</p>
                 <div class="btn-row">
-                    <button type="button" class="btn-secondary" id="sc-copy" data-label="Copy request" disabled>Copy request</button>
-                    <button type="button" class="btn-primary" id="sc-open" data-label="Copy &amp; open Project" disabled>Copy &amp; open Project</button>
+                    <button type="button" class="btn-primary" id="sc-copy" data-label="Copy request" disabled>Copy request</button>
                 </div>
                 <p class="run-note">The check runs in the Project against the live checklist in Notion. It reviews only: nothing posts and nothing is filed, and a checklist it can't read is reported plainly instead of checked from memory.</p>
             </section>
@@ -1999,8 +2050,7 @@ button:disabled { opacity: 0.4; cursor: not-allowed; }
                 <div class="preview-box"><p class="preview-text" id="st-preview"></p></div>
                 <p class="hint" id="st-hint">Paste the post the visual supports to enable the run.</p>
                 <div class="btn-row">
-                    <button type="button" class="btn-secondary" id="st-copy" data-label="Copy request" disabled>Copy request</button>
-                    <button type="button" class="btn-primary" id="st-open" data-label="Copy &amp; open Project" disabled>Copy &amp; open Project</button>
+                    <button type="button" class="btn-primary" id="st-copy" data-label="Copy request" disabled>Copy request</button>
                 </div>
                 <p class="run-note">The brief is built in the Project from the design vault and the live Visual Playbook. Only the textless background prompt is safe to ship; a full-visual concept prompt is a rough reference, never a published asset in Jon's voice.</p>
             </section>
@@ -2084,8 +2134,7 @@ button:disabled { opacity: 0.4; cursor: not-allowed; }
                 <div class="preview-box"><p class="preview-text" id="rc-preview"></p></div>
                 <p class="hint" id="rc-hint">Paste a post and pick at least one repurpose move to enable the run.</p>
                 <div class="btn-row">
-                    <button type="button" class="btn-secondary" id="rc-copy" data-label="Copy request" disabled>Copy request</button>
-                    <button type="button" class="btn-primary" id="rc-open" data-label="Copy &amp; open Project" disabled>Copy &amp; open Project</button>
+                    <button type="button" class="btn-primary" id="rc-copy" data-label="Copy request" disabled>Copy request</button>
                 </div>
                 <p class="run-note">The run happens in the Project against the live playbook and vault. Variants come back for your review, nothing files or posts until you approve, and a read-only Notion connector is reported plainly.</p>
             </section>
@@ -2195,8 +2244,7 @@ button:disabled { opacity: 0.4; cursor: not-allowed; }
                 <div class="preview-box"><p class="preview-text" id="sd-preview"></p></div>
                 <p class="hint" id="sd-hint">Add a topic and keep at least one source on to enable the run.</p>
                 <div class="btn-row">
-                    <button type="button" class="btn-secondary" id="sd-copy" data-label="Copy request" disabled>Copy request</button>
-                    <button type="button" class="btn-primary" id="sd-open" data-label="Copy &amp; open Project" disabled>Copy &amp; open Project</button>
+                    <button type="button" class="btn-primary" id="sd-copy" data-label="Copy request" disabled>Copy request</button>
                 </div>
                 <p class="run-note" id="sd-runnote">Paste into Claude Code, where the web, /watch and /harvest, and Notion MCP tools execute. Nothing is filed until you approve, and a failed Notion write is reported plainly instead of skipped in silence.</p>
             </section>
@@ -2564,10 +2612,6 @@ button:disabled { opacity: 0.4; cursor: not-allowed; }
 <script>
 /* ═══════════════════════ CONFIG, edit these ═══════════════════════ */
 
-// The Claude Project the tools hand off to. The "Copy & open Project"
-// button copies the assembled request and opens this URL in a new tab.
-// Leave as "#" and the button just copies (no tab opens).
-const PROJECT_URL = "#";
 
 // The launcher copilot backend (the small Fly chat service). Leave "" to disable
 // the chat panel entirely — the floating button stays hidden and the launcher
@@ -2818,6 +2862,48 @@ const GUIDE_ENTRY = [
   { key: "worked",  label: "A post that worked",  path: ["recycler", "campaign", "pulse"] },
 ];
 
+// ── What each tool hands back, where that output lands, and what follows ──
+// Drives the step strip, the "what you get back" block, and the panel that
+// appears after Copy. `lands` is deliberately explicit about Claude chat vs
+// Notion vs back into a launcher dashboard: that round trip is the thing new
+// users find hardest to hold in their head.
+// surface: "project" | "code" | "either" (the tool has its own Run in selector)
+const TOOL_FLOW = {
+  radar: { surface: "either", next: "dossier",
+    get: "A shortlist of what's actually moving in cyber right now, each with a post hook. Search volume too, if you left keywords on.",
+    lands: "In the Claude chat. Nothing is filed. You pick a topic and carry it forward." },
+  dossier: { surface: "either", next: "brief",
+    get: "A research dossier: the sources, what they agree on, where they don't, and the angles worth taking.",
+    lands: "Filed to the Research database in Notion once you approve it. Post Drafter and Idea Generator read it back on their own." },
+  ideas: { surface: "project", next: "brief",
+    get: "5 to 12 post ideas, each with an angle, a hook, the format that suits it, and the buying moment it serves.",
+    lands: "In the Claude chat. Nothing is filed. Pick the one you want and take it to Post Drafter." },
+  brief: { surface: "project", next: "check",
+    get: "A finished post draft, hook first, in Stern's voice.",
+    lands: "In the Claude chat. It's saved to Post Drafts in Notion only if you approve it." },
+  campaign: { surface: "project", next: "studio",
+    get: "Either 3 to 5 campaign concepts, or the full plan: the theme, the posts, and the order to run them.",
+    lands: "Filed to the Campaigns database in Notion once you approve it." },
+  check: { surface: "project", next: "studio",
+    get: "Six group scores, an overall grade, the AI tells it caught, and rewrites of the weak parts.",
+    lands: "In the Claude chat. It reviews and fixes; it files nothing." },
+  studio: { surface: "project", next: null, step3: "Take the image prompt to Canva or an image model",
+    get: "A visual brief plus a standalone image prompt, ready for an image model or a designer.",
+    lands: "In the Claude chat. Take the prompt into Canva or your image tool." },
+  recycler: { surface: "project", next: "check",
+    get: "New variants of a post that already worked, re-aimed at another moment, or turned into a video with a storyboard and script.",
+    lands: "In the Claude chat." },
+  harvest: { surface: "code", next: null, step3: "Commit and push to publish it to the team",
+    get: "A ready-to-run command that pulls articles and videos into the craft vault.",
+    lands: "Written into your local vault. A git push makes it live for everyone." },
+  pulse: { surface: "code", next: null, inbox: "analytics-inbox/", step3: "Reload this page to see the dashboard",
+    get: "A read on what performed: which posts, formats and hooks worked, and what to lean into next.",
+    lands: "Filed to Signal Metrics in Notion, and written back into this launcher's Performance dashboard." },
+  semrush: { surface: "code", next: "ideas", inbox: "semrush-inbox/", step3: "Reload this page to see the dashboard",
+    get: "What Stern should write next by search demand, plus where the site ranks today.",
+    lands: "Written back into this launcher's Search dashboard. Nothing goes to Notion." },
+};
+
 // ── Topic Researcher, the folder its Claude Code ingest mode reads from ──
 const RESEARCH_INBOX = "research-inbox/";
 
@@ -2856,11 +2942,6 @@ function flash(btn, msg) {
   setTimeout(() => { btn.textContent = btn.dataset.label; }, 1800);
 }
 
-function openProject() {
-  if (PROJECT_URL && PROJECT_URL !== "#") {
-    window.open(PROJECT_URL, "_blank", "noopener");
-  }
-}
 
 function showView(name) {
   document.querySelectorAll(".view").forEach(v => v.classList.remove("active"));
@@ -2954,7 +3035,6 @@ document.getElementById("bb-orig").href = ARTIFACT_URLS.signalBriefBuilder;
   const hintEl      = document.getElementById("rd-hint");
   const noteEl      = document.getElementById("rd-runnote");
   const copyBtn     = document.getElementById("rd-copy");
-  const openBtn     = document.getElementById("rd-open");
 
   MOMENTS.forEach(m => {
     const o = document.createElement("option");
@@ -3035,8 +3115,7 @@ document.getElementById("bb-orig").href = ARTIFACT_URLS.signalBriefBuilder;
     dotEl.classList.toggle("ready", ready);
     hintEl.style.display = ready ? "none" : "";
     copyBtn.disabled = !ready;
-    openBtn.disabled = !ready;
-    openBtn.textContent = cc ? "Copy for Claude Code" : "Copy & open Project";
+    copyBtn.textContent = cc ? "Copy for Claude Code" : "Copy request";
     if (noteEl) {
       noteEl.textContent = cc
         ? "Paste into Claude Code, where web search and the stern-keywords connector execute. It reports what's trending in the news and in search, not LinkedIn feed activity."
@@ -3045,11 +3124,6 @@ document.getElementById("bb-orig").href = ARTIFACT_URLS.signalBriefBuilder;
   }
 
   copyBtn.addEventListener("click", async () => { await copyText(assemble()); flash(copyBtn, "Copied ✓"); });
-  openBtn.addEventListener("click", async () => {
-    await copyText(assemble());
-    if (state.target !== "Claude Code") openProject();
-    flash(openBtn, "Copied ✓");
-  });
 
   update();
 })();
@@ -3070,7 +3144,6 @@ document.getElementById("bb-orig").href = ARTIFACT_URLS.signalBriefBuilder;
   const dotEl     = document.getElementById("ig-dot");
   const hintEl    = document.getElementById("ig-hint");
   const copyBtn   = document.getElementById("ig-copy");
-  const openBtn   = document.getElementById("ig-open");
   const briefBtn  = document.getElementById("ig-to-brief");
   const campBtn   = document.getElementById("ig-to-campaign");
 
@@ -3161,13 +3234,11 @@ document.getElementById("bb-orig").href = ARTIFACT_URLS.signalBriefBuilder;
     dotEl.classList.toggle("ready", ready);
     hintEl.style.display = ready ? "none" : "";
     copyBtn.disabled  = !ready;
-    openBtn.disabled  = !ready;
     briefBtn.disabled = !ready;
     campBtn.disabled  = !ready;
   }
 
   copyBtn.addEventListener("click", async () => { await copyText(assemble()); flash(copyBtn, "Copied ✓"); });
-  openBtn.addEventListener("click", async () => { await copyText(assemble()); openProject(); flash(openBtn, "Copied ✓"); });
 
   // Hand the topic on rather than making you retype it. The moment only travels
   // when one is actually tagged: the ANY sentinel isn't an option in either target.
@@ -3211,7 +3282,6 @@ document.getElementById("bb-orig").href = ARTIFACT_URLS.signalBriefBuilder;
   const dotEl      = document.getElementById("bb-dot");
   const hintEl     = document.getElementById("bb-hint");
   const copyBtn    = document.getElementById("bb-copy");
-  const openBtn    = document.getElementById("bb-open");
   const guidedEl   = document.getElementById("bb-guided");
   const angleEl    = document.getElementById("bb-angle");
   const takeEl     = document.getElementById("bb-take");
@@ -3338,11 +3408,9 @@ document.getElementById("bb-orig").href = ARTIFACT_URLS.signalBriefBuilder;
     dotEl.classList.toggle("ready", ready);
     hintEl.style.display = ready ? "none" : "";
     copyBtn.disabled = !ready;
-    openBtn.disabled = !ready;
   }
 
   copyBtn.addEventListener("click", async () => { await copyText(assemble()); flash(copyBtn, "Copied ✓"); });
-  openBtn.addEventListener("click", async () => { await copyText(assemble()); openProject(); flash(openBtn, "Copied ✓"); });
 
   update();
 })();
@@ -3389,7 +3457,6 @@ function fillMomentSelect(el, sentinel) {
   const hintEl    = document.getElementById("sca-hint");
   const fileField = document.getElementById("sca-file-field");
   const copyBtn   = document.getElementById("sca-copy");
-  const openBtn   = document.getElementById("sca-open");
 
   MOMENTS.forEach(m => {
     const o = document.createElement("option");
@@ -3482,11 +3549,9 @@ function fillMomentSelect(el, sentinel) {
     dotEl.classList.toggle("ready", ready);
     hintEl.style.display = ready ? "none" : "";
     copyBtn.disabled = !ready;
-    openBtn.disabled = !ready;
   }
 
   copyBtn.addEventListener("click", async () => { await copyText(assemble()); flash(copyBtn, "Copied ✓"); });
-  openBtn.addEventListener("click", async () => { await copyText(assemble()); openProject(); flash(openBtn, "Copied ✓"); });
 
   update();
 })();
@@ -3503,7 +3568,6 @@ function fillMomentSelect(el, sentinel) {
   const hintEl    = document.getElementById("sc-hint");
   const countEl   = document.getElementById("sc-count");
   const copyBtn   = document.getElementById("sc-copy");
-  const openBtn   = document.getElementById("sc-open");
   const chipWrap  = document.getElementById("sc-groups");
 
   fillMomentSelect(sel, UNTAGGED);
@@ -3599,12 +3663,10 @@ function fillMomentSelect(el, sentinel) {
     dotEl.classList.toggle("ready", ready);
     hintEl.style.display = ready ? "none" : "";
     copyBtn.disabled = !ready;
-    openBtn.disabled = !ready;
     countEl.textContent = `${state.selected.size} of ${CHECK_GROUPS.length} groups`;
   }
 
   copyBtn.addEventListener("click", async () => { await copyText(assemble()); flash(copyBtn, "Copied ✓"); });
-  openBtn.addEventListener("click", async () => { await copyText(assemble()); openProject(); flash(openBtn, "Copied ✓"); });
 
   update();
 })();
@@ -3621,7 +3683,6 @@ function fillMomentSelect(el, sentinel) {
   const dotEl     = document.getElementById("st-dot");
   const hintEl    = document.getElementById("st-hint");
   const copyBtn   = document.getElementById("st-copy");
-  const openBtn   = document.getElementById("st-open");
   const slidesField = document.getElementById("st-slides-field");
 
   fillMomentSelect(sel, UNTAGGED);
@@ -3704,11 +3765,9 @@ function fillMomentSelect(el, sentinel) {
     dotEl.classList.toggle("ready", ready);
     hintEl.style.display = ready ? "none" : "";
     copyBtn.disabled = !ready;
-    openBtn.disabled = !ready;
   }
 
   copyBtn.addEventListener("click", async () => { await copyText(assemble()); flash(copyBtn, "Copied ✓"); });
-  openBtn.addEventListener("click", async () => { await copyText(assemble()); openProject(); flash(openBtn, "Copied ✓"); });
 
   update();
 })();
@@ -3728,7 +3787,6 @@ function fillMomentSelect(el, sentinel) {
   const hintEl    = document.getElementById("rc-hint");
   const countEl   = document.getElementById("rc-count");
   const copyBtn   = document.getElementById("rc-copy");
-  const openBtn   = document.getElementById("rc-open");
   const chipWrap  = document.getElementById("rc-moves");
 
   fillMomentSelect(srcSel, UNTAGGED);
@@ -3822,13 +3880,11 @@ function fillMomentSelect(el, sentinel) {
     dotEl.classList.toggle("ready", ready);
     hintEl.style.display = ready ? "none" : "";
     copyBtn.disabled = !ready;
-    openBtn.disabled = !ready;
     const n = state.moves.size;
     countEl.textContent = `${n} of ${RECYCLE_MOVES.length} moves · ${n} ${n === 1 ? "variant" : "variants"}`;
   }
 
   copyBtn.addEventListener("click", async () => { await copyText(assemble()); flash(copyBtn, "Copied ✓"); });
-  openBtn.addEventListener("click", async () => { await copyText(assemble()); openProject(); flash(openBtn, "Copied ✓"); });
 
   update();
 })();
@@ -3860,7 +3916,6 @@ function fillMomentSelect(el, sentinel) {
   const warnEl    = document.getElementById("sd-warn");
   const noteEl    = document.getElementById("sd-runnote");
   const copyBtn   = document.getElementById("sd-copy");
-  const openBtn   = document.getElementById("sd-open");
   const researchOnly = document.getElementById("sd-research-only");
   const webRow    = document.getElementById("sd-t-web");
   const videoRow  = document.getElementById("sd-t-video");
@@ -4010,8 +4065,7 @@ function fillMomentSelect(el, sentinel) {
       : "Add a topic and keep at least one source on to enable the run.";
     hintEl.style.display = ready ? "none" : "";
     copyBtn.disabled = !ready;
-    openBtn.disabled = !ready;
-    openBtn.textContent = cc ? "Copy for Claude Code" : "Copy & open Project";
+    copyBtn.textContent = cc ? "Copy for Claude Code" : "Copy request";
     targetHelp.textContent = ingest
       ? "Claude Code reads the files you drop in research-inbox/. The Project reads files you attach to the chat."
       : "Claude Code analyzes video (/watch, /harvest) and files to Notion directly. The Project is web-only.";
@@ -4030,11 +4084,6 @@ function fillMomentSelect(el, sentinel) {
   }
 
   copyBtn.addEventListener("click", async () => { await copyText(assemble()); flash(copyBtn, "Copied ✓"); });
-  openBtn.addEventListener("click", async () => {
-    await copyText(assemble());
-    if (state.target !== "Claude Code") openProject();
-    flash(openBtn, "Copied ✓");
-  });
 
   update();
 })();
@@ -4840,6 +4889,81 @@ function renderPulse() {
     }
   }
 })();
+/* ═══════════ Flow scaffolding ═══════════
+   Injects the step strip, the "what you get back / where it lands" block, and
+   the panel that appears after Copy, into every tool view from TOOL_FLOW. One
+   implementation rather than eleven copies in the markup, so the wording can't
+   drift between tools. Touches no assembled prompt. */
+(function initFlow() {
+  const esc = s => String(s).replace(/[&<>"']/g, c =>
+    ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+  const nameOf = slug => {
+    const nav = document.querySelector('.nav-item[data-nav="' + slug + '"]');
+    return nav ? nav.textContent.trim() : slug;
+  };
+
+  function steps(f) {
+    if (f.surface === "code") {
+      return [f.inbox ? "Drop your files in " + f.inbox : "Fill this in",
+              "Copy it, run it in Claude Code",
+              f.step3 || "Reload this page to see the result"];
+    }
+    if (f.surface === "either") {
+      return ["Fill this in", "Copy it, paste it where you chose to run it",
+              f.step3 || "Read the output there"];
+    }
+    return ["Fill this in", "Copy it, paste into your Claude Project",
+            f.step3 || "Read the output in Claude"];
+  }
+
+  Object.keys(TOOL_FLOW).forEach(slug => {
+    const view = document.getElementById("view-" + slug);
+    const header = view && view.querySelector(".tool-header");
+    if (!header) return;
+    const f = TOOL_FLOW[slug];
+
+    const strip = document.createElement("div");
+    strip.className = "flow-steps";
+    strip.innerHTML = steps(f)
+      .map((s, i) => `<span class="flow-step"><b>${i + 1}</b>${esc(s)}</span>`)
+      .join('<span class="flow-arrow" aria-hidden="true">&rarr;</span>');
+    header.appendChild(strip);
+
+    const what = document.createElement("div");
+    what.className = "flow-what";
+    what.innerHTML =
+      `<div><span class="flow-k">What you get back</span><span class="flow-v">${esc(f.get)}</span></div>` +
+      `<div><span class="flow-k">Where it lands</span><span class="flow-v">${esc(f.lands)}</span></div>`;
+    header.appendChild(what);
+
+    // The copy action used to be a dead end. Now it says what to do next.
+    const copy = view.querySelector('[id$="-copy"]');
+    const row = copy && copy.closest(".btn-row");
+    if (!row) return;
+    const where = f.surface === "code"
+      ? "Paste it into <b>Claude Code</b>, running in this folder."
+      : f.surface === "either"
+        ? "Paste it into <b>your Claude Project</b>, or into Claude Code if that's the target you picked above."
+        : "Open <b>your Claude Project</b> and paste it in.";
+    const then = f.step3 ? " Then " + f.step3.charAt(0).toLowerCase() + f.step3.slice(1) + "." : "";
+    const panel = document.createElement("div");
+    panel.className = "flow-next";
+    panel.innerHTML =
+      '<div class="flow-next-h"><span class="tick" aria-hidden="true">&check;</span> Copied. Here\'s what to do with it.</div>' +
+      `<p class="flow-next-b">${where}${then}</p>`;
+    if (f.next) {
+      const b = document.createElement("button");
+      b.type = "button";
+      b.className = "btn-secondary flow-next-btn";
+      b.textContent = "Next: " + nameOf(f.next);
+      b.addEventListener("click", () => handoff(f.next, {}));
+      panel.appendChild(b);
+    }
+    row.insertAdjacentElement("afterend", panel);
+    copy.addEventListener("click", () => panel.classList.add("on"));
+  });
+})();
+
 /* ═══════════════════════ Start Here guide ═══════════════════════
    index.html-only, like the dashboards: it builds no prompt, so there's no
    .jsx twin and the byte-identity contract doesn't apply. Tool names and icons
