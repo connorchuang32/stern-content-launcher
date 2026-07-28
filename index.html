@@ -944,7 +944,7 @@ button:disabled { opacity: 0.4; cursor: not-allowed; }
 .brain-reads .flow-k { margin: 0 4px 0 0; }
 
 /* Teaser on Start here, same data, condensed */
-.brain-teaser { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; margin-bottom: 14px; }
+.brain-teaser { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; margin: 4px 0 18px; }
 .brain-chip { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 12px 13px; box-shadow: var(--surface-hi); }
 .brain-chip .brain-stat { font-size: 19px; }
 .brain-chip .brain-label { font-size: 13px; margin-top: 7px; }
@@ -1280,7 +1280,7 @@ button:disabled { opacity: 0.4; cursor: not-allowed; }
         <nav class="sidebar-nav">
             <div class="nav-group">
                 <div class="nav-group-label">Workspace</div>
-                <button class="nav-item" data-nav="guide"><svg class="ico"><use href="#ic-guide"/></svg> Start here</button>
+                <button class="nav-item" data-nav="guide"><svg class="ico"><use href="#ic-guide"/></svg> How Signal works</button>
                 <button class="nav-item" data-nav="brain"><svg class="ico"><use href="#ic-vault"/></svg> What Signal knows</button>
                 <button class="nav-item" data-nav="home"><svg class="ico"><use href="#ic-dashboard"/></svg> Dashboard</button>
             </div>
@@ -4808,7 +4808,7 @@ function renderPulse() {
     ideas: "Idea Generator", brief: "Post Drafter", check: "Draft Checker",
     studio: "Visual Designer", recycler: "Content Recycler", campaign: "Campaign Builder",
     pulse: "Content Analytics", semrush: "Search Intelligence", competitors: "Competitor Analysis",
-    guide: "Start here",
+    guide: "How Signal works",
   };
   const EXAMPLES = [
     "I have no idea what to post this week",
@@ -5160,7 +5160,12 @@ function renderPulse() {
          </div>`).join("") +
       `</div>` +
       `<button type="button" class="btn-secondary greveal" data-open-brain>See what Signal knows</button>`;
-    while (wrap.firstChild) tail.parentNode.insertBefore(wrap.firstChild, tail.nextSibling);
+    let ref = tail;
+    while (wrap.firstChild) {
+      const node = wrap.firstChild;
+      ref.parentNode.insertBefore(node, ref.nextSibling);
+      ref = node;   // advance, or every insert lands back at `tail` and reverses the order
+    }
     const btn = document.querySelector("#view-guide [data-open-brain]");
     if (btn) btn.addEventListener("click", () => showView("brain"));
   }
