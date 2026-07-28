@@ -943,6 +943,17 @@ button:disabled { opacity: 0.4; cursor: not-allowed; }
 .brain-reads { display: flex; flex-wrap: wrap; gap: 5px; align-items: center; }
 .brain-reads .flow-k { margin: 0 4px 0 0; }
 
+.brain-status { display: flex; flex-wrap: wrap; gap: 8px; margin: 4px 0 22px; }
+.brain-status:empty { display: none; }
+.bstat {
+  display: inline-flex; align-items: center; gap: 8px; font-size: 12.5px; color: var(--text);
+  border: 1px solid var(--border); background: var(--input-bg); border-radius: 999px; padding: 6px 13px;
+}
+.bstat em { font-style: normal; color: var(--text-light); font-size: 11.5px; }
+.bdot { width: 7px; height: 7px; border-radius: 50%; flex: none; background: var(--text-light); }
+.bstat.ok .bdot { background: var(--accent-bright); box-shadow: 0 0 8px rgba(168,85,247,0.75); }
+.bstat.down { color: var(--text-light); border-style: dashed; }
+
 /* Teaser on Start here, same data, condensed */
 .brain-teaser { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; margin: 4px 0 18px; }
 .brain-chip { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 12px 13px; box-shadow: var(--surface-hi); }
@@ -1500,6 +1511,8 @@ button:disabled { opacity: 0.4; cursor: not-allowed; }
             </div>
             <p class="tool-sub">Signal isn't a set of forms with a language model behind it. It's wired into a library of content craft, Stern's own playbook and voice, live search demand, and what has actually performed. This is what it reads before it writes anything, and it gets better as more goes in.</p>
         </header>
+
+        <div class="brain-status" id="brain-status" aria-live="polite"></div>
 
         <div class="brain-map" id="brain-map"></div>
 
@@ -5105,10 +5118,35 @@ function renderPulse() {
   if (window.ResizeObserver) new ResizeObserver(drawWires).observe(mapEl);
   // The view is display:none at load, so everything measures 0. Redraw the
   // first time it's actually shown, and on every return to it.
+  /* Live status. The MCP servers' own /healthz sends no CORS headers, so the
+     browser can't read them; the chat backend checks them server-side and this
+     reads that. Silent no-op when CHAT_BACKEND_URL is unset, so the launcher
+     stays fully static and file://-safe. */
+  const statusEl = document.getElementById("brain-status");
+  let statusLoaded = false;
+  function loadStatus() {
+    if (statusLoaded || !statusEl || !CHAT_BACKEND_URL) return;
+    statusLoaded = true;
+    fetch(CHAT_BACKEND_URL.replace(/\/$/, "") + "/status")
+      .then(r => (r.ok ? r.json() : null))
+      .then(d => {
+        if (!d || !Array.isArray(d.services)) return;
+        statusEl.innerHTML = d.services.map(sv => {
+          // Synthetic keyword data is not "up" in any useful sense: it's the
+          // [NOT REAL] case, and it should look different here.
+          const good = sv.ok && sv.realism !== "synthetic";
+          return `<span class="bstat ${good ? "ok" : "down"}" title="${esc(sv.detail || "")}">` +
+                 `<span class="bdot" aria-hidden="true"></span>${esc(sv.name)}` +
+                 (sv.note ? `<em>${esc(sv.note)}</em>` : "") + `</span>`;
+        }).join("");
+      })
+      .catch(() => { /* offline or backend down: just show nothing */ });
+  }
+
   const brainView = document.getElementById("view-brain");
   if (brainView) {
     new MutationObserver(() => {
-      if (brainView.classList.contains("active")) drawWires();
+      if (brainView.classList.contains("active")) { drawWires(); loadStatus(); }
     }).observe(brainView, { attributes: true, attributeFilter: ["class"] });
   }
 
