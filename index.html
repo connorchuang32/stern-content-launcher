@@ -565,6 +565,43 @@ button:focus-visible, a:focus-visible, textarea:focus-visible, select:focus-visi
 .scope-count { font-size: 13.5px; color: var(--text-light); margin: 12px 0 0; }
 .help-text { font-size: 13.5px; line-height: 1.5; color: var(--text-light); margin: 9px 0 0; }
 
+/* Post Drafter, the fields read out of a pasted Idea Generator block */
+.parsed-list { display: flex; flex-direction: column; gap: 7px; }
+.parsed-row { display: flex; align-items: baseline; gap: 10px; font-size: 13.5px; line-height: 1.45; }
+.parsed-key {
+    flex-shrink: 0;
+    width: 106px;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    color: var(--text-light);
+}
+.parsed-val { color: var(--text); overflow-wrap: anywhere; }
+.parsed-row.miss .parsed-val { color: var(--text-light); font-style: italic; }
+
+/* Step-by-step note (carousel generation: Visual Designer + Content Recycler) */
+.howto {
+    margin-top: 14px;
+    padding: 14px 16px;
+    background: rgba(124,58,237,0.07);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--accent-bright);
+    border-radius: 10px;
+}
+.howto-title {
+    font-family: var(--font-heading);
+    font-size: 11.5px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--accent-bright);
+    margin: 0 0 8px;
+}
+.howto ol { margin: 0; padding-left: 18px; }
+.howto li { font-size: 13.5px; line-height: 1.55; color: var(--text-muted); margin-bottom: 5px; }
+.howto li:last-child { margin-bottom: 0; }
+
 /* Disclosure / advanced (Radar) */
 .disclosure {
     display: flex;
@@ -1754,7 +1791,7 @@ button:disabled { opacity: 0.4; cursor: not-allowed; }
                 <div class="btn-row">
                     <button type="button" class="btn-primary" id="ig-copy" data-label="Copy request" disabled>Copy request</button>
                 </div>
-                <p class="run-note">Copies the request to your clipboard. Paste it into your Project and send. Nothing is filed: pick an idea and hand it on.</p>
+                <p class="run-note">Copies the request to your clipboard. Paste it into your Project and send. Nothing is filed: copy the idea you want out of the reply and paste it whole into Post Drafter's Quick tab.</p>
                 <div class="btn-row">
                     <button type="button" class="btn-secondary" id="ig-to-brief" data-label="Take topic to Post Drafter" disabled>Take topic to Post Drafter</button>
                     <button type="button" class="btn-secondary" id="ig-to-campaign" data-label="Take topic to Campaign Builder" disabled>Take topic to Campaign Builder</button>
@@ -1775,25 +1812,53 @@ button:disabled { opacity: 0.4; cursor: not-allowed; }
                 <div class="tool-mark" aria-hidden="true"><svg class="ico"><use href="#ic-brief"/></svg></div>
                 <h1 class="tool-title">Post Drafter</h1>
             </div>
-            <p class="tool-sub">Assemble a drafting request, then run it in your Project, where the full workflow (Notion, keywords, vault) executes. Guided walks you through the angle so the draft doesn't come back generic; Quick is the fast path when you already know.</p>
+            <p class="tool-sub">Assemble a drafting request, then run it in your Project, where the full workflow (Notion, keywords, vault) executes. Guided walks you through the angle so the draft doesn't come back generic; Quick takes a whole idea straight from Idea Generator.</p>
         </header>
 
-        <div class="segmented" id="bb-mode" role="group" aria-label="Mode" style="max-width:340px;margin-bottom:20px;">
-            <button type="button" class="seg-btn active" data-mode="guided">Guided</button>
-            <button type="button" class="seg-btn" data-mode="quick">Quick</button>
+        <div class="segmented" id="bb-mode" role="group" aria-label="Mode" style="max-width:400px;margin-bottom:20px;">
+            <button type="button" class="seg-btn active" data-mode="guided">Guided<span class="seg-sub">Fill it in yourself</span></button>
+            <button type="button" class="seg-btn" data-mode="quick">Quick<span class="seg-sub">Paste an idea</span></button>
         </div>
 
         <div class="tool-grid">
             <!-- Form -->
             <section class="tool-panel" aria-label="Brief form">
+                <!-- Quick mode: paste one whole idea from Idea Generator. The block goes
+                     into the request verbatim; the read-out below is a convenience, not
+                     the source of truth, so a missed label can't lose anything. -->
+                <div id="bb-quick" style="display:none;">
+                    <div class="tfield">
+                        <label class="tlabel">Paste an idea</label>
+                        <textarea class="ttextarea" id="bb-idea" rows="9" style="min-height:200px;" placeholder="Paste one whole idea from Idea Generator, title and all:
+
+4. &quot;Fewer attackers doesn't mean weaker attacks&quot;
+* Angle: Consolidation reads as good news until…
+* Hook: Ransomware is getting more efficient, not more chaotic.
+* Format: Founder POV
+* Buying moment: Penetration Test Findings
+* Why now: Timely peg, delivered as Jon's own read.
+* Visual: Text only. No graphic needed."></textarea>
+                        <p class="help-text">The whole block travels with the request, so nothing is lost if a label is missing or worded differently.</p>
+                    </div>
+
+                    <div class="tfield">
+                        <label class="tlabel">What it read out of that</label>
+                        <div class="parsed-list" id="bb-parsed"></div>
+                        <div class="btn-row" style="margin-top:14px;">
+                            <button type="button" class="btn-secondary" id="bb-fill" data-label="Edit these in Guided" disabled>Edit these in Guided</button>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="tfield">
                     <label class="tlabel">Buying moment</label>
                     <select class="tselect" id="bb-moment">
                         <option value="">Choose a moment…</option>
                     </select>
+                    <p class="help-text" id="bb-moment-help" style="display:none;">Read off the pasted idea where it matches a known moment. Change it if the idea tagged it wrong.</p>
                 </div>
 
-                <div class="tfield">
+                <div class="tfield" id="bb-topic-field">
                     <label class="tlabel">Topic</label>
                     <textarea class="ttextarea" id="bb-topic" rows="3" placeholder="One clear idea, in a sentence."></textarea>
                 </div>
@@ -1807,44 +1872,70 @@ button:disabled { opacity: 0.4; cursor: not-allowed; }
                     </div>
                 </div>
 
-                <!-- Guided interview, every field optional; blank ones drop out of the request -->
+                <!-- Guided: the same six fields Idea Generator returns, so a pasted idea
+                     maps one-to-one. Every field optional; blank ones drop out of the
+                     request, so Guided with nothing filled reproduces the bare request. -->
                 <div id="bb-guided">
-                    <div class="tgroup-label"><svg class="ico"><use href="#ic-dossier"/></svg> Angle &amp; framing</div>
+                    <div class="tgroup-label"><svg class="ico"><use href="#ic-ideas"/></svg> From the idea</div>
+                    <p class="help-text" style="margin:-8px 0 18px;">These match what Idea Generator hands you. Format and Buying moment are the two above; fill in what you have and leave the rest blank.</p>
 
                     <div class="tfield">
                         <label class="tlabel">Angle</label>
-                        <select class="tselect" id="bb-angle"></select>
-                    </div>
-
-                    <div class="tfield">
-                        <label class="tlabel">Your take</label>
-                        <input class="tinput" id="bb-take" type="text" placeholder="Your actual take, in one line.">
+                        <textarea class="ttextarea" id="bb-take" rows="3" placeholder="Your actual take, in one line."></textarea>
                         <p class="help-text">The sharper this is, the less generic the draft comes back.</p>
                     </div>
 
                     <div class="tfield">
-                        <label class="tlabel">Who it's for</label>
-                        <select class="tselect" id="bb-reader"></select>
+                        <label class="tlabel">Hook</label>
+                        <input class="tinput" id="bb-hook" type="text" placeholder="The opening line, if the idea gave you one.">
+                        <p class="help-text">Kept as written unless the draft can genuinely beat it.</p>
                     </div>
 
                     <div class="tfield">
-                        <label class="tlabel">Proof</label>
-                        <input class="tinput" id="bb-proof" type="text" placeholder="A stat, client story, pen-test finding, or personal experience.">
+                        <label class="tlabel">Why now</label>
+                        <input class="tinput" id="bb-whynow" type="text" placeholder="What makes this land this week rather than any week.">
                     </div>
 
                     <div class="tfield">
-                        <label class="tlabel">Takeaway</label>
-                        <input class="tinput" id="bb-takeaway" type="text" placeholder="The one thing they should remember.">
+                        <label class="tlabel">Visual</label>
+                        <input class="tinput" id="bb-visual" type="text" placeholder="Carousel, single graphic, short video, or text only.">
+                        <p class="help-text">Only so the copy is written to sit alongside it. Visual Designer builds the thing itself as a separate step.</p>
                     </div>
 
-                    <div class="tfield">
-                        <label class="tlabel">Desired reaction</label>
-                        <select class="tselect" id="bb-reaction"></select>
-                    </div>
+                    <button type="button" class="disclosure" id="bb-more-btn" aria-expanded="false">
+                        <span class="disclosure-caret">&#9656;</span> Sharpen it (optional)
+                    </button>
+                    <div class="advanced" id="bb-more" style="display:none;">
+                        <div class="tfield">
+                            <label class="tlabel">Angle type</label>
+                            <select class="tselect" id="bb-angle"></select>
+                            <p class="help-text">Picking one retitles the Angle prompt above.</p>
+                        </div>
 
-                    <div class="tfield">
-                        <label class="tlabel">Avoid</label>
-                        <input class="tinput" id="bb-avoid" type="text" placeholder="Anything to keep out: claims, jargon, a tone.">
+                        <div class="tfield">
+                            <label class="tlabel">Who it's for</label>
+                            <select class="tselect" id="bb-reader"></select>
+                        </div>
+
+                        <div class="tfield">
+                            <label class="tlabel">Proof</label>
+                            <input class="tinput" id="bb-proof" type="text" placeholder="A stat, client story, pen-test finding, or personal experience.">
+                        </div>
+
+                        <div class="tfield">
+                            <label class="tlabel">Takeaway</label>
+                            <input class="tinput" id="bb-takeaway" type="text" placeholder="The one thing they should remember.">
+                        </div>
+
+                        <div class="tfield">
+                            <label class="tlabel">Desired reaction</label>
+                            <select class="tselect" id="bb-reaction"></select>
+                        </div>
+
+                        <div class="tfield">
+                            <label class="tlabel">Avoid</label>
+                            <input class="tinput" id="bb-avoid" type="text" placeholder="Anything to keep out: claims, jargon, a tone.">
+                        </div>
                     </div>
                 </div>
 
@@ -2119,10 +2210,12 @@ button:disabled { opacity: 0.4; cursor: not-allowed; }
                 <div class="tfield">
                     <label class="tlabel">Aspect ratio</label>
                     <div class="segmented" id="st-ratio" role="group" aria-label="Aspect ratio">
-                        <button type="button" class="seg-btn active" data-val="Square 1:1">Square 1:1</button>
-                        <button type="button" class="seg-btn" data-val="Portrait 4:5">Portrait 4:5</button>
-                        <button type="button" class="seg-btn" data-val="Wide 16:9">Wide 16:9</button>
+                        <button type="button" class="seg-btn active" data-val="Square 1:1">Square<span class="seg-sub">1:1</span></button>
+                        <button type="button" class="seg-btn" data-val="Portrait 4:5">Portrait<span class="seg-sub">4:5</span></button>
+                        <button type="button" class="seg-btn" data-val="Vertical 9:16">Vertical<span class="seg-sub">9:16 mobile</span></button>
+                        <button type="button" class="seg-btn" data-val="Wide 16:9">Wide<span class="seg-sub">16:9</span></button>
                     </div>
+                    <p class="help-text">Vertical 9:16 fills a phone screen, which is what you want for video. LinkedIn shows feed <em>images</em> no taller than 4:5, so a 9:16 still gets cropped in the feed, the brief says so when you pick it.</p>
                 </div>
 
                 <div class="tfield" id="st-slides-field" style="display:none;">
@@ -2133,6 +2226,16 @@ button:disabled { opacity: 0.4; cursor: not-allowed; }
                         <button type="button" class="seg-btn" data-val="10">10</button>
                     </div>
                     <p class="help-text">The brief will spell out the text for each slide in order.</p>
+                    <div class="howto">
+                        <p class="howto-title">How you'll generate these slides</p>
+                        <ol>
+                            <li>The brief comes back with a master prompt plus one prompt per slide, and the same steps written out in full.</li>
+                            <li>Open one image generator conversation and keep every slide in it, so the look carries from slide to slide.</li>
+                            <li>Paste the master prompt on its own first. Check slide 1 and fix the master before going on, since every later slide inherits it.</li>
+                            <li>Then paste the slide prompts one at a time, in order, waiting for each image. If a slide drifts, paste the master again above it.</li>
+                            <li>Save as slide-01, slide-02… so the order survives the upload, then rebuild the text in Canva. Image models don't render exact copy or brand hex reliably.</li>
+                        </ol>
+                    </div>
                 </div>
 
                 <div class="tfield">
@@ -2213,6 +2316,28 @@ button:disabled { opacity: 0.4; cursor: not-allowed; }
                     <label class="tlabel">Re-aim at moment (optional)</label>
                     <select class="tselect" id="rc-reaim"></select>
                     <p class="help-text">Leave untagged to let the draft pick the best new moment. Put a new reader in Steer.</p>
+                </div>
+
+                <!-- Shown only for the two moves that produce an actual asset -->
+                <div class="tfield" id="rc-ratio-field" style="display:none;">
+                    <label class="tlabel">Aspect ratio</label>
+                    <div class="segmented" id="rc-ratio" role="group" aria-label="Aspect ratio">
+                        <button type="button" class="seg-btn" data-val="Square 1:1">Square<span class="seg-sub">1:1</span></button>
+                        <button type="button" class="seg-btn active" data-val="Portrait 4:5">Portrait<span class="seg-sub">4:5</span></button>
+                        <button type="button" class="seg-btn" data-val="Vertical 9:16">Vertical<span class="seg-sub">9:16 mobile</span></button>
+                        <button type="button" class="seg-btn" data-val="Wide 16:9">Wide<span class="seg-sub">16:9</span></button>
+                    </div>
+                    <p class="help-text">Applies to the carousel and video variants. Vertical 9:16 fills a phone screen, which is what you want for video. LinkedIn shows feed <em>images</em> no taller than 4:5, so a 9:16 still gets cropped in the feed.</p>
+                    <div class="howto" id="rc-howto" style="display:none;">
+                        <p class="howto-title">How you'll generate the carousel slides</p>
+                        <ol>
+                            <li>The carousel variant comes back with a master prompt plus one prompt per slide, and the same steps written out in full.</li>
+                            <li>Open one image generator conversation and keep every slide in it, so the look carries from slide to slide.</li>
+                            <li>Paste the master prompt on its own first. Check slide 1 and fix the master before going on, since every later slide inherits it.</li>
+                            <li>Then paste the slide prompts one at a time, in order, waiting for each image. If a slide drifts, paste the master again above it.</li>
+                            <li>Save as slide-01, slide-02… so the order survives the upload, then rebuild the text in Canva. Image models don't render exact copy or brand hex reliably.</li>
+                        </ol>
+                    </div>
                 </div>
 
                 <div class="toggle-group">
@@ -2827,13 +2952,17 @@ const CHECK_DEPTHS = ["Diagnose", "Diagnose + fixes", "Revise"];
 
 // ── Signal Studio ──
 const STUDIO_VISUAL_TYPES = ["Single image", "Carousel", "Video", "Quote card", "Data or stat card", "Diagram or framework"];
-const STUDIO_RATIOS = ["Square 1:1", "Portrait 4:5", "Wide 16:9"];
+// Shared by Visual Designer and Content Recycler. Declarative only, the markup's
+// data-val attributes are what the wiring reads. "Vertical 9:16" is the mobile
+// full-screen ratio: right for video, and cropped in-feed for a still image,
+// which is why the prompts say so rather than the picker hiding the option.
+const VISUAL_RATIOS = ["Square 1:1", "Portrait 4:5", "Vertical 9:16", "Wide 16:9"];
 const STUDIO_SLIDE_COUNTS = [5, 7, 10];
 
 // ── Content Recycler, each selected move produces one variant ──
 const RECYCLE_MOVES = [
   { key: "carousel", label: "Carousel",
-    phrase: "Expand it into a carousel. Lead with the post copy that sits above the carousel in the feed, written in full, then the carousel beneath it: a hook-first opening slide, one idea per slide, and a closing slide. For every slide give the on-slide text and one line on what the slide shows. Then add a block titled Carousel image-generator prompt holding a master prompt that primes the whole set (the look, the palette as literal hex values, the type treatment, the aspect ratio, and what stays consistent slide to slide) followed by one short numbered prompt per slide that inherits it. Write both in plain descriptive language with no tool-specific syntax, so it works in any image generator, and say plainly at the top of the block that the output is a rough draft for ideation, not publishable art." },
+    phrase: "Expand it into a carousel. Lead with the post copy that sits above the carousel in the feed, written in full, then the carousel beneath it: a hook-first opening slide, one idea per slide, and a closing slide. For every slide give the on-slide text and one line on what the slide shows. Then add a block titled Carousel image-generator prompt, built in three parts. First, a numbered walkthrough headed How to generate these slides, written for someone who has never done it: open an image generator that keeps a style across turns, start one conversation and keep every slide in it so the look carries; paste the master prompt on its own first and let it render slide 1; check that slide and fix the master prompt before going further, since every later slide inherits it; then paste the slide prompts one at a time, in order, waiting for each image before sending the next; if a slide drifts off the look, paste the master prompt again above that slide's prompt rather than starting a new conversation; save each image as you go, named slide-01, slide-02 and so on, so the order survives the upload; then rebuild the text in Canva, because an image model will not render exact copy, brand hex values, the logo, or small labels reliably. Second, the master prompt itself: the look, the palette as literal hex values, the type treatment, the aspect ratio, and what stays consistent slide to slide. Third, one short numbered prompt per slide that inherits the master, each labelled with its slide number and the on-slide text it has to carry, so it is obvious which prompt makes which slide. Write every prompt in plain descriptive language with no tool-specific syntax, so it works in any image generator, and say plainly at the top of the block that the output is a rough draft for ideation, not publishable art." },
   { key: "followup", label: "Follow-up post",
     phrase: "Write a follow-up post that advances the idea a step further and stands entirely on its own." },
   { key: "reactive", label: "Reactive spin",
@@ -3030,8 +3159,8 @@ const TOOL_FLOW = {
     get: "A research dossier: the sources, what they agree on, where they don't, and the angles worth taking.",
     lands: "Filed to the Research database in Notion once you approve it. Post Drafter and Idea Generator read it back on their own." },
   ideas: { surface: "project", next: "brief",
-    get: "5 to 12 post ideas, each with an angle, a hook, the format that suits it, and the buying moment it serves.",
-    lands: "In the Claude chat. Nothing is filed. Pick the one you want and take it to Post Drafter." },
+    get: "5 to 12 post ideas, each labelled with its angle, hook, format, buying moment, why now, and the visual it wants.",
+    lands: "In the Claude chat. Nothing is filed. Copy the one you want and paste it whole into Post Drafter's Quick tab." },
   brief: { surface: "project", next: "check",
     get: "A finished post draft, hook first, in Stern's voice.",
     lands: "In the Claude chat. It's saved to Post Drafts in Notion only if you approve it." },
@@ -3118,7 +3247,7 @@ const FIELD_MAP = {
   brief:    { moment: "bb-moment", topic: "bb-topic" },
   campaign: { moment: "sca-moment", topic: "sca-theme" },
   studio:   { moment: "st-moment" },
-  recycler: { moment: "sc-moment" },
+  recycler: { moment: "rc-source-moment" },
   ideas:    { moment: "ig-moment", topic: "ig-topic" },
 };
 
@@ -3348,13 +3477,13 @@ document.getElementById("bb-orig").href = ARTIFACT_URLS.signalBriefBuilder;
       parts.push(`Write them for ${reader}.`);
     }
 
-    parts.push(`Give me ${state.count} distinct post ideas, not variations on one. For each: the angle in one line, a ready hook, the format that fits (Evergreen, Reactive, or Founder POV), the buying moment it serves, and why it would land now.`);
+    parts.push(`Give me ${state.count} distinct post ideas, not variations on one. Number each idea and give it a short title, then set out its fields on their own lines using exactly these labels, in this order: Angle (the angle in one line), Hook (a ready opening line), Format (Evergreen, Reactive, or Founder POV), Buying moment (the one it serves), Why now (why it would land now). Spell the labels exactly like that, because Post Drafter reads them straight back out when I paste an idea into it.`);
 
     if (state.useSeries) {
       parts.push("Then sketch how the strongest three to five could arc into a series: the throughline, the order, and the cadence. A sketch to choose from, not a full plan, hand it to Campaign Builder to build out.");
     }
     if (state.useVisuals) {
-      parts.push("For each idea, say whether it wants a carousel, a single graphic, a short video, or text only, and what the visual would show in one line. Hand these to Visual Designer to produce.");
+      parts.push("For each idea, add one more line labelled Visual, after Why now, using that exact label: whether it wants a carousel, a single graphic, a short video, or text only, what the visual would show in one line, and the aspect ratio that suits it, 1:1 or 4:5 for feed graphics and carousels, 9:16 vertical for video and anything meant to fill a phone screen. Hand these to Visual Designer to produce.");
     }
     if (state.useVault) {
       parts.push("Pull hook, structure, and pacing patterns from the Video Briefs folder of the Stern Craft Vault (stern-vault connector), scope to the Video Briefs/wiki/ path with search_query, since search_simple can't filter by folder and the wiki holds the distilled notes rather than the raw transcripts under raw/ and harvest/, and apply what fits Stern's voice.");
@@ -3412,7 +3541,7 @@ document.getElementById("bb-orig").href = ARTIFACT_URLS.signalBriefBuilder;
 /* ═══════════════════════ Post Drafter ═══════════════════════ */
 (function initBrief() {
   const state = {
-    mode: "guided",          // "guided" | "quick", quick reproduces the original request verbatim
+    mode: "guided",          // "guided" = fill the fields, "quick" = paste a whole Idea Generator idea
     format: "Evergreen",
     useVault: true,
     useResearch: false,
@@ -3431,19 +3560,39 @@ document.getElementById("bb-orig").href = ARTIFACT_URLS.signalBriefBuilder;
   });
 
   const topicEl    = document.getElementById("bb-topic");
+  const topicField = document.getElementById("bb-topic-field");
   const steerEl    = document.getElementById("bb-steer");
   const previewEl  = document.getElementById("bb-preview");
   const dotEl      = document.getElementById("bb-dot");
   const hintEl     = document.getElementById("bb-hint");
   const copyBtn    = document.getElementById("bb-copy");
+  const quickEl    = document.getElementById("bb-quick");
+  const ideaEl     = document.getElementById("bb-idea");
+  const parsedEl   = document.getElementById("bb-parsed");
+  const fillBtn    = document.getElementById("bb-fill");
+  const momentHelp = document.getElementById("bb-moment-help");
   const guidedEl   = document.getElementById("bb-guided");
   const angleEl    = document.getElementById("bb-angle");
   const takeEl     = document.getElementById("bb-take");
+  const hookEl     = document.getElementById("bb-hook");
+  const whyEl      = document.getElementById("bb-whynow");
+  const visualEl   = document.getElementById("bb-visual");
   const readerEl   = document.getElementById("bb-reader");
   const proofEl    = document.getElementById("bb-proof");
   const takeawayEl = document.getElementById("bb-takeaway");
   const reactionEl = document.getElementById("bb-reaction");
   const avoidEl    = document.getElementById("bb-avoid");
+  const moreBtn    = document.getElementById("bb-more-btn");
+  const moreEl     = document.getElementById("bb-more");
+
+  const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+
+  // Text lifted out of an Idea Generator block already ends in punctuation, and
+  // the clause templates supply their own, so every request came out reading
+  // "…not more chaotic..". This gives each value exactly one terminator. The
+  // optional closing quote matters: Idea Generator wraps its hooks in quotes,
+  // so the stop lands inside them and a naive last-character test misses it.
+  const stop = s => (/[.?!]["'”’)\]]?$/.test(s) ? s : s + ".");
 
   // Populate the guided selects
   const fill = (el, list) => list.forEach(o => {
@@ -3455,39 +3604,127 @@ document.getElementById("bb-orig").href = ARTIFACT_URLS.signalBriefBuilder;
   fill(readerEl, BRIEF_READERS);
   fill(reactionEl, BRIEF_REACTIONS);
 
+  // ── Reading a pasted Idea Generator block ────────────────────────────────
+  // Deliberately tolerant: bullets, bold markers and spacing drift run to run.
+  // A missed label costs nothing, because the raw block is what reaches the
+  // prompt, this read-out only exists so you can see what was understood and
+  // carry it into Guided.
+  const IDEA_LABEL_RE = /^[\s>*\-–—•·]*\**\s*(angle|hook|format|buying moment|why now|visual)\s*\**\s*:\s*(.*)$/i;
+  const IDEA_ROWS = [
+    ["title",        "Title"],
+    ["angle",        "Angle"],
+    ["hook",         "Hook"],
+    ["format",       "Format"],
+    ["buyingmoment", "Buying moment"],
+    ["whynow",       "Why now"],
+    ["visual",       "Visual"],
+  ];
+
+  function parseIdea(text) {
+    const out = { title: "" };
+    let cur = null;
+    text.split(/\r?\n/).forEach(raw => {
+      const hit = raw.match(IDEA_LABEL_RE);
+      if (hit) {
+        cur = hit[1].toLowerCase().replace(/\s+/g, "");
+        out[cur] = hit[2].trim();
+        return;
+      }
+      const line = raw.trim();
+      if (!line) { cur = null; return; }
+      if (cur) { out[cur] = (out[cur] + " " + line).trim(); return; }
+      if (!out.title) {
+        out.title = line
+          .replace(/^[*\-–—•·>\s]*\d*[.)]?\s*/, "")
+          .replace(/^["'“”]+|["'“”]+$/g, "")
+          .trim();
+      }
+    });
+    return out;
+  }
+
+  // Match a parsed value against a known list. Substring, case-insensitive, and
+  // quote-stripped so `"What's our Cyber Risk in Dollars?"` matches unquoted text.
+  const matchFrom = (val, list) => {
+    const v = (val || "").toLowerCase();
+    if (!v) return "";
+    return list.find(x => v.includes(x.toLowerCase().replace(/^"|"$/g, ""))) || "";
+  };
+
+  let parsed = { title: "" };
+
+  function setFormat(v) {
+    state.format = v;
+    fmtGroup.querySelectorAll(".seg-btn").forEach(b => b.classList.toggle("active", b.dataset.val === v));
+  }
+  function setMode(v) {
+    state.mode = v;
+    modeGroup.querySelectorAll(".seg-btn").forEach(b => b.classList.toggle("active", b.dataset.mode === v));
+  }
+
+  function applyParse() {
+    parsed = parseIdea(ideaEl.value);
+    const mm = matchFrom(parsed.buyingmoment, MOMENTS);
+    if (mm) sel.value = mm;
+    const ff = matchFrom(parsed.format, FORMATS);
+    if (ff) setFormat(ff);
+  }
+
+  function renderParsed() {
+    let found = 0;
+    parsedEl.innerHTML = IDEA_ROWS.map(([k, label]) => {
+      const v = (parsed[k] || "").trim();
+      if (v) found++;
+      const shown = v ? (v.length > 92 ? v.slice(0, 92) + "…" : v) : "not found";
+      return `<div class="parsed-row${v ? "" : " miss"}"><span class="parsed-key">${label}</span><span class="parsed-val">${esc(shown)}</span></div>`;
+    }).join("");
+    fillBtn.disabled = found === 0;
+  }
+
   sel.addEventListener("change", update);
   topicEl.addEventListener("input", update);
   steerEl.addEventListener("input", update);
-  [takeEl, proofEl, takeawayEl, avoidEl].forEach(el => el.addEventListener("input", update));
+  ideaEl.addEventListener("input", () => { applyParse(); update(); });
+  [takeEl, hookEl, whyEl, visualEl, proofEl, takeawayEl, avoidEl].forEach(el => el.addEventListener("input", update));
   [readerEl, reactionEl].forEach(el => el.addEventListener("change", update));
 
-  // Angle drives the "Your take" prompt, this is what makes it feel like an interview
+  // Angle type drives the Angle prompt, this is what makes it feel like an interview
   angleEl.addEventListener("change", () => {
     const a = BRIEF_ANGLES.find(x => x.val === angleEl.value) || BRIEF_ANGLES[0];
     takeEl.placeholder = a.hint;
     update();
   });
 
+  // Carry the parsed fields into Guided so they can be edited before sending.
+  fillBtn.addEventListener("click", () => {
+    const topicSeed = parsed.title || parsed.hook || "";
+    if (topicSeed && !topicEl.value.trim()) topicEl.value = topicSeed;
+    if (parsed.angle)  takeEl.value   = parsed.angle;
+    if (parsed.hook)   hookEl.value   = parsed.hook;
+    if (parsed.whynow) whyEl.value    = parsed.whynow;
+    if (parsed.visual) visualEl.value = parsed.visual;
+    setMode("guided");
+    update();
+  });
+
+  // "Sharpen it" disclosure, same pattern as the Harvester's Output section
+  moreBtn.addEventListener("click", () => {
+    const open = moreEl.style.display === "none";
+    moreEl.style.display = open ? "" : "none";
+    moreBtn.setAttribute("aria-expanded", String(open));
+    moreBtn.querySelector(".disclosure-caret").innerHTML = open ? "&#9662;" : "&#9656;";
+  });
+
   // Mode switch
   const modeGroup = document.getElementById("bb-mode");
   modeGroup.querySelectorAll(".seg-btn").forEach(btn => {
-    btn.addEventListener("click", () => {
-      modeGroup.querySelectorAll(".seg-btn").forEach(b => b.classList.remove("active"));
-      btn.classList.add("active");
-      state.mode = btn.dataset.mode;
-      update();
-    });
+    btn.addEventListener("click", () => { setMode(btn.dataset.mode); update(); });
   });
 
   // Format segmented
   const fmtGroup = document.getElementById("bb-format");
   fmtGroup.querySelectorAll(".seg-btn").forEach(btn => {
-    btn.addEventListener("click", () => {
-      fmtGroup.querySelectorAll(".seg-btn").forEach(b => b.classList.remove("active"));
-      btn.classList.add("active");
-      state.format = btn.dataset.val;
-      update();
-    });
+    btn.addEventListener("click", () => { setFormat(btn.dataset.val); update(); });
   });
 
   // Toggles
@@ -3505,31 +3742,47 @@ document.getElementById("bb-orig").href = ARTIFACT_URLS.signalBriefBuilder;
     const topic  = topicEl.value.trim();
     const m = moment || "{buying moment}";
     const t = topic || "{topic}";
-    const parts = [
-      `Draft a LinkedIn post. Buying moment: ${m}. Topic: ${t}. Format: ${state.format}.`,
-    ];
+    const quick = state.mode === "quick";
+    const parts = [];
 
-    // Guided interview answers. In quick mode none of these fire, so the request
-    // stays identical to the original Brief Builder output.
-    if (state.mode === "guided") {
+    if (quick) {
+      // Quick mode: one whole idea from Idea Generator, pasted. The block travels
+      // verbatim so nothing depends on the launcher having parsed it correctly.
+      const idea = ideaEl.value.trim() || "{paste one idea from Idea Generator}";
+      parts.push(`Draft a LinkedIn post from an idea Idea Generator produced. Buying moment: ${m}. Format: ${state.format}.`);
+      parts.push(`Here is the idea, exactly as it came back:\n\n${idea}\n\nWork from the labelled fields in that block. Angle is the argument to make. Hook is the opening line, keep it as written unless you can genuinely beat it without changing what it says. Format is the post format. Buying moment is who this is aimed at and what they need at that point. Why now is what makes it timely, so carry that reasoning into the post rather than restating it. Visual, where there is one, is what runs alongside the post, so write the copy to sit beside it and don't describe it in the post itself; Visual Designer builds it as a separate step. If a field is missing, say which one and draft without it rather than inventing it.`);
+    } else {
+      parts.push(`Draft a LinkedIn post. Buying moment: ${m}. Topic: ${t}. Format: ${state.format}.`);
+
+      // Guided answers, every one optional. With all of them blank the request is
+      // the bare four-field one, which is what the old Quick mode produced.
       const angle = angleEl.value;
       const take  = takeEl.value.trim();
-      if (angle && take)   parts.push(`Angle: ${angle}, ${take}.`);
+      if (angle && take)   parts.push(`Angle: ${angle}, ${stop(take)}`);
       else if (angle)      parts.push(`Angle: ${angle}.`);
-      else if (take)       parts.push(`Angle: ${take}.`);
+      else if (take)       parts.push(`Angle: ${stop(take)}`);
+
+      const hook = hookEl.value.trim();
+      if (hook)            parts.push(`Open on this hook, and keep it as written unless you can genuinely beat it without changing what it says: ${stop(hook)}`);
+
+      const why = whyEl.value.trim();
+      if (why)             parts.push(`Why it lands now: ${stop(why)} Carry that reasoning into the post rather than restating it.`);
+
+      const visual = visualEl.value.trim();
+      if (visual)          parts.push(`It runs with this visual: ${stop(visual)} Write the copy to sit beside it and don't describe it in the post itself; Visual Designer builds it as a separate step.`);
 
       if (readerEl.value)  parts.push(`Write it for ${readerEl.value}.`);
 
       const proof = proofEl.value.trim();
-      if (proof)           parts.push(`Anchor it in this proof: ${proof}.`);
+      if (proof)           parts.push(`Anchor it in this proof: ${stop(proof)}`);
 
       const takeaway = takeawayEl.value.trim();
-      if (takeaway)        parts.push(`The one thing the reader should take away: ${takeaway}.`);
+      if (takeaway)        parts.push(`The one thing the reader should take away: ${stop(takeaway)}`);
 
       if (reactionEl.value) parts.push(`Aim to ${reactionEl.value}.`);
 
       const avoid = avoidEl.value.trim();
-      if (avoid)           parts.push(`Avoid: ${avoid}.`);
+      if (avoid)           parts.push(`Avoid: ${stop(avoid)}`);
     }
 
     if (state.useVault) {
@@ -3556,10 +3809,24 @@ document.getElementById("bb-orig").href = ARTIFACT_URLS.signalBriefBuilder;
   }
 
   function update() {
-    const ready = sel.value.trim() !== "" && topicEl.value.trim() !== "";
-    guidedEl.style.display = state.mode === "guided" ? "" : "none";
+    const quick = state.mode === "quick";
+    // Quick still needs the moment: the research, keyword and filing clauses all
+    // interpolate it, and a pasted idea can be tagged to a wildcard.
+    const ready = quick
+      ? (ideaEl.value.trim() !== "" && sel.value.trim() !== "")
+      : (sel.value.trim() !== "" && topicEl.value.trim() !== "");
+
+    quickEl.style.display    = quick ? "" : "none";
+    guidedEl.style.display   = quick ? "none" : "";
+    topicField.style.display = quick ? "none" : "";
+    momentHelp.style.display = quick ? "" : "none";
+    if (quick) renderParsed();
+
     previewEl.textContent = assemble();
     dotEl.classList.toggle("ready", ready);
+    hintEl.textContent = quick
+      ? "Paste an idea and pick the buying moment it serves to enable the button."
+      : "Pick a buying moment and add a topic to enable the button.";
     hintEl.style.display = ready ? "none" : "";
     copyBtn.disabled = !ready;
   }
@@ -3660,11 +3927,11 @@ function fillMomentSelect(el, sentinel) {
     if (design) {
       parts.push(`Design a full LinkedIn campaign for the buying moment ${m}.`);
       parts.push(`Big idea: ${theme}. Goal: ${goalText}. Scope: ${scale}.`);
-      parts.push("Produce the campaign's narrative arc (how the posts build on each other), then each post as a numbered brief, hook, angle, format, the buying-moment stage it serves, and a call to action, plus the posting sequence and cadence, the visual assets each post needs (hand these to Signal Studio), and the signals that would tell us it's working.");
+      parts.push("Produce the campaign's narrative arc (how the posts build on each other), then each post as a numbered brief, hook, angle, format, the buying-moment stage it serves, and a call to action, plus the posting sequence and cadence, the visual assets each post needs with the aspect ratio that suits each one, 1:1 or 4:5 for feed graphics and carousels and 9:16 vertical for video and anything meant to fill a phone screen (hand these to Signal Studio), and the signals that would tell us it's working.");
     } else {
       parts.push(`Brainstorm distinct LinkedIn campaign concepts for the buying moment ${m}.`);
       parts.push(`Big idea to explore: ${theme}. Goal: ${goalText}. Scope: ${scale}.`);
-      parts.push("Give me 3 distinct concepts, no more, and make each genuinely different rather than a variation on one idea. For each concept: a title, the throughline in one sentence, and why it fits this moment. Then storyboard it as a numbered post-by-post outline, and for every post in that outline give the hook line, the angle, the format (Evergreen, Reactive, or Founder POV), whether it runs as a written post, a carousel, or a short video, and one line on what the visual shows, so any post can be carried straight into Post Drafter or Visual Designer. Don't write the full posts yet, and don't file anything.");
+      parts.push("Give me 3 distinct concepts, no more, and make each genuinely different rather than a variation on one idea. For each concept: a title, the throughline in one sentence, and why it fits this moment. Then storyboard it as a numbered post-by-post outline, and for every post in that outline give the hook line, the angle, the format (Evergreen, Reactive, or Founder POV), whether it runs as a written post, a carousel, or a short video, one line on what the visual shows, and the aspect ratio that suits it, 1:1 or 4:5 for feed graphics and carousels, 9:16 vertical for video and anything meant to fill a phone screen, so any post can be carried straight into Post Drafter or Visual Designer. Don't write the full posts yet, and don't file anything.");
     }
 
     if (state.useVault) {
@@ -3866,6 +4133,7 @@ function fillMomentSelect(el, sentinel) {
     const tagged = moment && moment !== UNTAGGED;
     const isCarousel = state.visualType === "Carousel";
     const isVideo = state.visualType === "Video";
+    const isVertical = state.ratio === "Vertical 9:16";
     const postText = postEl.value.trim() || "{paste the post the visual supports}";
     const parts = [];
 
@@ -3880,6 +4148,10 @@ function fillMomentSelect(el, sentinel) {
     if (tagged) ctx.push(`buying moment "${moment}"`);
     parts.push(`Spec: ${ctx.join(", ")}.`);
 
+    if (isVertical) {
+      parts.push(`It runs vertical at 9:16, full-screen on a phone, so compose for a tall frame: stack rather than spread, keep every element that matters inside the middle 80% of the height so the LinkedIn interface doesn't sit on top of it, and size type for a phone held at arm's length rather than a desktop preview. LinkedIn shows feed images no taller than 4:5, so say plainly in the brief whether this asset is video, a Story-style or Reels-style export, or a still meant for the feed, and if it is a still for the feed, note that a 9:16 image will be cropped or letterboxed there and give the 4:5 safe crop alongside it.`);
+    }
+
     parts.push(`Post the visual supports:\n\n${postText}`);
 
     parts.push(`Produce a designer-ready brief with: the concept in one line; layout and visual hierarchy (what's largest and the reading order); a hard text budget, ${isCarousel ? "one idea and at most 15 words per slide" : isVideo ? "one caption per beat and under 12 words each, since the captions carry the whole thing on mute" : "at most three text zones (one dominant hook, one supporting line, one closer) and under 25 words total"}, because the graphic stops the scroll and the post copy carries the detail, so anything that fails the thumbnail test at feed scale moves to the caption rather than getting smaller; the exact copy for every text element (headline, subhead, labels${isCarousel ? ", and the text for each slide in order" : ""}); color and type per the Playbook; imagery or icon direction; and a short list of what to avoid.`);
@@ -3890,7 +4162,7 @@ function fillMomentSelect(el, sentinel) {
     }
 
     if (isCarousel) {
-      parts.push(`Because this is a carousel, lead the brief with the post copy that sits above it in the feed, written in full, then the slides beneath it. Then add a block titled Carousel image-generator prompt holding a master prompt that primes the whole set (the look, the palette as literal hex values, the type treatment, the aspect ratio, and what stays consistent slide to slide) followed by one short numbered prompt per slide that inherits it. Write both in plain descriptive language with no tool-specific syntax, so it works in any image generator, and say plainly at the top of the block that the output is a rough draft for ideation, not publishable art.`);
+      parts.push(`Because this is a carousel, lead the brief with the post copy that sits above it in the feed, written in full, then the slides beneath it. Then add a block titled Carousel image-generator prompt, built in three parts. First, a numbered walkthrough headed How to generate these slides, written for someone who has never done it: open an image generator that keeps a style across turns, start one conversation and keep every slide in it so the look carries; paste the master prompt on its own first and let it render slide 1; check that slide and fix the master prompt before going further, since every later slide inherits it; then paste the slide prompts one at a time, in order, waiting for each image before sending the next; if a slide drifts off the look, paste the master prompt again above that slide's prompt rather than starting a new conversation; save each image as you go, named slide-01, slide-02 and so on, so the order survives the upload; then rebuild the text in Canva, because an image model will not render exact copy, brand hex values, the logo, or small labels reliably. Second, the master prompt itself: the look, the palette as literal hex values, the type treatment, the aspect ratio, and what stays consistent slide to slide. Third, one short numbered prompt per slide that inherits the master, each labelled with its slide number and the on-slide text it has to carry, so it is obvious which prompt makes which slide. Write every prompt in plain descriptive language with no tool-specific syntax, so it works in any image generator, and say plainly at the top of the block that the output is a rough draft for ideation, not publishable art.`);
     }
 
     parts.push("Flag any zone where an AI-generated background would be acceptable, background only, with no critical text over it, per the Visual Playbook honesty rule. Keep all text on clean brand backgrounds.");
@@ -3928,13 +4200,15 @@ function fillMomentSelect(el, sentinel) {
 
 /* ═══════════════════════ Content Recycler ═══════════════════════ */
 (function initRecycler() {
-  const state = { moves: new Set(), useVault: true, useKeywords: false, saveToNotion: true, useHumanize: true };
+  const state = { moves: new Set(), ratio: "Portrait 4:5", useVault: true, useKeywords: false, saveToNotion: true, useHumanize: true };
 
   const postEl    = document.getElementById("rc-post");
   const srcSel    = document.getElementById("rc-source-moment");
   const winnerEl  = document.getElementById("rc-winner");
   const reaimSel  = document.getElementById("rc-reaim");
   const reaimField = document.getElementById("rc-reaim-field");
+  const ratioField = document.getElementById("rc-ratio-field");
+  const howtoEl   = document.getElementById("rc-howto");
   const steerEl   = document.getElementById("rc-steer");
   const previewEl = document.getElementById("rc-preview");
   const dotEl     = document.getElementById("rc-dot");
@@ -3964,6 +4238,8 @@ function fillMomentSelect(el, sentinel) {
   [postEl, winnerEl, steerEl].forEach(el => el.addEventListener("input", update));
   [srcSel, reaimSel].forEach(el => el.addEventListener("change", update));
 
+  wireSegGroup("rc-ratio", v => { state.ratio = v; update(); });
+
   document.querySelectorAll("#view-recycler [data-toggle]").forEach(btn => {
     btn.addEventListener("click", () => {
       const key = btn.dataset.toggle;
@@ -3979,6 +4255,7 @@ function fillMomentSelect(el, sentinel) {
     const retargeting = state.moves.has("retarget");
     const reaimMoment = reaimSel.value;
     const reaimTagged = retargeting && reaimMoment && reaimMoment !== UNTAGGED;
+    const needsRatio = state.moves.has("carousel") || state.moves.has("video");
     const src = postEl.value.trim() || "{paste the winning post}";
     const chosen = RECYCLE_MOVES.filter(m => state.moves.has(m.key));
     const parts = [];
@@ -3998,6 +4275,10 @@ function fillMomentSelect(el, sentinel) {
           ? `- ${m.phrase} Re-aim at "${reaimMoment}".`
           : `- ${m.phrase}`);
       parts.push(`Produce these variants:\n${lines.join("\n")}`);
+    }
+
+    if (needsRatio) {
+      parts.push(`Build any carousel or video variant at ${state.ratio}, and state that ratio in its spec and in every image-generator prompt.${state.ratio === "Vertical 9:16" ? " That is full-screen on a phone, so compose for a tall frame: stack rather than spread, keep everything that matters inside the middle 80% of the height so the LinkedIn interface doesn't sit on top of it, and size type for a phone held at arm's length rather than a desktop preview. LinkedIn shows feed images no taller than 4:5, so note where a 9:16 still would be cropped in the feed and give the 4:5 safe crop alongside it." : ""}`);
     }
 
     if (state.useVault) {
@@ -4030,6 +4311,8 @@ function fillMomentSelect(el, sentinel) {
   function update() {
     const ready = postEl.value.trim() !== "" && state.moves.size > 0;
     reaimField.style.display = state.moves.has("retarget") ? "" : "none";
+    ratioField.style.display = (state.moves.has("carousel") || state.moves.has("video")) ? "" : "none";
+    howtoEl.style.display    = state.moves.has("carousel") ? "" : "none";
     previewEl.textContent = assemble();
     dotEl.classList.toggle("ready", ready);
     hintEl.style.display = ready ? "none" : "";
